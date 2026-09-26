@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Layanan — Kelurahan Lahendong</title>
+  <meta name="description" content="Prosedur, syarat, dan estimasi waktu pengurusan surat di Kantor Kelurahan Lahendong." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%232D5A4A'/><ellipse cx='16' cy='17' rx='8' ry='6' fill='none' stroke='%23F7F6F1' stroke-width='1.6'/><ellipse cx='16' cy='15.5' rx='3.5' ry='2.5' fill='%23F7F6F1'/></svg>" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body class="bg-[var(--bg)] text-[var(--ink)] min-h-screen flex flex-col">
+
+  <div id="header"></div>
+
+  <main id="konten-utama" class="flex-1">
+
+    <section class="bg-[var(--surface)] border-b border-[var(--line)]">
+      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-12 md:py-16 grid md:grid-cols-12 gap-6">
+        <div class="md:col-span-7">
+          <span class="eyebrow">Pelayanan Warga</span>
+          <h1 class="judul-halaman mt-5">Layanan Surat</h1>
+        </div>
+        <div class="md:col-span-5 md:self-end">
+          <p class="text-[var(--muted)] leading-[1.65]">
+            Syarat, alur, estimasi waktu, dan biaya pengurusan berbagai jenis surat keterangan
+            di Kantor Kelurahan Lahendong.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+      <div class="grid md:grid-cols-12 gap-8 md:gap-12">
+        <div class="reveal md:col-span-4">
+          <p class="no-seksi mb-3">01</p>
+          <span class="eyebrow">Jenis Surat</span>
+          <h2 class="judul-seksi mt-4">Pilih layanan</h2>
+          <p class="text-[var(--muted)] mt-4 text-[15px] leading-[1.65]">
+            Ketuk salah satu jenis surat untuk melihat syarat dan alur pengurusannya.
+          </p>
+
+          <div class="kartu p-5 mt-8 bg-[var(--surface)]">
+            <p class="text-[11px] font-semibold tracking-[0.08em] uppercase text-[var(--muted)] mb-3">Jam layanan</p>
+            <p class="text-[15px]">Senin – Jumat</p>
+            <p class="text-[15px]">08.00 – 15.00 WITA</p>
+            <a href="kontak.html" class="tautan mt-4">
+              <span class="relative">Hubungi kantor<span class="garis absolute left-0 -bottom-0.5"></span></span>
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+
+        <div id="daftar-layanan" class="md:col-span-8 space-y-3">
+          <!-- diisi oleh JS -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script>
+    function blokInfo(label, isi, aksen) {
+      return `
+        <div>
+          <p class="text-[11px] font-semibold tracking-[0.08em] uppercase text-[var(--muted)] mb-1.5">${label}</p>
+          <p class="text-[15px] ${aksen ? "text-[var(--accent)] font-semibold" : "text-[var(--muted)]"} leading-[1.6]">${isi}</p>
+        </div>
+      `;
+    }
+
+    function itemLayanan(item, i) {
+      return `
+        <details class="kartu reveal overflow-hidden">
+          <summary class="flex items-center gap-4 px-5 py-4">
+            <span class="no-seksi shrink-0">${nomorUrut(i)}</span>
+            <span class="font-judul text-[17px] md:text-[19px] leading-snug flex-1">${item.nama_surat}</span>
+            <i data-lucide="chevron-down" class="chevron-ikon w-5 h-5 text-[var(--primary)] shrink-0"></i>
+          </summary>
+          <div class="px-5 pb-5 pt-1">
+            <div class="border-t border-[var(--line)] pt-5 space-y-5">
+              ${blokInfo("Syarat", item.syarat)}
+              ${blokInfo("Alur pengajuan", item.alur)}
+              <div class="grid grid-cols-2 gap-6 pt-1">
+                ${blokInfo("Estimasi waktu", item.waktu)}
+                ${blokInfo("Biaya", item.biaya, true)}
+              </div>
+            </div>
+          </div>
+        </details>
+      `;
+    }
+
+    async function muatLayanan() {
+      const container = document.getElementById("daftar-layanan");
+      tampilkanMemuat(container);
+      try {
+        const data = await ambilData("layanan");
+        if (!data.length) {
+          tampilkanGagal(container, "Belum ada data layanan surat.");
+          return;
+        }
+        container.innerHTML = data.map(itemLayanan).join("");
+        if (window.lucide) lucide.createIcons();
+        aktifkanReveal();
+      } catch (err) {
+        tampilkanGagal(container, "Data layanan belum bisa dimuat saat ini.");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      muatLayanan();
+      aktifkanReveal();
+    });
+  </script>
+</body>
+</html>

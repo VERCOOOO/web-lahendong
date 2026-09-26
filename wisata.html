@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wisata — Kelurahan Lahendong</title>
+  <meta name="description" content="Daftar destinasi wisata di Kelurahan Lahendong: Danau Linow, Hutan Pinus, Kawah Belerang, dan Pemandian Air Panas." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%232D5A4A'/><ellipse cx='16' cy='17' rx='8' ry='6' fill='none' stroke='%23F7F6F1' stroke-width='1.6'/><ellipse cx='16' cy='15.5' rx='3.5' ry='2.5' fill='%23F7F6F1'/></svg>" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body class="bg-[var(--bg)] text-[var(--ink)] min-h-screen flex flex-col">
+
+  <div id="header"></div>
+
+  <main id="konten-utama" class="flex-1">
+
+    <section class="bg-[var(--surface)] border-b border-[var(--line)]">
+      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-12 md:py-16 grid md:grid-cols-12 gap-6">
+        <div class="md:col-span-7">
+          <span class="eyebrow">Jelajahi Lahendong</span>
+          <h1 class="judul-halaman mt-5">Destinasi Wisata</h1>
+        </div>
+        <div class="md:col-span-5 md:self-end">
+          <p class="text-[var(--muted)] leading-[1.65]">
+            Dari danau vulkanik tiga warna hingga pemandian air panas alami, berikut destinasi
+            yang bisa dikunjungi di sekitar Kelurahan Lahendong.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+      <div id="grid-wisata" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
+        <!-- diisi oleh JS -->
+      </div>
+    </section>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script>
+    function kartuWisata(item, i) {
+      return `
+        <a href="wisata-detail.html?id=${encodeURIComponent(item.id)}" class="kartu reveal block overflow-hidden">
+          <div class="bingkai-foto aspect-[4/3]">
+            <img src="${urlFoto(item.foto)}" alt="${item.nama}" loading="lazy" onerror="this.src='img/placeholder.webp'" />
+          </div>
+          <div class="p-5">
+            <p class="no-seksi">${nomorUrut(i)}</p>
+            <h2 class="judul-kartu mt-2">${item.nama}</h2>
+            <p class="text-sm text-[var(--muted)] mt-2 leading-[1.6]">${item.ringkas}</p>
+            <span class="tautan mt-5">
+              <span class="relative">Lihat detail<span class="garis absolute left-0 -bottom-0.5"></span></span>
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </span>
+          </div>
+        </a>
+      `;
+    }
+
+    async function muatDaftarWisata() {
+      const grid = document.getElementById("grid-wisata");
+      tampilkanMemuat(grid);
+      try {
+        const data = await ambilData("wisata");
+        if (!data.length) {
+          tampilkanGagal(grid, "Belum ada data destinasi wisata.");
+          return;
+        }
+        grid.innerHTML = data.map(kartuWisata).join("");
+        if (window.lucide) lucide.createIcons();
+        aktifkanReveal();
+      } catch (err) {
+        tampilkanGagal(grid, "Daftar destinasi belum bisa dimuat saat ini.");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", muatDaftarWisata);
+  </script>
+</body>
+</html>

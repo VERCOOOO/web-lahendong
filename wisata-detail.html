@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="judul-tab">Detail Wisata — Kelurahan Lahendong</title>
+  <meta name="description" content="Detail destinasi wisata Kelurahan Lahendong: jam operasional, tiket, fasilitas, dan cara menuju lokasi." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%232D5A4A'/><ellipse cx='16' cy='17' rx='8' ry='6' fill='none' stroke='%23F7F6F1' stroke-width='1.6'/><ellipse cx='16' cy='15.5' rx='3.5' ry='2.5' fill='%23F7F6F1'/></svg>" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body class="bg-[var(--bg)] text-[var(--ink)] min-h-screen flex flex-col">
+
+  <div id="header"></div>
+
+  <main id="konten-utama" class="flex-1">
+    <div id="konten-detail">
+      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-24 flex items-center justify-center gap-2.5 text-[var(--muted)] text-sm">
+        <i data-lucide="loader-circle" class="w-4 h-4 animate-spin"></i> Memuat data…
+      </div>
+    </div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script>
+    function halamanPesan(ikon, judul, pesan, warnaIkon) {
+      return `
+        <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-24 md:py-32 text-center">
+          <i data-lucide="${ikon}" class="w-10 h-10 ${warnaIkon} mx-auto mb-5"></i>
+          <h1 class="judul-halaman">${judul}</h1>
+          <p class="text-[var(--muted)] mt-4 mb-8 max-w-[420px] mx-auto">${pesan}</p>
+          <a href="wisata.html" class="tombol">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke daftar wisata
+          </a>
+        </section>
+      `;
+    }
+
+    function barisInfo(ikon, label, nilai) {
+      return `
+        <div class="py-5 border-b border-[var(--line)] flex gap-4">
+          <i data-lucide="${ikon}" class="w-[18px] h-[18px] text-[var(--primary)] shrink-0 mt-1"></i>
+          <div>
+            <p class="text-[11px] font-semibold tracking-[0.08em] uppercase text-[var(--muted)]">${label}</p>
+            <p class="text-[15px] mt-1">${nilai}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function tampilanDetail(item) {
+      return `
+        <section class="relative h-[45vh] max-h-[420px] min-h-[300px] flex items-end overflow-hidden">
+          <img src="${urlFoto(item.foto)}" alt="${item.nama}" class="absolute inset-0 w-full h-full object-cover" onerror="this.src='img/placeholder.webp'" />
+          <div class="absolute inset-0 bg-black/35"></div>
+          <div class="absolute inset-x-0 bottom-0 h-1/2" style="background:linear-gradient(to top, rgba(0,0,0,.30), transparent);"></div>
+          <div class="relative max-w-[var(--konten)] mx-auto w-full px-4 md:px-6 pb-10 md:pb-12">
+            <a href="wisata.html" class="inline-flex items-center gap-2 text-white/80 hover:text-white text-sm font-semibold mb-5">
+              <i data-lucide="arrow-left" class="w-4 h-4"></i> Daftar wisata
+            </a>
+            <h1 class="judul-hero text-white max-w-[720px]">${item.nama}</h1>
+          </div>
+        </section>
+
+        <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+          <div class="grid lg:grid-cols-12 gap-10 lg:gap-16">
+            <div class="lg:col-span-7">
+              <span class="eyebrow">Tentang destinasi</span>
+              <h2 class="judul-seksi mt-4 mb-5">${item.nama}</h2>
+              <div class="prosa">
+                <p>${item.deskripsi}</p>
+              </div>
+
+              <h3 class="judul-kartu mt-12 mb-4">Cara menuju lokasi</h3>
+              <div class="prosa"><p>${item.cara_kesana}</p></div>
+
+              ${item.maps_link ? `
+                <a href="${item.maps_link}" target="_blank" rel="noopener noreferrer" class="tombol tombol-sekunder mt-7">
+                  <i data-lucide="map" class="w-4 h-4"></i> Buka di Google Maps
+                </a>` : ""}
+            </div>
+
+            <aside class="lg:col-span-5">
+              <div class="kartu p-6 md:p-7">
+                <p class="text-[11px] font-semibold tracking-[0.08em] uppercase text-[var(--muted)] pb-4 border-b border-[var(--line)]">
+                  Informasi kunjungan
+                </p>
+                ${barisInfo("clock", "Jam operasional", item.jam)}
+                ${barisInfo("ticket", "Tiket masuk", item.tiket)}
+                ${barisInfo("layout-grid", "Fasilitas", item.fasilitas)}
+                <div class="pt-5 flex gap-4">
+                  <i data-lucide="sun" class="w-[18px] h-[18px] text-[var(--primary)] shrink-0 mt-1"></i>
+                  <div>
+                    <p class="text-[11px] font-semibold tracking-[0.08em] uppercase text-[var(--muted)]">Waktu terbaik</p>
+                    <p class="text-[15px] mt-1">${item.waktu_terbaik}</p>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+      `;
+    }
+
+    async function muatDetailWisata() {
+      const container = document.getElementById("konten-detail");
+      const id = new URLSearchParams(window.location.search).get("id");
+
+      if (!id) {
+        container.innerHTML = halamanPesan("map-pin-off", "Destinasi tidak ditemukan",
+          "Tautan yang Anda buka tidak menyertakan destinasi apa pun.", "text-[var(--muted)]");
+        if (window.lucide) lucide.createIcons();
+        return;
+      }
+
+      try {
+        const data = await ambilData("wisata");
+        const item = data.find((row) => row.id === id);
+        if (!item) {
+          container.innerHTML = halamanPesan("map-pin-off", "Destinasi tidak ditemukan",
+            "Tautan yang Anda buka tidak valid atau destinasi sudah tidak tersedia.", "text-[var(--muted)]");
+        } else {
+          container.innerHTML = tampilanDetail(item);
+          document.getElementById("judul-tab").textContent = item.nama + " — Kelurahan Lahendong";
+        }
+      } catch (err) {
+        container.innerHTML = halamanPesan("triangle-alert", "Data belum bisa dimuat",
+          "Silakan coba lagi beberapa saat lagi.", "text-[var(--danger)]");
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+
+    document.addEventListener("DOMContentLoaded", muatDetailWisata);
+  </script>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kelurahan Lahendong — Tomohon Selatan</title>
+  <meta name="description" content="Situs resmi Kelurahan Lahendong, Kecamatan Tomohon Selatan, Kota Tomohon, Sulawesi Utara." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%232D5A4A'/><ellipse cx='16' cy='17' rx='8' ry='6' fill='none' stroke='%23F7F6F1' stroke-width='1.6'/><ellipse cx='16' cy='15.5' rx='3.5' ry='2.5' fill='%23F7F6F1'/></svg>" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body class="bg-[var(--bg)] text-[var(--ink)] min-h-screen flex flex-col">
+
+  <div id="header"></div>
+
+  <main id="konten-utama" class="flex-1">
+
+    <!-- HERO -->
+    <section class="relative h-[60vh] max-h-[520px] min-h-[400px] flex items-end overflow-hidden">
+      <img src="img/hero-lahendong.webp" alt="Ilustrasi kontur topografi kawasan Kelurahan Lahendong"
+           class="absolute inset-0 w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-black/35"></div>
+      <div class="absolute inset-x-0 bottom-0 h-1/2" style="background:linear-gradient(to top, rgba(0,0,0,.30), transparent);"></div>
+
+      <div class="relative max-w-[var(--konten)] mx-auto w-full px-4 md:px-6 pb-12 md:pb-14">
+        <span class="eyebrow eyebrow-terang">Tomohon Selatan · Sulawesi Utara</span>
+        <h1 class="judul-hero text-white mt-5 max-w-[720px]">Kelurahan Lahendong</h1>
+        <p class="text-white/85 text-[17px] md:text-[19px] leading-[1.6] mt-5 max-w-[520px]">
+          Kampung yang membumi di antara danau vulkanik, hutan pinus,
+          dan sumber panas bumi Sulawesi Utara.
+        </p>
+      </div>
+    </section>
+
+    <!-- FAKTA RINGKAS -->
+    <section class="bg-[var(--surface)] border-b border-[var(--line)]">
+      <div id="deret-statistik" class="deret-statistik max-w-[var(--konten)] mx-auto px-4 md:px-6 py-10 md:py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- diisi oleh JS -->
+      </div>
+    </section>
+
+    <!-- 01 · SAMBUTAN -->
+    <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+      <div class="grid md:grid-cols-12 gap-8 md:gap-12">
+        <div class="reveal md:col-span-4">
+          <p class="no-seksi mb-3">01</p>
+          <span class="eyebrow">Sambutan</span>
+          <h2 class="judul-seksi mt-4">Selamat datang<br class="hidden md:block"> di Lahendong</h2>
+        </div>
+        <div class="reveal md:col-span-8">
+          <p class="lead">
+            Lahendong dikenal luas karena Danau Linow, hutan pinus yang sejuk, serta kekayaan
+            energi panas bumi yang menopang kehidupan warganya.
+          </p>
+          <div class="prosa mt-6">
+            <p>
+              Situs ini menjadi pusat informasi resmi mengenai pemerintahan, data kependudukan,
+              potensi wilayah, hingga destinasi wisata yang dapat dikunjungi. Seluruh data
+              disusun agar mudah diakses warga maupun pengunjung dari luar daerah.
+            </p>
+            <p>
+              Kelurahan Lahendong terbagi ke dalam delapan lingkungan yang dipimpin oleh kepala
+              lingkungan masing-masing, di bawah koordinasi aparat kelurahan.
+            </p>
+          </div>
+          <a href="profil.html" class="tautan mt-7">
+            <span class="relative">Selengkapnya tentang profil kelurahan<span class="garis absolute left-0 -bottom-0.5"></span></span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 · WISATA -->
+    <section class="bg-[var(--surface)] border-y border-[var(--line)]">
+      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+        <div class="reveal flex flex-wrap items-end justify-between gap-6 mb-10 md:mb-12">
+          <div>
+            <p class="no-seksi mb-3">02</p>
+            <span class="eyebrow">Jelajahi</span>
+            <h2 class="judul-seksi garis-aksen mt-4">Destinasi wisata</h2>
+          </div>
+          <a href="wisata.html" class="tautan hidden md:inline-flex">
+            <span class="relative">Lihat semua<span class="garis absolute left-0 -bottom-0.5"></span></span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </div>
+
+        <div id="grid-wisata" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
+          <!-- diisi oleh JS -->
+        </div>
+
+        <a href="wisata.html" class="tautan md:hidden mt-8">
+          <span class="relative">Lihat semua destinasi<span class="garis absolute left-0 -bottom-0.5"></span></span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+    </section>
+
+    <!-- 03 · POTENSI -->
+    <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+      <div class="grid md:grid-cols-12 gap-8 md:gap-12">
+        <div class="reveal md:col-span-4">
+          <p class="no-seksi mb-3">03</p>
+          <span class="eyebrow">Potensi Wilayah</span>
+          <h2 class="judul-seksi mt-4">Tiga pilar yang menopang Lahendong</h2>
+          <a href="potensi.html" class="tautan mt-6">
+            <span class="relative">Telusuri potensi<span class="garis absolute left-0 -bottom-0.5"></span></span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </div>
+
+        <div class="reveal md:col-span-8">
+          <div class="border-t border-[var(--line)]">
+            <div class="flex gap-5 md:gap-8 py-7 border-b border-[var(--line)]">
+              <i data-lucide="flame" class="w-6 h-6 text-[var(--primary)] shrink-0 mt-1"></i>
+              <div>
+                <h3 class="judul-kartu">Panas Bumi</h3>
+                <p class="text-[var(--muted)] mt-2 max-w-[520px]">
+                  Kawasan geotermal Lahendong menopang salah satu pembangkit listrik tenaga
+                  panas bumi tertua di Sulawesi Utara.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-5 md:gap-8 py-7 border-b border-[var(--line)]">
+              <i data-lucide="sprout" class="w-6 h-6 text-[var(--primary)] shrink-0 mt-1"></i>
+              <div>
+                <h3 class="judul-kartu">Pertanian</h3>
+                <p class="text-[var(--muted)] mt-2 max-w-[520px]">
+                  Tanah vulkanik yang subur mendukung perkebunan cengkih, sayur-mayur, dan
+                  tanaman hortikultura warga.
+                </p>
+              </div>
+            </div>
+            <div class="flex gap-5 md:gap-8 py-7 border-b border-[var(--line)]">
+              <i data-lucide="store" class="w-6 h-6 text-[var(--primary)] shrink-0 mt-1"></i>
+              <div>
+                <h3 class="judul-kartu">UMKM</h3>
+                <p class="text-[var(--muted)] mt-2 max-w-[520px]">
+                  Aneka olahan kuliner dan kerajinan tangan menjadi penggerak ekonomi
+                  rumah tangga di delapan lingkungan.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA LAYANAN -->
+    <section class="bg-[var(--primary)]">
+      <div class="reveal max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-20 grid md:grid-cols-12 gap-8 items-center">
+        <div class="md:col-span-8">
+          <span class="eyebrow eyebrow-terang">Pelayanan Warga</span>
+          <h2 class="judul-seksi text-white mt-4">Butuh surat keterangan?</h2>
+          <p class="text-white/80 mt-4 max-w-[520px]">
+            Lihat syarat, alur, estimasi waktu, dan biaya pengurusan berbagai jenis surat
+            di kantor kelurahan.
+          </p>
+        </div>
+        <div class="md:col-span-4 md:justify-self-end">
+          <a href="layanan.html" class="tombol tombol-terang">
+            Lihat layanan <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script>
+    const FAKTA = {
+      jumlah_penduduk: { label: "Jumlah penduduk", satuan: "jiwa" },
+      jumlah_kk: { label: "Kepala keluarga", satuan: "KK" },
+      jumlah_lingkungan: { label: "Lingkungan", satuan: "" },
+      luas_wilayah: { label: "Luas wilayah", satuan: "km²" },
+    };
+
+    async function muatFakta() {
+      const grid = document.getElementById("deret-statistik");
+      tampilkanMemuat(grid);
+      try {
+        const data = await ambilData("statistik");
+        const urutan = Object.keys(FAKTA);
+        const kartu = urutan
+          .map((kunci) => {
+            const baris = data.find((row) => row.kunci === kunci);
+            if (!baris) return "";
+            const info = FAKTA[kunci];
+            return `
+              <div>
+                <p class="angka">${formatAngka(baris.nilai)}${info.satuan ? `<span class="satuan">${info.satuan}</span>` : ""}</p>
+                <p class="label-angka">${info.label}</p>
+              </div>
+            `;
+          })
+          .join("");
+        grid.innerHTML = kartu;
+      } catch (err) {
+        tampilkanGagal(grid);
+      }
+    }
+
+    function kartuWisata(item, i) {
+      return `
+        <a href="wisata-detail.html?id=${encodeURIComponent(item.id)}" class="kartu reveal group block overflow-hidden">
+          <div class="bingkai-foto aspect-[4/3]">
+            <img src="${urlFoto(item.foto)}" alt="${item.nama}" loading="lazy" onerror="this.src='img/placeholder.webp'" />
+          </div>
+          <div class="p-5">
+            <p class="no-seksi">${nomorUrut(i)}</p>
+            <h3 class="judul-kartu mt-2">${item.nama}</h3>
+            <p class="text-sm text-[var(--muted)] mt-2 leading-[1.6]">${item.ringkas}</p>
+          </div>
+        </a>
+      `;
+    }
+
+    async function muatWisata() {
+      const grid = document.getElementById("grid-wisata");
+      tampilkanMemuat(grid);
+      try {
+        const data = await ambilData("wisata");
+        grid.innerHTML = data.slice(0, 4).map(kartuWisata).join("");
+        aktifkanReveal();
+      } catch (err) {
+        tampilkanGagal(grid, "Daftar destinasi belum bisa dimuat saat ini.");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      muatFakta();
+      muatWisata();
+      aktifkanReveal();
+      if (window.lucide) lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

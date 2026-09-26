@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Potensi — Kelurahan Lahendong</title>
+  <meta name="description" content="Potensi panas bumi, pertanian, dan UMKM di Kelurahan Lahendong, Tomohon Selatan." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%232D5A4A'/><ellipse cx='16' cy='17' rx='8' ry='6' fill='none' stroke='%23F7F6F1' stroke-width='1.6'/><ellipse cx='16' cy='15.5' rx='3.5' ry='2.5' fill='%23F7F6F1'/></svg>" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body class="bg-[var(--bg)] text-[var(--ink)] min-h-screen flex flex-col">
+
+  <div id="header"></div>
+
+  <main id="konten-utama" class="flex-1">
+
+    <section class="bg-[var(--surface)] border-b border-[var(--line)]">
+      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-12 md:py-16 grid md:grid-cols-12 gap-6">
+        <div class="md:col-span-7">
+          <span class="eyebrow">Kelurahan Lahendong</span>
+          <h1 class="judul-halaman mt-5">Potensi Wilayah</h1>
+        </div>
+        <div class="md:col-span-5 md:self-end">
+          <p class="text-[var(--muted)] leading-[1.65]">
+            Panas bumi, pertanian, dan usaha mikro warga menjadi tiga pilar utama yang
+            menopang perekonomian Kelurahan Lahendong.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 01 · PANAS BUMI -->
+    <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+      <div class="grid md:grid-cols-12 gap-8 md:gap-12">
+        <div class="reveal md:col-span-4">
+          <p class="no-seksi mb-3">01</p>
+          <span class="eyebrow">Energi</span>
+          <h2 class="judul-seksi mt-4">Panas Bumi</h2>
+        </div>
+        <div class="reveal md:col-span-8">
+          <p class="lead">
+            Lahendong adalah salah satu titik panas bumi tertua yang dimanfaatkan
+            di Sulawesi Utara.
+          </p>
+          <div class="prosa mt-6">
+            <p>
+              Aktivitas vulkanik di bawah permukaan menghasilkan uap panas yang dialirkan ke
+              pembangkit listrik tenaga panas bumi (PLTP) di sekitar wilayah, menjadikan
+              Lahendong salah satu penyumbang energi bersih bagi jaringan listrik daerah.
+            </p>
+            <p>
+              Fenomena geotermal ini juga terlihat langsung di beberapa titik wisata seperti
+              Kawah Belerang dan Pemandian Air Panas — bukti nyata kekayaan sumber daya alam
+              kelurahan ini.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 · PERTANIAN -->
+    <section class="bg-[var(--surface)] border-y border-[var(--line)]">
+      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+        <div class="grid md:grid-cols-12 gap-8 md:gap-12">
+          <div class="reveal md:col-span-4">
+            <p class="no-seksi mb-3">02</p>
+            <span class="eyebrow">Agraris</span>
+            <h2 class="judul-seksi mt-4">Pertanian</h2>
+          </div>
+          <div class="reveal md:col-span-8">
+            <p class="lead">
+              Tanah vulkanik yang subur menjadikan Lahendong cocok untuk beragam tanaman
+              hortikultura.
+            </p>
+            <p class="prosa mt-6">
+              Warga banyak menggantungkan penghidupan pada perkebunan dan pertanian skala
+              rumah tangga, dengan tiga komoditas yang paling menonjol berikut.
+            </p>
+
+            <div class="mt-8 border-t border-[var(--line)]">
+              <div class="flex items-center gap-4 py-4 border-b border-[var(--line)]">
+                <span class="no-seksi w-6 shrink-0">01</span>
+                <span class="font-judul text-[18px]">Cengkih</span>
+              </div>
+              <div class="flex items-center gap-4 py-4 border-b border-[var(--line)]">
+                <span class="no-seksi w-6 shrink-0">02</span>
+                <span class="font-judul text-[18px]">Sayur-mayur</span>
+              </div>
+              <div class="flex items-center gap-4 py-4 border-b border-[var(--line)]">
+                <span class="no-seksi w-6 shrink-0">03</span>
+                <span class="font-judul text-[18px]">Tanaman hias</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 · UMKM -->
+    <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+      <div class="reveal mb-10 md:mb-12 grid md:grid-cols-12 gap-6">
+        <div class="md:col-span-6">
+          <p class="no-seksi mb-3">03</p>
+          <span class="eyebrow">Ekonomi Warga</span>
+          <h2 class="judul-seksi garis-aksen mt-4">UMKM Lahendong</h2>
+        </div>
+        <div class="md:col-span-6 md:self-end">
+          <p class="text-[var(--muted)] leading-[1.65]">
+            Aneka olahan kuliner dan kerajinan tangan hasil usaha mikro warga yang tersebar
+            di berbagai lingkungan.
+          </p>
+        </div>
+      </div>
+
+      <div id="grid-umkm" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+        <!-- diisi oleh JS -->
+      </div>
+    </section>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script>
+    function kartuUmkm(item, i) {
+      return `
+        <article class="kartu kartu-hover reveal overflow-hidden">
+          <div class="bingkai-foto aspect-[4/3]">
+            <img src="${urlFoto(item.foto)}" alt="${item.nama}" loading="lazy" onerror="this.src='img/placeholder.webp'" />
+          </div>
+          <div class="p-5">
+            <p class="no-seksi">${nomorUrut(i)}</p>
+            <h3 class="judul-kartu mt-2">${item.nama}</h3>
+            <p class="text-sm text-[var(--muted)] mt-2 leading-[1.6]">${item.produk}</p>
+            <div class="mt-5 pt-4 border-t border-[var(--line)] space-y-2">
+              <p class="text-sm text-[var(--muted)] flex items-center gap-2.5">
+                <i data-lucide="map-pin" class="w-4 h-4 shrink-0 text-[var(--primary)]"></i> ${item.lingkungan}
+              </p>
+              <p class="text-sm flex items-center gap-2.5">
+                <i data-lucide="phone" class="w-4 h-4 shrink-0 text-[var(--primary)]"></i>
+                <a href="tel:${String(item.kontak).replace(/[^0-9+]/g, "")}" class="text-[var(--primary)] font-semibold hover:underline">${item.kontak}</a>
+              </p>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    async function muatUmkm() {
+      const grid = document.getElementById("grid-umkm");
+      tampilkanMemuat(grid);
+      try {
+        const data = await ambilData("umkm");
+        if (!data.length) {
+          tampilkanGagal(grid, "Belum ada data UMKM.");
+          return;
+        }
+        grid.innerHTML = data.map(kartuUmkm).join("");
+        if (window.lucide) lucide.createIcons();
+        aktifkanReveal();
+      } catch (err) {
+        tampilkanGagal(grid, "Data UMKM belum bisa dimuat saat ini.");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      muatUmkm();
+      aktifkanReveal();
+    });
+  </script>
+</body>
+</html>

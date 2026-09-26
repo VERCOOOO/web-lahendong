@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Penduduk — Kelurahan Lahendong</title>
+  <meta name="description" content="Statistik dan grafik kependudukan Kelurahan Lahendong, Tomohon Selatan." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%232D5A4A'/><ellipse cx='16' cy='17' rx='8' ry='6' fill='none' stroke='%23F7F6F1' stroke-width='1.6'/><ellipse cx='16' cy='15.5' rx='3.5' ry='2.5' fill='%23F7F6F1'/></svg>" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body class="bg-[var(--bg)] text-[var(--ink)] min-h-screen flex flex-col">
+
+  <div id="header"></div>
+
+  <main id="konten-utama" class="flex-1">
+
+    <section class="bg-[var(--surface)] border-b border-[var(--line)]">
+      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-12 md:py-16 grid md:grid-cols-12 gap-6">
+        <div class="md:col-span-7">
+          <span class="eyebrow">Kelurahan Lahendong</span>
+          <h1 class="judul-halaman mt-5">Data Penduduk</h1>
+        </div>
+        <div class="md:col-span-5 md:self-end">
+          <p class="text-[var(--muted)] leading-[1.65]">
+            Statistik kependudukan Kelurahan Lahendong berdasarkan data terbaru dari
+            delapan lingkungan.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- RINGKASAN -->
+    <section class="bg-[var(--surface)] border-b border-[var(--line)]">
+      <div id="deret-statistik" class="deret-statistik max-w-[var(--konten)] mx-auto px-4 md:px-6 py-10 md:py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- diisi oleh JS -->
+      </div>
+    </section>
+
+    <!-- 01 · KOMPOSISI -->
+    <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+      <div class="reveal mb-10 md:mb-12">
+        <p class="no-seksi mb-3">01</p>
+        <span class="eyebrow">Komposisi Penduduk</span>
+        <h2 class="judul-seksi garis-aksen mt-4">Laki-laki &amp; Perempuan</h2>
+      </div>
+
+      <div class="reveal grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+        <div class="lg:col-span-5">
+          <div class="h-[260px] md:h-[300px]">
+            <canvas id="grafik-gender" aria-label="Diagram lingkaran perbandingan jumlah penduduk laki-laki dan perempuan"></canvas>
+          </div>
+        </div>
+        <div class="lg:col-span-7 gulir-x border-t border-[var(--line)]">
+          <table class="tabel min-w-[300px]">
+            <thead>
+              <tr>
+                <th>Jenis Kelamin</th>
+                <th class="num">Jumlah</th>
+                <th class="num">Persentase</th>
+              </tr>
+            </thead>
+            <tbody id="tabel-gender"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 · SEBARAN -->
+    <section class="bg-[var(--surface)] border-y border-[var(--line)]">
+      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+        <div class="reveal mb-10 md:mb-12 grid md:grid-cols-12 gap-6">
+          <div class="md:col-span-6">
+            <p class="no-seksi mb-3">02</p>
+            <span class="eyebrow">Sebaran Wilayah</span>
+            <h2 class="judul-seksi garis-aksen mt-4">Jumlah Jiwa per Lingkungan</h2>
+          </div>
+          <div class="md:col-span-6 md:self-end">
+            <p class="text-[var(--muted)] leading-[1.65]">
+              Grafik dan tabel berikut menampilkan angka yang sama, sehingga data tetap
+              terbaca meski grafik tidak dimuat.
+            </p>
+          </div>
+        </div>
+
+        <div class="reveal h-[340px] md:h-[400px] mb-12">
+          <canvas id="grafik-lingkungan" aria-label="Diagram batang jumlah jiwa per lingkungan"></canvas>
+        </div>
+
+        <div class="reveal gulir-x border-t border-[var(--line)]">
+          <table class="tabel min-w-[560px]">
+            <thead>
+              <tr>
+                <th>Lingkungan</th>
+                <th class="num">KK</th>
+                <th class="num">Jiwa</th>
+                <th class="num">Laki-laki</th>
+                <th class="num">Perempuan</th>
+              </tr>
+            </thead>
+            <tbody id="tabel-lingkungan"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script>
+    const WARNA = {
+      primary: "#2D5A4A",
+      accent: "#C07A1E",
+      line: "#DDE2DC",
+      ink: "#1B2420",
+      muted: "#5C6862",
+      surface: "#FFFFFF",
+    };
+    const FONT = "'Source Sans 3', system-ui, sans-serif";
+
+    /* Grafik ikut menghormati prefers-reduced-motion, sama seperti animasi CSS. */
+    const KURANGI_GERAK = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const ANIMASI = KURANGI_GERAK ? false : { duration: 600, easing: "easeOutQuart" };
+
+    const FAKTA = {
+      jumlah_penduduk: { label: "Jumlah penduduk", satuan: "jiwa" },
+      jumlah_kk: { label: "Kepala keluarga", satuan: "KK" },
+      laki: { label: "Laki-laki", satuan: "jiwa" },
+      perempuan: { label: "Perempuan", satuan: "jiwa" },
+    };
+
+    function nilaiStatistik(data, kunci) {
+      const baris = data.find((row) => row.kunci === kunci);
+      return baris ? Number(baris.nilai) : 0;
+    }
+
+    async function muatRingkasan() {
+      const grid = document.getElementById("deret-statistik");
+      tampilkanMemuat(grid);
+      try {
+        const data = await ambilData("statistik");
+        grid.innerHTML = Object.keys(FAKTA)
+          .map((kunci) => {
+            const baris = data.find((row) => row.kunci === kunci);
+            if (!baris) return "";
+            const info = FAKTA[kunci];
+            return `
+              <div>
+                <p class="angka">${formatAngka(baris.nilai)}<span class="satuan">${info.satuan}</span></p>
+                <p class="label-angka">${info.label}</p>
+              </div>
+            `;
+          })
+          .join("");
+      } catch (err) {
+        tampilkanGagal(grid);
+      }
+    }
+
+    async function muatGrafikGender() {
+      const tbody = document.getElementById("tabel-gender");
+      try {
+        const data = await ambilData("statistik");
+        const laki = nilaiStatistik(data, "laki");
+        const perempuan = nilaiStatistik(data, "perempuan");
+        const total = laki + perempuan;
+        const persen = (n) => (total ? ((n / total) * 100).toFixed(1).replace(".", ",") : "0") + "%";
+
+        new Chart(document.getElementById("grafik-gender"), {
+          type: "doughnut",
+          data: {
+            labels: ["Laki-laki", "Perempuan"],
+            datasets: [{
+              data: [laki, perempuan],
+              backgroundColor: [WARNA.primary, WARNA.accent],
+              borderColor: WARNA.surface,
+              borderWidth: 3,
+            }],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: ANIMASI,
+            cutout: "58%",
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: { color: WARNA.ink, font: { family: FONT, size: 13 }, padding: 18, boxWidth: 10, boxHeight: 10, usePointStyle: true, pointStyle: "circle" },
+              },
+              tooltip: {
+                backgroundColor: WARNA.ink,
+                titleFont: { family: FONT },
+                bodyFont: { family: FONT },
+                padding: 10,
+                displayColors: false,
+                callbacks: {
+                  label: (ctx) => ctx.label + ": " + ctx.parsed.toLocaleString("id-ID") + " jiwa",
+                },
+              },
+            },
+          },
+        });
+
+        tbody.innerHTML = `
+          <tr><td>Laki-laki</td><td class="num">${formatAngka(laki)}</td><td class="num">${persen(laki)}</td></tr>
+          <tr><td>Perempuan</td><td class="num">${formatAngka(perempuan)}</td><td class="num">${persen(perempuan)}</td></tr>
+          <tr><td>Total</td><td class="num">${formatAngka(total)}</td><td class="num">100%</td></tr>
+        `;
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-10">Data belum bisa dimuat saat ini.</td></tr>`;
+      }
+    }
+
+    async function muatGrafikLingkungan() {
+      const tbody = document.getElementById("tabel-lingkungan");
+      try {
+        const data = await ambilData("lingkungan");
+        if (!data.length) {
+          tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10">Belum ada data lingkungan.</td></tr>`;
+          return;
+        }
+
+        new Chart(document.getElementById("grafik-lingkungan"), {
+          type: "bar",
+          data: {
+            labels: data.map((row) => row.nama),
+            datasets: [{
+              label: "Jumlah jiwa",
+              data: data.map((row) => Number(row.jumlah_jiwa)),
+              backgroundColor: WARNA.primary,
+              hoverBackgroundColor: WARNA.accent,
+              borderRadius: 3,
+              maxBarThickness: 22,
+            }],
+          },
+          options: {
+            indexAxis: "y",
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: ANIMASI,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: WARNA.ink,
+                titleFont: { family: FONT },
+                bodyFont: { family: FONT },
+                padding: 10,
+                displayColors: false,
+                callbacks: { label: (ctx) => ctx.parsed.x.toLocaleString("id-ID") + " jiwa" },
+              },
+            },
+            scales: {
+              x: {
+                border: { display: false },
+                grid: { color: WARNA.line, drawTicks: false },
+                ticks: { color: WARNA.muted, font: { family: FONT, size: 12 }, padding: 8 },
+              },
+              y: {
+                border: { color: WARNA.line },
+                grid: { display: false },
+                ticks: { color: WARNA.ink, font: { family: FONT, size: 13 }, padding: 8 },
+              },
+            },
+          },
+        });
+
+        tbody.innerHTML = data
+          .map((item) => `
+            <tr>
+              <td>${item.nama}</td>
+              <td class="num">${formatAngka(item.jumlah_kk)}</td>
+              <td class="num">${formatAngka(item.jumlah_jiwa)}</td>
+              <td class="num">${formatAngka(item.laki)}</td>
+              <td class="num">${formatAngka(item.perempuan)}</td>
+            </tr>
+          `)
+          .join("");
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10">Data belum bisa dimuat saat ini.</td></tr>`;
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      muatRingkasan();
+      muatGrafikGender();
+      muatGrafikLingkungan();
+      aktifkanReveal();
+    });
+  </script>
+</body>
+</html>

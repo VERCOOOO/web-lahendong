@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pemerintahan — Kelurahan Lahendong</title>
+  <meta name="description" content="Struktur aparat dan data 8 lingkungan Kelurahan Lahendong, Tomohon Selatan." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%232D5A4A'/><ellipse cx='16' cy='17' rx='8' ry='6' fill='none' stroke='%23F7F6F1' stroke-width='1.6'/><ellipse cx='16' cy='15.5' rx='3.5' ry='2.5' fill='%23F7F6F1'/></svg>" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body class="bg-[var(--bg)] text-[var(--ink)] min-h-screen flex flex-col">
+
+  <div id="header"></div>
+
+  <main id="konten-utama" class="flex-1">
+
+    <section class="bg-[var(--surface)] border-b border-[var(--line)]">
+      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-12 md:py-16 grid md:grid-cols-12 gap-6">
+        <div class="md:col-span-7">
+          <span class="eyebrow">Kelurahan Lahendong</span>
+          <h1 class="judul-halaman mt-5">Pemerintahan</h1>
+        </div>
+        <div class="md:col-span-5 md:self-end">
+          <p class="text-[var(--muted)] leading-[1.65]">
+            Struktur aparat kelurahan beserta pembagian wilayah ke dalam delapan lingkungan
+            yang tersebar di Kelurahan Lahendong.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 01 · APARAT -->
+    <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+      <div class="reveal mb-10 md:mb-12">
+        <p class="no-seksi mb-3">01</p>
+        <span class="eyebrow">Struktur Organisasi</span>
+        <h2 class="judul-seksi garis-aksen mt-4">Aparat Kelurahan</h2>
+      </div>
+      <div id="grid-aparat" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+        <!-- diisi oleh JS -->
+      </div>
+    </section>
+
+    <!-- 02 · LINGKUNGAN -->
+    <section class="bg-[var(--surface)] border-y border-[var(--line)]">
+      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+        <div class="reveal mb-10 md:mb-12 grid md:grid-cols-12 gap-6">
+          <div class="md:col-span-6">
+            <p class="no-seksi mb-3">02</p>
+            <span class="eyebrow">Wilayah</span>
+            <h2 class="judul-seksi garis-aksen mt-4">Data Delapan Lingkungan</h2>
+          </div>
+          <div class="md:col-span-6 md:self-end">
+            <p class="text-[var(--muted)] leading-[1.65]">
+              Rincian kepala lingkungan beserta jumlah kepala keluarga dan jiwa per lingkungan.
+            </p>
+          </div>
+        </div>
+
+        <div class="reveal gulir-x border-t border-[var(--line)]">
+          <table class="tabel min-w-[680px]">
+            <thead>
+              <tr>
+                <th>Lingkungan</th>
+                <th>Kepala Lingkungan</th>
+                <th class="num">KK</th>
+                <th class="num">Jiwa</th>
+                <th class="num">Laki-laki</th>
+                <th class="num">Perempuan</th>
+              </tr>
+            </thead>
+            <tbody id="tabel-lingkungan"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script>
+    function kartuAparat(item) {
+      const adaFoto = item.foto && String(item.foto).trim() !== "";
+      const visual = adaFoto
+        ? `<div class="bingkai-foto aspect-[4/3] border-b border-[var(--line)]">
+             <img src="${urlFoto(item.foto)}" alt="${item.nama}" loading="lazy" onerror="this.src='img/placeholder.webp'" />
+           </div>`
+        : `<div class="monogram aspect-[4/3]" aria-hidden="true">${inisial(item.nama)}</div>`;
+
+      return `
+        <div class="kartu reveal overflow-hidden">
+          ${visual}
+          <div class="p-5">
+            <p class="no-seksi">${String(item.urutan).padStart(2, "0")}</p>
+            <h3 class="font-judul text-[17px] leading-snug mt-2">${item.nama}</h3>
+            <p class="text-[13px] text-[var(--muted)] mt-1.5 leading-snug">${item.jabatan}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function barisLingkungan(item) {
+      return `
+        <tr>
+          <td>${item.nama}</td>
+          <td>${item.kepala}</td>
+          <td class="num">${formatAngka(item.jumlah_kk)}</td>
+          <td class="num">${formatAngka(item.jumlah_jiwa)}</td>
+          <td class="num">${formatAngka(item.laki)}</td>
+          <td class="num">${formatAngka(item.perempuan)}</td>
+        </tr>
+      `;
+    }
+
+    async function muatAparat() {
+      const grid = document.getElementById("grid-aparat");
+      tampilkanMemuat(grid);
+      try {
+        const data = await ambilData("aparat");
+        if (!data.length) {
+          tampilkanGagal(grid, "Belum ada data aparat kelurahan.");
+          return;
+        }
+        const terurut = [...data].sort((a, b) => Number(a.urutan) - Number(b.urutan));
+        grid.innerHTML = terurut.map(kartuAparat).join("");
+        aktifkanReveal();
+      } catch (err) {
+        tampilkanGagal(grid, "Data aparat belum bisa dimuat saat ini.");
+      }
+    }
+
+    async function muatLingkungan() {
+      const tbody = document.getElementById("tabel-lingkungan");
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center py-10">Memuat data…</td></tr>`;
+      try {
+        const data = await ambilData("lingkungan");
+        tbody.innerHTML = data.length
+          ? data.map(barisLingkungan).join("")
+          : `<tr><td colspan="6" class="text-center py-10">Belum ada data lingkungan.</td></tr>`;
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-10">Data lingkungan belum bisa dimuat saat ini.</td></tr>`;
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      muatAparat();
+      muatLingkungan();
+      aktifkanReveal();
+    });
+  </script>
+</body>
+</html>
