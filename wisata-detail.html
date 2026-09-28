@@ -59,6 +59,7 @@
     }
 
     function tampilanDetail(item) {
+      const tautanPeta = escapeHtml(urlAman(teksPolos(item.maps_link)));
       return `
         <section class="relative h-[45vh] max-h-[420px] min-h-[300px] flex items-end overflow-hidden">
           <img src="${urlFoto(item.foto)}" alt="${item.nama}" class="absolute inset-0 w-full h-full object-cover" onerror="this.src='img/placeholder.webp'" />
@@ -84,8 +85,8 @@
               <h3 class="judul-kartu mt-12 mb-4">Cara menuju lokasi</h3>
               <div class="prosa"><p>${item.cara_kesana}</p></div>
 
-              ${item.maps_link ? `
-                <a href="${item.maps_link}" target="_blank" rel="noopener noreferrer" class="tombol tombol-sekunder mt-7">
+              ${tautanPeta ? `
+                <a href="${tautanPeta}" target="_blank" rel="noopener noreferrer" class="tombol tombol-sekunder mt-7">
                   <i data-lucide="map" class="w-4 h-4"></i> Buka di Google Maps
                 </a>` : ""}
             </div>
@@ -125,13 +126,13 @@
 
       try {
         const data = await ambilData("wisata");
-        const item = data.find((row) => row.id === id);
+        const item = data.find((row) => teksPolos(row.id) === id);
         if (!item) {
           container.innerHTML = halamanPesan("map-pin-off", "Destinasi tidak ditemukan",
             "Tautan yang Anda buka tidak valid atau destinasi sudah tidak tersedia.", "text-[var(--muted)]");
         } else {
           container.innerHTML = tampilanDetail(item);
-          document.getElementById("judul-tab").textContent = item.nama + " — Kelurahan Lahendong";
+          document.getElementById("judul-tab").textContent = teksPolos(item.nama) + " — Kelurahan Lahendong";
         }
       } catch (err) {
         container.innerHTML = halamanPesan("triangle-alert", "Data belum bisa dimuat",

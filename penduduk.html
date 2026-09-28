@@ -141,7 +141,7 @@
 
     function nilaiStatistik(data, kunci) {
       const baris = data.find((row) => row.kunci === kunci);
-      return baris ? Number(baris.nilai) : 0;
+      return baris ? keAngka(baris.nilai) ?? 0 : 0;
     }
 
     async function muatRingkasan() {
@@ -233,10 +233,10 @@
         new Chart(document.getElementById("grafik-lingkungan"), {
           type: "bar",
           data: {
-            labels: data.map((row) => row.nama),
+            labels: data.map((row) => teksPolos(row.nama)),
             datasets: [{
               label: "Jumlah jiwa",
-              data: data.map((row) => Number(row.jumlah_jiwa)),
+              data: data.map((row) => keAngka(row.jumlah_jiwa) ?? 0),
               backgroundColor: WARNA.primary,
               hoverBackgroundColor: WARNA.accent,
               borderRadius: 3,

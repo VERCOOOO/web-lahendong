@@ -131,7 +131,7 @@
           tampilkanGagal(grid, "Belum ada data aparat kelurahan.");
           return;
         }
-        const terurut = [...data].sort((a, b) => Number(a.urutan) - Number(b.urutan));
+        const terurut = data.sort((a, b) => (keAngka(a.urutan) ?? 999) - (keAngka(b.urutan) ?? 999));
         grid.innerHTML = terurut.map(kartuAparat).join("");
         aktifkanReveal();
       } catch (err) {

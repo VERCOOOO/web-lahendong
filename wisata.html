@@ -51,7 +51,7 @@
   <script>
     function kartuWisata(item, i) {
       return `
-        <a href="wisata-detail.html?id=${encodeURIComponent(item.id)}" class="kartu reveal block overflow-hidden">
+        <a href="wisata-detail.html?id=${encodeURIComponent(teksPolos(item.id))}" class="kartu reveal block overflow-hidden">
           <div class="bingkai-foto aspect-[4/3]">
             <img src="${urlFoto(item.foto)}" alt="${item.nama}" loading="lazy" onerror="this.src='img/placeholder.webp'" />
           </div>

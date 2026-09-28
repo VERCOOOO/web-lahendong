@@ -1,21 +1,47 @@
 /* ==========================================================================
    Lapisan data situs Kelurahan Lahendong.
    Satu saklar PAKAI_DUMMY mengendalikan sumber data untuk seluruh situs.
+   Panduan mengisi Google Sheet ada di README.md.
    ========================================================================== */
 
-const PAKAI_DUMMY = true;
+const PAKAI_DUMMY = false;
 
-/* URL CSV publik per tab (dipakai hanya saat PAKAI_DUMMY = false).
-   Format: publikasikan Google Sheet sebagai "Comma-separated values (.csv)" per tab. */
+/* ID Google Sheet — bagian di antara "/d/" dan "/edit" pada tautan sheet.
+   Sheet harus dibagikan "Siapa saja yang memiliki link" sebagai Pelihat. */
+const ID_SPREADSHEET = "11f8D-qzWt1rdkin7uBMmrbrEkZmc4dih39ruUwTh1gQ";
+
+/** URL CSV satu tab, dicari berdasarkan nama tab. */
+function urlTab(namaTab) {
+  return "https://docs.google.com/spreadsheets/d/" + ID_SPREADSHEET +
+    "/gviz/tq?tqx=out:csv&headers=1&sheet=" + encodeURIComponent(namaTab);
+}
+
+/* URL CSV per tab (dipakai hanya saat PAKAI_DUMMY = false). Tiap entri boleh
+   diganti URL CSV lain, mis. tautan dari menu "Publikasikan ke web". */
 const URL_SHEET = {
-  statistik: "",
-  lingkungan: "",
-  wisata: "",
-  umkm: "",
-  aparat: "",
-  layanan: "",
-  kontak: "",
+  statistik: urlTab("statistik"),
+  lingkungan: urlTab("lingkungan"),
+  wisata: urlTab("wisata"),
+  umkm: urlTab("umkm"),
+  aparat: urlTab("aparat"),
+  layanan: urlTab("layanan"),
+  kontak: urlTab("kontak"),
 };
+
+/* Kolom tiap tab. Baris judul di sheet harus memakai nama-nama ini;
+   huruf besar/kecil dan spasi diabaikan ("Jumlah KK" dibaca "jumlah_kk").
+   Kolom pertama adalah kunci baris: baris yang kunci-nya kosong diabaikan. */
+const SKEMA = {
+  statistik: ["kunci", "nilai"],
+  lingkungan: ["id", "nama", "kepala", "jumlah_kk", "jumlah_jiwa", "laki", "perempuan"],
+  wisata: ["id", "nama", "ringkas", "deskripsi", "foto", "jam", "tiket", "fasilitas", "waktu_terbaik", "cara_kesana", "maps_link"],
+  umkm: ["id", "nama", "produk", "kontak", "lingkungan", "foto"],
+  aparat: ["id", "nama", "jabatan", "urutan", "foto"],
+  layanan: ["id", "nama_surat", "syarat", "alur", "waktu", "biaya"],
+  kontak: ["id", "nama", "peran", "nomor"],
+};
+
+const BATAS_WAKTU_MS = 15000;
 
 /* ---------------------------------------------------------------------- */
 /* Data dummy                                                              */
@@ -169,7 +195,7 @@ const DATA_DUMMY = {
 };
 
 /* ---------------------------------------------------------------------- */
-/* Utilitas                                                                */
+/* Utilitas nilai                                                          */
 /* ---------------------------------------------------------------------- */
 
 function urlFoto(nilai) {
@@ -179,34 +205,151 @@ function urlFoto(nilai) {
   return "img/" + teks;
 }
 
-function saringBarisKosong(baris) {
-  return (baris || []).filter((row) => {
-    if (!row || typeof row !== "object") return false;
-    if (Object.prototype.hasOwnProperty.call(row, "id")) {
-      return row.id !== undefined && row.id !== null && String(row.id).trim() !== "";
-    }
-    if (Object.prototype.hasOwnProperty.call(row, "kunci")) {
-      return row.kunci !== undefined && row.kunci !== null && String(row.kunci).trim() !== "";
-    }
-    return true;
+/** Hanya tautan http(s) yang diterima; nilai lain (mis. "javascript:") dikosongkan. */
+function urlAman(nilai) {
+  const teks = String(nilai || "").trim();
+  return /^https?:\/\//i.test(teks) ? teks : "";
+}
+
+/**
+ * Isi sel → Number. Menerima format Indonesia maupun internasional:
+ * "3241", "3.241", "7,85", "7.85", "3.241,5". Kosong/bukan angka → null.
+ */
+function keAngka(nilai) {
+  let s = String(nilai ?? "").replace(/\s/g, "");
+  if (s === "") return null;
+
+  const adaTitik = s.includes(".");
+  const adaKoma = s.includes(",");
+  if (adaTitik && adaKoma) {
+    // Pemisah yang muncul terakhir adalah pemisah desimal.
+    s = s.lastIndexOf(",") > s.lastIndexOf(".")
+      ? s.replace(/\./g, "").replace(",", ".")
+      : s.replace(/,/g, "");
+  } else if (adaKoma) {
+    s = /^-?\d{1,3}(,\d{3})+$/.test(s) ? s.replace(/,/g, "") : s.replace(",", ".");
+  } else if (adaTitik && /^-?\d{1,3}(\.\d{3})+$/.test(s)) {
+    s = s.replace(/\./g, "");
+  }
+
+  const n = Number(s);
+  return Number.isFinite(n) ? n : null;
+}
+
+const ENTITAS_HTML = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+
+/** Isi sheet dirender lewat innerHTML, jadi setiap nilai di-escape saat dinormalisasi. */
+function escapeHtml(teks) {
+  return String(teks).replace(/[&<>"']/g, (c) => ENTITAS_HTML[c]);
+}
+
+/** Kebalikan escapeHtml — untuk konteks non-HTML seperti judul tab dan label grafik. */
+function teksPolos(teks) {
+  return String(teks ?? "")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&amp;/g, "&");
+}
+
+/* ---------------------------------------------------------------------- */
+/* Normalisasi baris — dijalankan sama persis untuk mode dummy dan sheet  */
+/* ---------------------------------------------------------------------- */
+
+/** "Jumlah KK " → "jumlah_kk". Juga membuang BOM di awal file CSV. */
+function normalisasiKunci(teks) {
+  return String(teks ?? "").replace(/^﻿/, "").trim().toLowerCase().replace(/\s+/g, "_");
+}
+
+function rapikanBaris(namaTab, baris) {
+  const kolom = SKEMA[namaTab] || [];
+  return (baris || []).map((row) => {
+    const bersih = {};
+    Object.keys(row || {}).forEach((k) => {
+      const kunci = normalisasiKunci(k);
+      if (kunci) bersih[kunci] = escapeHtml(String(row[k] ?? "").trim());
+    });
+    // Kolom yang tidak ada di sheet diisi kosong agar halaman tidak menampilkan "undefined".
+    kolom.forEach((k) => {
+      if (!(k in bersih)) bersih[k] = "";
+    });
+    if (namaTab === "statistik") bersih.kunci = normalisasiKunci(bersih.kunci);
+    return bersih;
   });
 }
 
-function ambilCSV(url) {
-  return new Promise((resolve, reject) => {
-    if (typeof Papa === "undefined") {
-      reject(new Error("PapaParse belum dimuat."));
-      return;
-    }
-    Papa.parse(url, {
-      download: true,
-      header: true,
-      skipEmptyLines: true,
-      complete: (hasil) => resolve(hasil.data),
-      error: (err) => reject(err),
-    });
-  });
+function saringBarisKosong(namaTab, baris) {
+  const kunciBaris = (SKEMA[namaTab] || ["id"])[0];
+  return baris.filter((row) => String(row[kunciBaris] || "").trim() !== "");
 }
+
+/* ---------------------------------------------------------------------- */
+/* Pengambilan dari Google Sheets                                          */
+/* ---------------------------------------------------------------------- */
+
+async function unduhCSV(url) {
+  const kontrol = new AbortController();
+  const timer = setTimeout(() => kontrol.abort(), BATAS_WAKTU_MS);
+  try {
+    const res = await fetch(url, { signal: kontrol.signal, cache: "no-store" });
+    if (!res.ok) throw new Error("server membalas HTTP " + res.status);
+    const teks = await res.text();
+    if (/^\s*</.test(teks)) {
+      throw new Error("yang diterima halaman HTML, bukan CSV — sheet belum dibagikan ke \"Siapa saja yang memiliki link\", atau URL bukan format CSV");
+    }
+    return teks;
+  } catch (err) {
+    if (err.name === "AbortError") {
+      throw new Error("tidak ada respons dalam " + BATAS_WAKTU_MS / 1000 + " detik");
+    }
+    if (err instanceof TypeError) {
+      // Sheet privat dialihkan ke halaman login Google dan diblokir CORS.
+      throw new Error("permintaan gagal — periksa koneksi internet dan pastikan sheet dibagikan ke \"Siapa saja yang memiliki link\"");
+    }
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function ambilDariSheet(namaTab) {
+  const url = URL_SHEET[namaTab];
+  if (!url) throw new Error('URL untuk tab "' + namaTab + '" belum diisi di URL_SHEET');
+  if (/docs\.google\.com/.test(url) && !/output=csv|out:csv/.test(url)) {
+    console.warn('[data] URL tab "' + namaTab + '" bukan URL CSV. Tautan "/edit" tidak bisa dipakai langsung — isi ID_SPREADSHEET saja.');
+  }
+  if (typeof Papa === "undefined") throw new Error("PapaParse belum dimuat");
+
+  const hasil = Papa.parse(await unduhCSV(url), {
+    header: true,
+    skipEmptyLines: "greedy", // Google mengekspor baris kosong sebagai ",,,,"
+    transformHeader: normalisasiKunci,
+  });
+
+  const kolomAda = hasil.meta.fields || [];
+  const kunciBaris = (SKEMA[namaTab] || [])[0];
+  if (kunciBaris && !kolomAda.includes(kunciBaris)) {
+    // Google mengirim tab pertama bila nama tab tidak ditemukan, jadi tanpa kolom kunci datanya pasti salah tab.
+    throw new Error('tab "' + namaTab + '" tidak ditemukan, atau kolom "' + kunciBaris + '" di baris judulnya hilang');
+  }
+  const hilang = (SKEMA[namaTab] || []).filter((k) => !kolomAda.includes(k));
+  if (hilang.length) {
+    console.warn('[data] Tab "' + namaTab + '" tidak punya kolom: ' + hilang.join(", ") + ". Periksa baris judul di Google Sheet.");
+  }
+  if (hasil.errors.length) {
+    console.warn('[data] Tab "' + namaTab + '": ' + hasil.errors.length + " baris CSV tidak rapi.", hasil.errors.slice(0, 3));
+  }
+  return hasil.data;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Titik masuk tunggal                                                     */
+/* ---------------------------------------------------------------------- */
+
+/* Satu halaman bisa meminta tab yang sama lebih dari sekali (mis. penduduk.html).
+   Hasilnya disimpan di memori agar tiap CSV hanya diunduh sekali per kunjungan. */
+const tembolokData = {};
 
 /**
  * Mengambil data satu tab. Bentuk pemanggilan identik untuk mode dummy
@@ -215,17 +358,17 @@ function ambilCSV(url) {
  * @returns {Promise<Array<Object>>}
  */
 async function ambilData(namaTab) {
+  if (!tembolokData[namaTab]) {
+    tembolokData[namaTab] = (async () => {
+      const mentah = PAKAI_DUMMY ? DATA_DUMMY[namaTab] || [] : await ambilDariSheet(namaTab);
+      return saringBarisKosong(namaTab, rapikanBaris(namaTab, mentah));
+    })();
+  }
   try {
-    if (PAKAI_DUMMY) {
-      const data = DATA_DUMMY[namaTab] || [];
-      return saringBarisKosong(data);
-    }
-    const url = URL_SHEET[namaTab];
-    if (!url) throw new Error("URL sheet untuk tab '" + namaTab + "' belum diatur.");
-    const baris = await ambilCSV(url);
-    return saringBarisKosong(baris);
+    return (await tembolokData[namaTab]).slice();
   } catch (err) {
-    console.error("Gagal mengambil data tab '" + namaTab + "':", err);
+    delete tembolokData[namaTab];
+    console.error('[data] Gagal mengambil tab "' + namaTab + '": ' + err.message);
     throw err;
   }
 }

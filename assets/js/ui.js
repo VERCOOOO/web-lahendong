@@ -172,21 +172,24 @@ function renderFooter() {
 
 /** Inisial nama untuk monogram pengganti foto. */
 function inisial(nama) {
-  const kata = String(nama || "")
-    .replace(/\b(Drs|S\.STP|S\.Sos|S\.E|S\.H|M\.Si|Ir)\b\.?/gi, "")
+  const kata = teksPolos(nama)
+    .split(",")[0] // gelar di belakang koma: "Nama, S.STP"
     .trim()
     .split(/\s+/)
-    .filter(Boolean);
+    .filter((k) =>
+      k &&
+      !/^[a-z]{1,4}\.$/i.test(k) && // gelar depan & inisial tengah: Drs. Ir. H. M.
+      !/^[a-z]{1,4}(\.[a-z]{1,4})+\.?$/i.test(k) // gelar akademik: S.T S.St M.Kes S.STP
+    );
   if (!kata.length) return "—";
   if (kata.length === 1) return kata[0].slice(0, 2).toUpperCase();
   return (kata[0][0] + kata[kata.length - 1][0]).toUpperCase();
 }
 
-/** Format angka gaya Indonesia: 3241 -> "3.241", 7.85 -> "7,85". */
+/** Format angka gaya Indonesia: 3241 -> "3.241", 7.85 -> "7,85". Bukan angka → apa adanya. */
 function formatAngka(nilai) {
-  const n = Number(String(nilai).replace(",", "."));
-  if (!isFinite(n) || String(nilai).trim() === "") return nilai;
-  return n.toLocaleString("id-ID", { maximumFractionDigits: 2 });
+  const n = keAngka(nilai);
+  return n === null ? nilai : n.toLocaleString("id-ID", { maximumFractionDigits: 2 });
 }
 
 /** Nomor urut dua digit untuk penanda seksi/kartu. */
