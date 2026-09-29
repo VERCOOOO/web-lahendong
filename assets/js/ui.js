@@ -16,16 +16,19 @@ const NAV_LINKS = [
   { href: "kontak.html", label: "Kontak" },
 ];
 
-/* Tanda kontur — identitas visual yang senada dengan citra peta topografi. */
-const TANDA_KONTUR = `
-  <svg viewBox="0 0 32 32" width="30" height="30" fill="none" aria-hidden="true" class="shrink-0">
-    <circle cx="16" cy="16" r="14.25" stroke="var(--line)" stroke-width="1.5"/>
-    <ellipse cx="16" cy="17" rx="10" ry="7.5" stroke="var(--primary)" stroke-width="1.5" opacity=".45"/>
-    <ellipse cx="16" cy="16" rx="6.5" ry="4.75" stroke="var(--primary)" stroke-width="1.5" opacity=".7"/>
-    <ellipse cx="16" cy="15" rx="3" ry="2.25" fill="var(--primary)"/>
-    <path d="M3 22.5c4-1.6 7.2-1.6 10.5 0" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round"/>
-  </svg>
-`;
+/* Emblem: gunung berkawah dengan uap panas bumi — ciri khas Lahendong. */
+function emblem(ukuran = 36, latar = "var(--primary)") {
+  return `
+    <svg viewBox="0 0 40 40" width="${ukuran}" height="${ukuran}" aria-hidden="true" class="shrink-0">
+      <rect width="40" height="40" rx="9" fill="${latar}"/>
+      <path d="M5 31 L15 16.5 H25 L35 31 Z" fill="var(--bg)"/>
+      <path d="M15 16.5 Q20 19.5 25 16.5" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M17.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4 M22.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4"
+            fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"/>
+      <path d="M8 34.5 H32" stroke="var(--bg)" stroke-width="1.6" stroke-linecap="round" opacity=".55"/>
+    </svg>
+  `;
+}
 
 function halamanAktif() {
   const path = window.location.pathname.split("/").pop();
@@ -54,14 +57,31 @@ function renderHeader() {
     `;
   }).join("");
 
+  /* Tanpa ini, header yang sticky terkurung di dalam #header (setinggi header itu
+     sendiri) dan ikut tergulir hilang. Dengan display: contents, header menempel
+     relatif terhadap <body>, sedangkan bilah resmi di atasnya tetap tergulir. */
+  container.style.display = "contents";
+
   container.innerHTML = `
     <a href="#konten-utama" class="sr-only focus:not-sr-only focus:absolute focus:z-[60] focus:m-3 focus:px-4 focus:py-2 focus:bg-[var(--primary)] focus:text-white focus:rounded-[4px] text-sm font-semibold">
       Lewati ke konten
     </a>
+    <div class="bg-[var(--primary-d)] text-white/80 text-[12.5px]">
+      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 h-9 flex items-center justify-between gap-4">
+        <p class="flex items-center gap-2 min-w-0">
+          <i data-lucide="landmark" class="w-3.5 h-3.5 shrink-0 text-white/60"></i>
+          <span class="truncate">Situs resmi Kelurahan Lahendong, Kota Tomohon</span>
+        </p>
+        <div class="hidden md:flex items-center gap-5 shrink-0">
+          <span class="flex items-center gap-1.5"><i data-lucide="clock" class="w-3.5 h-3.5 text-white/60"></i>Senin – Jumat, 08.00 – 15.00 WITA</span>
+          <a href="kontak.html" class="flex items-center gap-1.5 hover:text-white"><i data-lucide="phone" class="w-3.5 h-3.5 text-white/60"></i>Hubungi kami</a>
+        </div>
+      </div>
+    </div>
     <header class="sticky top-0 z-50 bg-[var(--surface)] border-b border-[var(--line)]">
       <div class="max-w-[var(--konten)] mx-auto h-[72px] px-4 md:px-6 flex items-center justify-between gap-6">
         <a href="index.html" class="flex items-center gap-3 shrink-0" aria-label="Beranda Kelurahan Lahendong">
-          ${TANDA_KONTUR}
+          ${emblem(36)}
           <span class="leading-none">
             <span class="block font-judul text-[17px] text-[var(--ink)]">Kelurahan Lahendong</span>
             <span class="block text-[11px] tracking-[0.08em] uppercase text-[var(--muted)] mt-1">Tomohon Selatan</span>
@@ -117,8 +137,13 @@ function renderFooter() {
       <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14">
         <div class="grid gap-10 md:grid-cols-12">
           <div class="md:col-span-5">
-            <h3 class="font-judul text-[22px] text-white">Kelurahan Lahendong</h3>
-            <p class="text-[11px] tracking-[0.08em] uppercase text-white/60 mt-2">Kecamatan Tomohon Selatan</p>
+            <div class="flex items-center gap-3.5">
+              ${emblem(44, "rgba(255,255,255,.12)")}
+              <div>
+                <h3 class="font-judul text-[22px] leading-tight text-white">Kelurahan Lahendong</h3>
+                <p class="text-[11px] tracking-[0.08em] uppercase text-white/60 mt-1.5">Kecamatan Tomohon Selatan</p>
+              </div>
+            </div>
             <p class="text-sm text-white/75 leading-relaxed mt-5 max-w-[320px]">
               Pusat informasi resmi mengenai pemerintahan, data kependudukan, potensi wilayah,
               dan destinasi wisata Kelurahan Lahendong.
@@ -248,7 +273,21 @@ function tampilkanGagal(container, pesan = "Data belum bisa dimuat saat ini. Sil
   if (window.lucide) lucide.createIcons();
 }
 
+/** Mengisi setiap <nav data-remah> dengan jejak "Beranda / Halaman ini". */
+function isiRemah() {
+  const aktif = NAV_LINKS.find((link) => link.href === halamanAktif());
+  const label = aktif ? aktif.label : document.title.split(" — ")[0];
+  document.querySelectorAll("[data-remah]").forEach((el) => {
+    el.innerHTML = `
+      <a href="index.html">Beranda</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">${label}</span>
+    `;
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   renderHeader();
   renderFooter();
+  isiRemah();
 });

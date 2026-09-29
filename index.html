@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kelurahan Lahendong — Tomohon Selatan</title>
   <meta name="description" content="Situs resmi Kelurahan Lahendong, Kecamatan Tomohon Selatan, Kota Tomohon, Sulawesi Utara." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='%232D5A4A'/><ellipse cx='16' cy='17' rx='8' ry='6' fill='none' stroke='%23F7F6F1' stroke-width='1.6'/><ellipse cx='16' cy='15.5' rx='3.5' ry='2.5' fill='%23F7F6F1'/></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' rx='9' fill='%232D5A4A'/><path d='M5 31 L15 16.5 H25 L35 31 Z' fill='%23F7F6F1'/><path d='M17.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4 M22.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4' fill='none' stroke='%23C07A1E' stroke-width='2.4' stroke-linecap='round'/></svg>" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -41,7 +41,7 @@
 
     <!-- FAKTA RINGKAS -->
     <section class="bg-[var(--surface)] border-b border-[var(--line)]">
-      <div id="deret-statistik" class="deret-statistik max-w-[var(--konten)] mx-auto px-4 md:px-6 py-10 md:py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+      <div id="deret-statistik" class="deret-statistik max-w-[var(--konten)] mx-auto px-4 md:px-6 py-10 md:py-12 grid grid-cols-2 lg:grid-cols-4">
         <!-- diisi oleh JS -->
       </div>
     </section>
@@ -53,6 +53,7 @@
           <p class="no-seksi mb-3">01</p>
           <span class="eyebrow">Sambutan</span>
           <h2 class="judul-seksi mt-4">Selamat datang<br class="hidden md:block"> di Lahendong</h2>
+          <div id="pimpinan" class="mt-8"><!-- diisi oleh JS dari tab aparat --></div>
         </div>
         <div class="reveal md:col-span-8">
           <p class="lead">
@@ -154,9 +155,9 @@
       </div>
     </section>
 
-    <!-- CTA LAYANAN -->
-    <section class="bg-[var(--primary)]">
-      <div class="reveal max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-20 grid md:grid-cols-12 gap-8 items-center">
+    <!-- CTA LAYANAN — panel terpisah agar tidak menyatu dengan footer yang juga hijau -->
+    <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 pb-14 md:pb-24">
+      <div class="panel-ajakan reveal px-6 py-10 md:px-12 md:py-14 grid md:grid-cols-12 gap-8 items-center">
         <div class="md:col-span-8">
           <span class="eyebrow eyebrow-terang">Pelayanan Warga</span>
           <h2 class="judul-seksi text-white mt-4">Butuh surat keterangan?</h2>
@@ -238,8 +239,36 @@
       }
     }
 
+    /* Pimpinan diambil dari tab aparat (urutan terkecil), bukan ditulis di HTML.
+       Blok ini pelengkap, jadi bila gagal dimuat cukup tidak ditampilkan. */
+    async function muatPimpinan() {
+      const wadah = document.getElementById("pimpinan");
+      try {
+        const data = await ambilData("aparat");
+        if (!data.length) return;
+        const lurah = data.sort((a, b) => (keAngka(a.urutan) ?? 999) - (keAngka(b.urutan) ?? 999))[0];
+        const adaFoto = lurah.foto && String(lurah.foto).trim() !== "";
+        const visual = adaFoto
+          ? `<img src="${urlFoto(lurah.foto)}" alt="${lurah.nama}" class="w-14 h-14 rounded-full object-cover border border-[var(--line)] shrink-0" onerror="this.src='img/placeholder.webp'" />`
+          : `<span class="monogram w-14 h-14 rounded-full border border-[var(--line)] text-[18px] shrink-0" aria-hidden="true">${inisial(lurah.nama)}</span>`;
+        wadah.innerHTML = `
+          <p class="text-[11px] font-semibold tracking-[0.08em] uppercase text-[var(--muted)] mb-4">Pimpinan kelurahan</p>
+          <a href="pemerintahan.html" class="flex items-center gap-4 pt-5 border-t border-[var(--line)] group">
+            ${visual}
+            <span class="min-w-0">
+              <span class="block font-judul text-[17px] leading-snug group-hover:text-[var(--primary)]">${lurah.nama}</span>
+              <span class="block text-[13px] text-[var(--muted)] mt-1">${lurah.jabatan}</span>
+            </span>
+          </a>
+        `;
+      } catch (err) {
+        wadah.remove();
+      }
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
       muatFakta();
+      muatPimpinan();
       muatWisata();
       aktifkanReveal();
       if (window.lucide) lucide.createIcons();
