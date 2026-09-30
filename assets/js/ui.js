@@ -67,7 +67,7 @@ function renderHeader() {
     return `
       <a href="${link.href}"${tanda(link)} class="flex items-center justify-between gap-4 py-3.5 border-b border-[var(--line)] text-[15px] font-semibold ${isAktif ? "text-[var(--primary)]" : "text-[var(--ink)]"}">
         ${link.label}
-        ${isAktif ? '<span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>' : ""}
+        ${isAktif ? '<span class="w-2 h-2 bg-[var(--accent)]"></span>' : ""}
       </a>
     `;
   }).join("");
@@ -82,10 +82,10 @@ function renderHeader() {
       Lewati ke konten
     </a>
 
-    <div class="bg-[var(--primary-d)] text-white/80 text-[12.5px]">
+    <div class="bg-[var(--deep-2)] text-[var(--on-deep-muted)] text-[12.5px]">
       <div class="wadah h-9 flex items-center justify-between gap-4">
         <p class="flex items-center gap-2 min-w-0">
-          <i data-lucide="landmark" class="w-3.5 h-3.5 shrink-0 text-white/60"></i>
+          <i data-lucide="landmark" class="w-3.5 h-3.5 shrink-0 text-[var(--accent)]"></i>
           <span class="truncate">Situs resmi Kelurahan Lahendong, Kota Tomohon</span>
         </p>
         <div class="hidden md:flex items-center gap-5 shrink-0">
@@ -100,7 +100,7 @@ function renderHeader() {
         <a href="index.html" class="flex items-center gap-3 shrink-0" aria-label="Beranda Kelurahan Lahendong">
           ${emblem(36)}
           <span class="leading-none">
-            <span class="block font-judul text-[17px] text-[var(--ink)]">Kelurahan Lahendong</span>
+            <span class="block font-judul text-[20px] text-[var(--ink)]">Kelurahan Lahendong</span>
             <span class="block text-[11px] tracking-[0.08em] uppercase text-[var(--muted)] mt-1">Tomohon Selatan</span>
           </span>
         </a>
@@ -160,14 +160,14 @@ function renderFooter() {
   ];
 
   wadah.innerHTML = `
-    <footer class="bg-[var(--primary)] text-white mt-auto">
-      <div class="wadah py-14">
+    <footer class="kaki-situs">
+      <div class="wadah pt-16 pb-14">
         <div class="grid gap-10 md:grid-cols-12">
           <div class="md:col-span-5">
             <div class="flex items-center gap-3.5">
               ${emblem(44, "rgba(255,255,255,.12)")}
               <div>
-                <h3 class="font-judul text-[22px] leading-tight text-white">Kelurahan Lahendong</h3>
+                <h3 class="font-judul text-[24px] leading-tight text-white">Kelurahan Lahendong</h3>
                 <p class="text-[11px] tracking-[0.08em] uppercase text-white/60 mt-1.5">Kecamatan Tomohon Selatan</p>
               </div>
             </div>
@@ -178,14 +178,14 @@ function renderFooter() {
           </div>
 
           <div class="md:col-span-3">
-            <h4 class="label-kecil text-white/60 mb-4">Tautan Cepat</h4>
+            <h4 class="label-kecil text-[var(--toska)] mb-4">Tautan Cepat</h4>
             <ul class="space-y-2.5 text-sm">
               ${tautanCepat.map(([href, label]) => `<li><a href="${href}" class="text-white/85 hover:text-white">${label}</a></li>`).join("")}
             </ul>
           </div>
 
           <div class="md:col-span-4">
-            <h4 class="label-kecil text-white/60 mb-4">Kantor Kelurahan</h4>
+            <h4 class="label-kecil text-[var(--toska)] mb-4">Kantor Kelurahan</h4>
             <ul class="space-y-3 text-sm text-white/85">
               <li class="flex items-start gap-3" data-wadah-profil>
                 <i data-lucide="map-pin" class="w-4 h-4 mt-1 shrink-0 text-white/60"></i>
@@ -204,7 +204,7 @@ function renderFooter() {
         </div>
       </div>
 
-      <div class="border-t border-white/15">
+      <div class="border-t border-white/10">
         <p class="wadah py-5 text-xs text-white/60">
           &copy; ${new Date().getFullYear()} Pemerintah Kelurahan Lahendong. Seluruh hak cipta dilindungi.
         </p>

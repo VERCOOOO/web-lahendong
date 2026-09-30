@@ -11,8 +11,8 @@ function itemLayanan(item, i) {
   return `
     <details class="kartu reveal overflow-hidden">
       <summary class="flex items-center gap-4 px-5 py-4">
-        <span class="no-seksi shrink-0">${nomorUrut(i)}</span>
-        <span class="font-judul text-[17px] md:text-[19px] leading-snug flex-1">${item.nama_surat}</span>
+        <span class="nomor-urut text-[22px] shrink-0">${nomorUrut(i)}</span>
+        <span class="font-judul text-[20px] md:text-[23px] leading-tight flex-1">${item.nama_surat}</span>
         <i data-lucide="chevron-down" class="chevron-ikon w-5 h-5 text-[var(--primary)] shrink-0"></i>
       </summary>
       <div class="px-5 pb-5 pt-1">
@@ -33,7 +33,7 @@ function blokInfo(label, isi, { aksen = false } = {}) {
   return `
     <div>
       <p class="label-kecil mb-1.5">${label}</p>
-      <p class="text-[15px] ${aksen ? "text-[var(--accent)] font-semibold" : "text-[var(--muted)]"} leading-[1.6]">${isi}</p>
+      <p class="text-[15px] ${aksen ? "text-[var(--primary-d)] font-semibold" : "text-[var(--muted)]"} leading-[1.6]">${isi}</p>
     </div>
   `;
 }

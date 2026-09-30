@@ -26,7 +26,7 @@ const ID_SPREADSHEET = "11f8D-qzWt1rdkin7uBMmrbrEkZmc4dih39ruUwTh1gQ";
 const SKEMA = {
   // Informasi umum kelurahan: kantor, wilayah, sejarah, legenda.
   profil: ["kunci", "nilai", "keterangan"],
-  // Angka kependudukan (sumber: HUMAS).
+  // Angka kependudukan (sumber: Kelurahan Lahendong).
   statistik: ["kunci", "nilai", "keterangan"],
   lingkungan: ["id", "nama", "kepala", "jumlah_kk", "jumlah_jiwa", "laki", "perempuan", "jumlah_lansia", "jumlah_rumah"],
   // Sumber tunggal identitas aparat. "atasan" berisi id aparat di atasnya (untuk bagan).
@@ -149,7 +149,7 @@ function periksaKolom(namaTab, kolomAda) {
 
 /** "Jumlah KK " → "jumlah_kk". Juga membuang BOM di awal file CSV. */
 function normalisasiKunci(teks) {
-  return String(teks ?? "").replace(/^﻿/, "").trim().toLowerCase().replace(/\s+/g, "_");
+  return String(teks ?? "").replace(/^\uFEFF/, "").trim().toLowerCase().replace(/\s+/g, "_");
 }
 
 function rapikanBaris(namaTab, baris) {

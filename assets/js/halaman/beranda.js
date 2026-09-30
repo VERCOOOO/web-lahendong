@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   isiDariData(document.getElementById("pimpinan"), "aparat", renderPimpinan, { kosong: null, gagal: null });
 
   isiDariData(document.getElementById("grid-wisata"), "wisata",
-    (data) => data.slice(0, 4).map((item, i) => kartuWisata(item, i)).join(""),
+    (data) => data.slice(0, 4).map((item) => kartuWisata(item)).join(""),
     { gagal: "Daftar destinasi belum bisa dimuat saat ini." }
   );
 
@@ -36,11 +36,10 @@ function renderPimpinan(aparat) {
   const [lurah] = urutkanAparat(aparat);
   if (!lurah) return "";
   return `
-    <p class="label-kecil mb-4">Pimpinan kelurahan</p>
-    <a href="pemerintahan.html" class="flex items-center gap-4 pt-5 border-t border-[var(--line)] group">
+    <a href="pemerintahan.html" class="kartu kartu-hover flex items-center gap-4 p-4 group">
       ${visualOrang(lurah, "w-14 h-14 rounded-full border border-[var(--line)] text-[18px] shrink-0")}
       <span class="min-w-0">
-        <span class="block font-judul text-[17px] leading-snug group-hover:text-[var(--primary)]">${namaOrang(lurah.nama)}</span>
+        <span class="block font-judul text-[20px] leading-tight group-hover:text-[var(--primary)]">${namaOrang(lurah.nama)}</span>
         <span class="block text-[13px] text-[var(--muted)] mt-1">${lurah.jabatan}</span>
       </span>
     </a>
@@ -49,11 +48,11 @@ function renderPimpinan(aparat) {
 
 function ringkasanPotensi(item, i) {
   return `
-    <div class="flex gap-5 md:gap-8 py-7 border-b border-[var(--line)]">
-      <span class="no-seksi shrink-0 mt-1.5">${nomorUrut(i)}</span>
+    <div class="flex gap-5 md:gap-8 py-7 border-b border-white/15">
+      <span class="nomor-urut shrink-0 mt-0.5">${nomorUrut(i)}</span>
       <div>
         <h3 class="judul-kartu">${item.judul}</h3>
-        <p class="text-[var(--muted)] mt-2 max-w-[520px]">${kalimatPertama(item.deskripsi)}</p>
+        <p class="muted-gelap mt-2 max-w-[560px]">${kalimatPertama(item.deskripsi)}</p>
       </div>
     </div>
   `;

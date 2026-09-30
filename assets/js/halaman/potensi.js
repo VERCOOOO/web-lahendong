@@ -17,7 +17,7 @@ function blokPotensi(item, i) {
   return `
     <article class="reveal grid md:grid-cols-12 gap-4 md:gap-12 py-8 md:py-10 border-b border-[var(--line)]">
       <div class="md:col-span-4">
-        <p class="no-seksi">${nomorUrut(i)}</p>
+        <p class="nomor-urut">${nomorUrut(i)}</p>
         <h3 class="judul-kartu mt-2">${item.judul}</h3>
       </div>
       <div class="md:col-span-8 prosa">${paragraf(item.deskripsi)}</div>
@@ -25,13 +25,12 @@ function blokPotensi(item, i) {
   `;
 }
 
-function kartuUmkm(item, i) {
+function kartuUmkm(item) {
   return `
     <article class="kartu kartu-hover reveal overflow-hidden">
-      <div class="bingkai-foto aspect-[4/3]">${gambar("umkm", item)}</div>
+      <div class="bingkai-foto aspect-[3/2]">${gambar("umkm", item)}</div>
       <div class="p-5">
-        <p class="no-seksi">${nomorUrut(i)}</p>
-        <h3 class="judul-kartu mt-2">${item.nama}</h3>
+        <h3 class="judul-kartu">${item.nama}</h3>
         <p class="text-sm text-[var(--muted)] mt-2 leading-[1.6]">${item.produk}</p>
         <div class="mt-5 pt-4 border-t border-[var(--line)] space-y-2">
           ${item.lingkungan ? `

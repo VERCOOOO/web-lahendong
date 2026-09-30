@@ -2,7 +2,7 @@
    Data awal — dipakai saat PAKAI_DUMMY = true (lihat data.js), dan menjadi
    isi template spreadsheet (data/template-data-lahendong.xlsx).
 
-   Sumber data asli: Statistik HUMAS 2026, Potensi Kelurahan Lahendong,
+   Sumber data asli: Statistik Kelurahan Lahendong 2026, Potensi Kelurahan Lahendong,
    daftar wisata, dan susunan aparat dari kelurahan. Nilai yang belum ada
    data resminya ditandai "CONTOH" di kolom keterangan dan wajib diganti.
    Baris baru dalam satu sel ("\n") ditampilkan sebagai paragraf/daftar.
@@ -41,23 +41,24 @@ const DATA_DUMMY = {
 
   statistik: [
     { kunci: "tahun_data", nilai: "2026", keterangan: "Tahun data kependudukan. Halaman Penduduk." },
-    { kunci: "sumber_data", nilai: "HUMAS", keterangan: "Sumber data kependudukan. Halaman Penduduk." },
-    { kunci: "jumlah_penduduk", nilai: "2235", keterangan: "Sumber: HUMAS 2026. Beranda dan Penduduk." },
+    { kunci: "sumber_data", nilai: "Kelurahan Lahendong", keterangan: "Sumber data kependudukan. Halaman Penduduk." },
+    { kunci: "jumlah_penduduk", nilai: "2235", keterangan: "Sumber: Kelurahan Lahendong, 2026. Beranda dan Penduduk." },
     { kunci: "laki", nilai: "1123", keterangan: "Penduduk laki-laki. Halaman Penduduk." },
     { kunci: "perempuan", nilai: "1112", keterangan: "Penduduk perempuan. Halaman Penduduk." },
     { kunci: "jumlah_kk", nilai: "762", keterangan: "Kepala keluarga. Beranda dan Penduduk." },
     { kunci: "jumlah_lingkungan", nilai: "8", keterangan: "Beranda dan Profil." },
   ],
 
-  // Sumber: HUMAS 2026. Nama kepala lingkungan belum tersedia.
+  // Sumber: Kelurahan Lahendong, 2026. Nama kepala lingkungan belum tersedia.
+  // Jumlah jiwa tiap baris = laki + perempuan; total 8 lingkungan = jumlah_penduduk di tab statistik.
   lingkungan: [
     { id: "L1", nama: "Lingkungan 1", kepala: "", jumlah_kk: "124", jumlah_jiwa: "345", laki: "169", perempuan: "176", jumlah_lansia: "37", jumlah_rumah: "106" },
-    { id: "L2", nama: "Lingkungan 2", kepala: "", jumlah_kk: "116", jumlah_jiwa: "326", laki: "172", perempuan: "156", jumlah_lansia: "45", jumlah_rumah: "80" },
+    { id: "L2", nama: "Lingkungan 2", kepala: "", jumlah_kk: "116", jumlah_jiwa: "328", laki: "172", perempuan: "156", jumlah_lansia: "45", jumlah_rumah: "80" },
     { id: "L3", nama: "Lingkungan 3", kepala: "", jumlah_kk: "80", jumlah_jiwa: "221", laki: "114", perempuan: "107", jumlah_lansia: "33", jumlah_rumah: "64" },
     { id: "L4", nama: "Lingkungan 4", kepala: "", jumlah_kk: "67", jumlah_jiwa: "210", laki: "111", perempuan: "99", jumlah_lansia: "29", jumlah_rumah: "51" },
     { id: "L5", nama: "Lingkungan 5", kepala: "", jumlah_kk: "113", jumlah_jiwa: "330", laki: "157", perempuan: "173", jumlah_lansia: "54", jumlah_rumah: "71" },
     { id: "L6", nama: "Lingkungan 6", kepala: "", jumlah_kk: "96", jumlah_jiwa: "271", laki: "139", perempuan: "132", jumlah_lansia: "40", jumlah_rumah: "65" },
-    { id: "L7", nama: "Lingkungan 7", kepala: "", jumlah_kk: "69", jumlah_jiwa: "221", laki: "109", perempuan: "113", jumlah_lansia: "32", jumlah_rumah: "59" },
+    { id: "L7", nama: "Lingkungan 7", kepala: "", jumlah_kk: "69", jumlah_jiwa: "222", laki: "109", perempuan: "113", jumlah_lansia: "32", jumlah_rumah: "59" },
     { id: "L8", nama: "Lingkungan 8", kepala: "", jumlah_kk: "97", jumlah_jiwa: "308", laki: "152", perempuan: "156", jumlah_lansia: "42", jumlah_rumah: "75" },
   ],
 

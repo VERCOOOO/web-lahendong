@@ -73,15 +73,20 @@ function infoKunjungan(item) {
 function tampilanDetail(item) {
   const tautanPeta = escapeHtml(urlAman(teksPolos(item.maps_link)));
   return `
-    <section class="relative h-[45vh] max-h-[420px] min-h-[300px] flex items-end overflow-hidden">
-      ${gambar("wisata", item, "absolute inset-0 w-full h-full object-cover")}
-      <div class="absolute inset-0 bg-black/35"></div>
-      <div class="absolute inset-x-0 bottom-0 h-1/2" style="background:linear-gradient(to top, rgba(0,0,0,.30), transparent);"></div>
-      <div class="relative wadah w-full pb-10 md:pb-12">
-        <a href="wisata.html" class="inline-flex items-center gap-2 text-white/80 hover:text-white text-sm font-semibold mb-5">
-          <i data-lucide="arrow-left" class="w-4 h-4"></i> Daftar wisata
-        </a>
-        <h1 class="judul-hero text-white max-w-[720px]">${item.nama}</h1>
+    <section class="kop-halaman">
+      <div class="wadah kop-isi grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        <div class="lg:col-span-6">
+          <a href="wisata.html" class="inline-flex items-center gap-2 text-[var(--toska)] hover:text-white text-sm font-semibold">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Daftar wisata
+          </a>
+          <h1 class="judul-halaman">${item.nama}</h1>
+          ${item.ringkas ? `<p class="kop-ringkas">${item.ringkas}</p>` : ""}
+        </div>
+        <div class="lg:col-span-6">
+          <div class="bingkai-foto aspect-[3/2] rounded-[var(--radius)] border-t-4 border-[var(--accent)]">
+            ${gambar("wisata", item)}
+          </div>
+        </div>
       </div>
     </section>
 
@@ -89,7 +94,7 @@ function tampilanDetail(item) {
       <div class="grid lg:grid-cols-12 gap-10 lg:gap-16">
         <div class="lg:col-span-7">
           <span class="eyebrow">Tentang destinasi</span>
-          <h2 class="judul-seksi mt-4 mb-5">${item.nama}</h2>
+          <h2 class="judul-seksi garis-aksen mt-4 mb-8">Kenali ${item.nama}</h2>
           <div class="prosa">${paragraf(item.deskripsi)}</div>
 
           ${item.cara_kesana ? `

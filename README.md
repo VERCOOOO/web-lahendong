@@ -6,6 +6,9 @@ HTML + Tailwind (CDN) + JavaScript biasa — tanpa build step. Desain mengikuti 
 > **Admin kelurahan:** baca [**Panduan Admin**](docs/panduan-admin.html) — versi visual dari README ini,
 > lengkap dengan tabel tab ↔ halaman yang bisa disorot dan langkah untuk tugas sehari-hari.
 > Versi terbit: <https://vercoooo.github.io/web-lahendong/docs/panduan-admin.html>
+>
+> **Pengembang:** baca [**Panduan Teknis**](docs/panduan-teknis.html) — alur data dari sheet ke halaman,
+> isi setiap berkas, fungsi kunci, grid adaptif, dan resep mengubah kode.
 
 ## Cara kerja: spreadsheet → situs
 
@@ -50,6 +53,8 @@ Satu baris = satu data, kolom `id` sebagai pengenal unik.
 - **Menambah**: isi baris baru dengan id baru (mis. `W5`).
 - **Menyembunyikan**: kosongkan `id`-nya — baris tidak tampil, datanya tetap tersimpan.
 - **Mengurutkan**: urutan di situs = urutan baris di sheet (tab `aparat`: kolom `urutan`).
+- **Susunan kartu** menyesuaikan jumlah baris sendiri (maks. 4 per baris di desktop: 3 kartu → 3 kolom,
+  5 → 3 + 2, 6 → 3 × 2, 8 → 4 × 2). Tidak perlu mengubah kode saat menambah atau menghapus wisata/UMKM.
 
 ### Aparat, bagan, dan kontak
 
@@ -122,10 +127,11 @@ Situs menampilkan "… belum bisa dimuat". Buka konsol browser (F12 → Console)
 │   ├── data.js          pengaturan (PAKAI_DUMMY, ID_SPREADSHEET), SKEMA tab, ambilData()
 │   ├── data-contoh.js   data awal: isi template spreadsheet & data saat PAKAI_DUMMY = true
 │   ├── ui.js            kerangka: header, footer, breadcrumb, info kantor, animasi, status memuat
-│   ├── komponen.js      FOTO statis, isiDariData(), potongan HTML bersama
+│   ├── komponen.js      FOTO statis, isiDariData(), aturKolom(), potongan HTML bersama
 │   └── halaman/         logika per halaman (index.html → beranda.js)
 ├── img/                 gambar statis
-└── data/                template spreadsheet
+├── data/                template spreadsheet
+└── docs/                Panduan Admin & Panduan Teknis
 ```
 
 Setiap halaman memuat skrip dengan urutan yang sama:
@@ -148,6 +154,10 @@ isiDariData(document.getElementById("daftar-potensi"), "potensi",
 **Informasi kantor** di elemen mana pun cukup ditandai `data-profil="kunci"` (mis.
 `<span data-profil="jam_layanan">`); `ui.js` mengisinya dari tab `profil` dan menyembunyikan
 wadah `[data-wadah-profil]` bila nilainya kosong.
+
+**Grid kartu** yang jumlahnya ditentukan admin memakai `class="grid-adaptif"` (atribut opsional
+`data-maks`, `data-hp="2"`); `isiDariData()` memanggil `aturKolom()` otomatis. Jangan tambahkan kelas
+kolom Tailwind (`lg:grid-cols-4`) pada wadah itu.
 
 Nilai dari `ambilData()` sudah di-escape, jadi aman disisipkan ke HTML. Untuk konteks non-HTML
 (judul tab, label grafik), pakai `teksPolos()`.

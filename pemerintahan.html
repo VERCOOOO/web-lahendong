@@ -9,7 +9,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="assets/css/style.css" />
@@ -22,18 +22,11 @@
 
   <main id="konten-utama" class="flex-1">
 
-    <section class="kop-halaman bg-[var(--surface)] border-b border-[var(--line)]">
-      <div class="wadah py-12 md:py-16 grid md:grid-cols-12 gap-6">
-        <div class="md:col-span-7">
-          <nav class="remah" aria-label="Lokasi halaman" data-remah></nav>
-          <h1 class="judul-halaman mt-4">Pemerintahan</h1>
-        </div>
-        <div class="md:col-span-5 md:self-end">
-          <p class="text-[var(--muted)] leading-[1.65]">
-            Struktur aparat kelurahan beserta pembagian wilayah ke dalam delapan lingkungan
-            yang tersebar di Kelurahan Lahendong.
-          </p>
-        </div>
+    <section class="kop-halaman">
+      <div class="wadah kop-isi">
+        <nav class="remah" aria-label="Lokasi halaman" data-remah></nav>
+        <h1 class="judul-halaman">Pemerintahan</h1>
+        <p class="kop-ringkas">Struktur aparat kelurahan beserta pembagian wilayah ke dalam delapan lingkungan yang tersebar di Kelurahan Lahendong.</p>
       </div>
     </section>
 
@@ -41,7 +34,6 @@
     <section class="wadah seksi">
       <div class="reveal mb-10 md:mb-12 grid md:grid-cols-12 gap-6">
         <div class="md:col-span-6">
-          <p class="no-seksi mb-3">01</p>
           <span class="eyebrow">Struktur Organisasi</span>
           <h2 class="judul-seksi garis-aksen mt-4">Bagan Pemerintahan Kelurahan</h2>
         </div>
@@ -58,11 +50,10 @@
     <section class="bg-[var(--surface)] border-y border-[var(--line)]">
       <div class="wadah seksi">
         <div class="reveal mb-10 md:mb-12">
-          <p class="no-seksi mb-3">02</p>
           <span class="eyebrow">Aparat Kelurahan</span>
           <h2 class="judul-seksi garis-aksen mt-4">Profil Aparat</h2>
         </div>
-        <div id="grid-aparat" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"><!-- diisi oleh JS --></div>
+        <div id="grid-aparat" class="grid-adaptif" data-maks="4" data-hp="2"><!-- diisi oleh JS --></div>
       </div>
     </section>
 
@@ -70,7 +61,6 @@
     <section class="wadah seksi">
       <div class="reveal mb-10 md:mb-12 grid md:grid-cols-12 gap-6">
         <div class="md:col-span-6">
-          <p class="no-seksi mb-3">03</p>
           <span class="eyebrow">Wilayah</span>
           <h2 class="judul-seksi garis-aksen mt-4">Lingkungan &amp; Kepala Lingkungan</h2>
         </div>
@@ -82,7 +72,7 @@
           </p>
         </div>
       </div>
-      <div id="grid-lingkungan" class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5"><!-- diisi oleh JS --></div>
+      <div id="grid-lingkungan" class="grid-adaptif" data-maks="4" data-hp="2"><!-- diisi oleh JS --></div>
     </section>
   </main>
 

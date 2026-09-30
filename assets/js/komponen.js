@@ -71,9 +71,43 @@ async function isiDariData(wadah, tab, render, opsi = {}) {
     return data;
   }
   wadah.innerHTML = html;
+  aturKolomDi(wadah);
   segarkanTampilan();
   if (setelah) setelah(data);
   return data;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Grid adaptif — jumlah kolom mengikuti jumlah kartu                      */
+/* ---------------------------------------------------------------------- */
+
+/* Kartu dibagi ke baris sesedikit mungkin, lalu dibagi rata per baris:
+   jumlah baris = ceil(n / maks), jumlah kolom = ceil(n / baris).
+   Dengan maks 4: 3 kartu → 3 kolom, 4 → 4, 5 → 3 + 2, 6 → 3 × 2, 7 → 4 + 3, 8 → 4 × 2.
+   Hasilnya disimpan di variabel CSS --kolom; style.css yang menerapkannya di desktop
+   (tablet 2 kolom, HP 1 kolom). Batas maks diatur lewat atribut data-maks di HTML. */
+function hitungKolom(n, maks = 4) {
+  if (n <= 0) return 1;
+  const baris = Math.ceil(n / maks);
+  return Math.ceil(n / baris);
+}
+
+/** Atur --kolom sebuah .grid-adaptif / .deret-statistik menurut jumlah anak yang tampil. */
+function aturKolom(wadah) {
+  const item = [...wadah.children].filter((el) =>
+    !el.hidden && !el.classList.contains("hidden") && !el.classList.contains("col-span-full"));
+  const kolom = hitungKolom(item.length, Number(wadah.dataset.maks) || 4);
+  wadah.style.setProperty("--kolom", kolom);
+  wadah.dataset.kolom = kolom;
+  // Deret statistik: tandai sel pertama tiap baris agar garis pembatas kirinya dihilangkan.
+  item.forEach((el, i) => el.classList.toggle("awal-baris", i % kolom === 0));
+}
+
+/** Terapkan aturKolom pada wadah itu sendiri dan grid adaptif di dalamnya. */
+function aturKolomDi(wadah) {
+  const pilih = ".grid-adaptif, .deret-statistik";
+  if (wadah.matches(pilih)) aturKolom(wadah);
+  wadah.querySelectorAll(pilih).forEach(aturKolom);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -91,7 +125,7 @@ function formatAngka(nilai) {
   return n === null ? nilai : n.toLocaleString("id-ID", { maximumFractionDigits: 2 });
 }
 
-/** Nomor urut dua digit untuk penanda seksi/kartu: 0 → "01". */
+/** Nomor urut dua digit untuk daftar bernomor: 0 → "01". */
 function nomorUrut(i) {
   return String(i + 1).padStart(2, "0");
 }
@@ -150,16 +184,23 @@ function selStatistik({ nilai, satuan = "", label }) {
 }
 
 /** Kartu destinasi wisata (beranda & halaman wisata). */
-function kartuWisata(item, i, { denganTautan = false } = {}) {
+function kartuWisata(item, { denganTautan = false } = {}) {
+  const meta = [
+    ["ticket", barisDari(item.tiket)[0]],
+    ["clock", barisDari(item.jam)[0]],
+  ].filter(([, teks]) => teks);
   return `
-    <a href="wisata-detail.html?id=${encodeURIComponent(teksPolos(item.id))}" class="kartu reveal block overflow-hidden">
-      <div class="bingkai-foto aspect-[4/3]">${gambar("wisata", item)}</div>
-      <div class="p-5">
-        <p class="no-seksi">${nomorUrut(i)}</p>
-        <h3 class="judul-kartu mt-2">${item.nama}</h3>
-        <p class="text-sm text-[var(--muted)] mt-2 leading-[1.6]">${item.ringkas}</p>
+    <a href="wisata-detail.html?id=${encodeURIComponent(teksPolos(item.id))}" class="kartu reveal flex flex-col overflow-hidden">
+      <div class="bingkai-foto aspect-[3/2]">${gambar("wisata", item)}</div>
+      <div class="p-5 md:p-6 flex flex-col flex-1">
+        <h3 class="judul-kartu">${item.nama}</h3>
+        <p class="text-[15px] text-[var(--muted)] mt-2 leading-[1.6]">${item.ringkas}</p>
+        ${meta.length ? `
+          <div class="kartu-meta">
+            ${meta.map(([ikon, teks]) => `<span title="${teks}"><i data-lucide="${ikon}" class="w-4 h-4"></i><span class="meta-teks">${teks}</span></span>`).join("")}
+          </div>` : ""}
         ${denganTautan ? `
-          <span class="tautan mt-5">
+          <span class="tautan mt-auto pt-5">
             <span class="relative">Lihat detail<span class="garis absolute left-0 -bottom-0.5"></span></span>
             <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </span>` : ""}

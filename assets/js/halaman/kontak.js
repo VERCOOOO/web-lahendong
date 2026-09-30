@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   isiDariData(document.getElementById("daftar-narahubung"), ["aparat", "kontak"], ([aparat, kontak]) => {
     const { darurat, dariAparat, umum } = kelompokkanNarahubung(aparat, kontak);
     return [
-      grup("Darurat", darurat.map(kartuDarurat), "sm:grid-cols-3"),
+      grup("Darurat", darurat.map(kartuDarurat), 3),
       grup("Aparat kelurahan", dariAparat.map(kartuNarahubung)),
       grup("Layanan umum", umum.map(kartuNarahubung)),
     ].join("");
@@ -53,13 +53,13 @@ function kelompokkanNarahubung(aparat, kontak) {
   return { darurat: darurat.filter(adaNomor), dariAparat: dariAparat.filter(adaNomor), umum: umum.filter(adaNomor) };
 }
 
-/** Satu kelompok berjudul; kelompok tanpa isi tidak ditampilkan. */
-function grup(judul, kartu, kolom = "sm:grid-cols-2") {
+/** Satu kelompok berjudul; kelompok tanpa isi tidak ditampilkan. maks = kolom terbanyak di desktop. */
+function grup(judul, kartu, maks = 2) {
   if (!kartu.length) return "";
   return `
     <section>
       <h3 class="label-kecil mb-4">${judul}</h3>
-      <div class="grid ${kolom} gap-4 md:gap-5">${kartu.join("")}</div>
+      <div class="grid-adaptif rata-kiri" data-maks="${maks}">${kartu.join("")}</div>
     </section>
   `;
 }
@@ -85,7 +85,7 @@ function kartuNarahubung(orang) {
     <div class="kartu kartu-hover p-5 flex items-start gap-4">
       ${visualOrang(orang, "w-12 h-12 rounded-[4px] text-[16px] border border-[var(--line)] shrink-0")}
       <div class="min-w-0">
-        <p class="font-judul text-[16px] leading-snug">${namaOrang(orang.nama)}</p>
+        <p class="font-judul text-[19px] leading-tight">${namaOrang(orang.nama)}</p>
         <p class="text-[11px] text-[var(--muted)] uppercase tracking-[0.08em] mt-1.5">${orang.peran}</p>
         <a href="${hrefTelepon(orang.nomor)}" class="inline-flex items-center gap-2 text-sm text-[var(--primary)] font-semibold hover:underline mt-3">
           <i data-lucide="phone" class="w-4 h-4"></i> ${orang.nomor}

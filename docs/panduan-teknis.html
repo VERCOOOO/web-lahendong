@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Panduan teknis Website Kelurahan Lahendong: arsitektur, alur data dari Google Sheet ke halaman, fungsi-fungsi kunci, dan resep mengubah kode.">
+<link rel="icon" href="../img/emblem.svg" type="image/svg+xml">
+<title>Panduan Teknis Lahendong</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Satu tema terang, sama dengan situs Lahendong ("mode terang saja"). Palet = DESIGN-SPEC v2. */
+  :root {
+    --bg: #EEF3F0; --surface: #FFFFFF; --line: #D3DDD8;
+    --ink: #10201C; --muted: #4E605A;
+    --primary: #0B6B63; --primary-d: #07524C; --tint: #DDF1EC;
+    --deep: #0E2E29; --deep-2: #0A221E; --on-deep: #E6F0EC; --on-deep-muted: #A7C1BA; --toska: #6FD0BF;
+    --belerang: #E0AE1E; --belerang-ink: #8A6400; --belerang-tint: #FBF1D3;
+    --danger: #A8382A;
+    --judul: "Archivo", "Arial Narrow", system-ui, sans-serif;
+    --teks: "Plus Jakarta Sans", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--teks); font-size: 16px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3 { font-family: var(--judul); font-stretch: 80%; font-weight: 700; line-height: 1.1; margin: 0; text-wrap: balance; }
+  p { margin: 0; }
+  a { color: var(--primary); font-weight: 600; }
+  :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 2px; }
+  code { font-family: var(--mono); font-size: .86em; background: var(--tint); color: var(--primary-d); padding: 1px 5px; border-radius: 3px; overflow-wrap: anywhere; }
+  pre { margin: 0; background: var(--deep-2); color: var(--on-deep); border-radius: 4px; padding: 16px 18px; overflow-x: auto; font-family: var(--mono); font-size: 13.5px; line-height: 1.6; }
+  pre code { background: none; color: inherit; padding: 0; font-size: inherit; overflow-wrap: normal; }
+  pre .k { color: var(--toska); }
+  pre .c { color: #7F9C94; }
+  pre .s { color: #F0C340; }
+
+  .wadah { max-width: 1120px; margin-inline: auto; padding-inline: 20px; }
+  .label { font-size: 11.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .eyebrow { display: inline-flex; align-items: center; gap: 9px; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--primary); }
+  .eyebrow::before { content: ""; width: 8px; height: 8px; background: var(--belerang); }
+
+  /* Kepala */
+  .kepala { background: var(--deep); color: var(--on-deep); border-bottom: 4px solid var(--belerang); padding-block: 48px 44px; }
+  .kepala .eyebrow { color: var(--toska); }
+  .kepala h1 { font-size: clamp(38px, 8vw, 64px); font-stretch: 72%; font-weight: 800; text-transform: uppercase; line-height: .95; color: #fff; margin-top: 12px; }
+  .kepala .ringkas { max-width: 640px; margin-top: 16px; font-size: 18px; color: var(--on-deep-muted); }
+  .kepala .tautan { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 22px; font-size: 14.5px; }
+  .kepala .tautan a { color: var(--toska); }
+
+  /* Tata letak: daftar isi lengket di kiri (desktop) */
+  .tata { display: grid; gap: 40px; padding-block: 48px 80px; }
+  .daftar-isi { font-size: 14px; }
+  .daftar-isi ol { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 2px; }
+  .daftar-isi a { display: block; padding: 6px 10px; border-left: 2px solid var(--line); color: var(--muted); font-weight: 600; text-decoration: none; }
+  .daftar-isi a:hover { color: var(--primary); border-left-color: var(--belerang); }
+  @media (min-width: 960px) {
+    .tata { grid-template-columns: 220px minmax(0, 1fr); gap: 56px; }
+    .daftar-isi { position: sticky; top: 24px; align-self: start; }
+  }
+
+  .isi { display: grid; gap: 64px; min-width: 0; }
+  .bagian { display: grid; gap: 18px; scroll-margin-top: 20px; }
+  .bagian > h2 { font-size: clamp(28px, 5vw, 38px); margin-top: 6px; }
+  .bagian > p, .bagian > ul, .bagian > ol { max-width: 700px; color: var(--muted); }
+  .bagian > p strong, .bagian li strong { color: var(--ink); }
+  .bagian ul, .bagian ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
+  h3 { font-size: 23px; margin-top: 10px; }
+
+  /* Alur data */
+  .bagian .alur { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 10px; counter-reset: langkah; }
+  .alur li { position: relative; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 4px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 14px 16px; counter-increment: langkah; }
+  .alur li::before { content: counter(langkah); grid-row: span 2; font-family: var(--judul); font-stretch: 72%; font-weight: 800; font-size: 30px; line-height: 1; color: var(--belerang-ink); }
+  .alur li + li::after { content: ""; position: absolute; left: 34px; top: -11px; height: 10px; border-left: 2px solid var(--line); }
+  .alur b { font-family: var(--judul); font-stretch: 80%; font-size: 19px; font-weight: 700; }
+  .alur span { color: var(--muted); font-size: 15px; }
+  .alur .gelap { background: var(--deep); border-color: var(--deep); }
+  .alur .gelap b { color: #fff; }
+  .alur .gelap span { color: var(--on-deep-muted); }
+  .alur .gelap::before { color: var(--belerang); }
+  .alur .gelap code { background: rgba(255,255,255,.1); color: var(--toska); }
+
+  /* Tabel */
+  .gulir { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  th { text-align: left; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); background: var(--bg); padding: 10px 14px; white-space: nowrap; }
+  td { padding: 11px 14px; border-top: 1px solid var(--line); vertical-align: top; color: var(--muted); }
+  td:first-child { color: var(--ink); white-space: nowrap; }
+  .num { text-align: center; font-variant-numeric: tabular-nums; }
+
+  /* Kotak fungsi */
+  .fungsi { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+  .fungsi header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+  .fungsi header code { background: none; padding: 0; font-size: 15.5px; font-weight: 500; color: var(--primary-d); }
+  .fungsi header .label { white-space: nowrap; }
+  .fungsi .badan { padding: 16px 18px; display: grid; gap: 12px; color: var(--muted); font-size: 15px; }
+  .fungsi .badan pre { margin-inline: -18px; border-radius: 0; }
+  .fungsi .badan pre:last-child { margin-bottom: -16px; }
+
+  .catatan { background: var(--belerang-tint); border-left: 4px solid var(--belerang); border-radius: 0 4px 4px 0; padding: 14px 18px; font-size: 15px; color: var(--ink); max-width: 760px; }
+  .catatan.bahaya { background: #F6E2DE; border-left-color: var(--danger); }
+
+  .bagian .langkah { counter-reset: n; list-style: none; padding: 0; }
+  .langkah > li { counter-increment: n; position: relative; padding-left: 38px; }
+  .langkah > li::before { content: counter(n); position: absolute; left: 0; top: 1px; width: 26px; height: 26px; display: grid; place-items: center; background: var(--primary); color: #fff; font-size: 13px; font-weight: 700; border-radius: 2px; }
+  .langkah pre { margin-top: 8px; }
+
+  .kaki { border-top: 1px solid var(--line); padding-block: 24px 40px; font-size: 13.5px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header class="kepala">
+  <div class="wadah">
+    <span class="eyebrow">Website Kelurahan Lahendong</span>
+    <h1>Panduan Teknis</h1>
+    <p class="ringkas">Cara situs ini bekerja dari dalam: dari sel di Google Sheet sampai kartu di layar, apa isi setiap berkas, dan cara mengubah kode tanpa merusak yang lain.</p>
+    <div class="tautan">
+      <a href="panduan-admin.html">Panduan Admin (mengelola isi)</a>
+      <a href="https://github.com/VERCOOOO/web-lahendong">Repositori GitHub</a>
+      <a href="https://vercoooo.github.io/web-lahendong/">Situs terbit</a>
+    </div>
+  </div>
+</header>
+
+<div class="wadah tata">
+  <nav class="daftar-isi" aria-label="Daftar isi">
+    <p class="label">Daftar isi</p>
+    <ol>
+      <li><a href="#gambaran">Gambaran besar</a></li>
+      <li><a href="#alur">Alur data</a></li>
+      <li><a href="#berkas">Isi setiap berkas</a></li>
+      <li><a href="#fungsi">Fungsi kunci</a></li>
+      <li><a href="#grid">Grid adaptif</a></li>
+      <li><a href="#tampilan">Sistem tampilan</a></li>
+      <li><a href="#resep">Resep perubahan</a></li>
+      <li><a href="#debug">Mencari kesalahan</a></li>
+      <li><a href="#terbit">Menerbitkan</a></li>
+    </ol>
+  </nav>
+
+  <main class="isi">
+
+    <!-- 1 -->
+    <section class="bagian" id="gambaran">
+      <span class="eyebrow">Gambaran besar</span>
+      <h2>Situs statis yang membaca spreadsheet</h2>
+      <p>Tidak ada server, database, maupun proses <em>build</em>. GitHub Pages hanya mengirim berkas apa adanya: HTML, CSS, JavaScript, dan gambar. Semua pekerjaan terjadi <strong>di browser pengunjung</strong>: setelah halaman terbuka, JavaScript mengunduh isi Google Sheet dalam bentuk CSV, lalu menyusunnya menjadi HTML.</p>
+      <p>Pembagian tugasnya tegas:</p>
+      <ul>
+        <li><strong>Google Sheet</strong> menyimpan isi: angka, nama, teks, daftar.</li>
+        <li><strong>HTML</strong> menyimpan kerangka halaman: judul, kalimat pengantar, dan wadah kosong yang nanti diisi.</li>
+        <li><strong>JavaScript</strong> mengambil data dan mengisi wadah itu.</li>
+        <li><strong>CSS</strong> (<code>style.css</code> + kelas Tailwind) mengatur rupa.</li>
+      </ul>
+      <p>Pustaka luar yang dimuat dari CDN hanya empat: <strong>Tailwind</strong> (kelas utilitas seperti <code>mt-4</code>), <strong>Lucide</strong> (ikon), <strong>PapaParse</strong> (membaca CSV), dan <strong>Chart.js</strong> (grafik, hanya di halaman Penduduk). Tidak ada npm, jadi tidak ada yang perlu dipasang.</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="bagian" id="alur">
+      <span class="eyebrow">Alur data</span>
+      <h2>Dari sel sheet sampai kartu di layar</h2>
+      <p>Contoh: pengunjung membuka <code>wisata.html</code>.</p>
+      <ol class="alur">
+        <li><b>Browser memuat halaman</b><span>HTML berisi <code>&lt;div id="grid-wisata"&gt;</code> yang masih kosong, lalu skrip dimuat berurutan: <code>data.js</code> → <code>data-contoh.js</code> → <code>ui.js</code> → <code>komponen.js</code> → <code>halaman/wisata.js</code>.</span></li>
+        <li><b>ui.js menggambar kerangka</b><span>Header, footer, breadcrumb, dan info kantor (<code>data-profil</code>) diisi saat <code>DOMContentLoaded</code>.</span></li>
+        <li><b>wisata.js memanggil isiDariData()</b><span>Wadah langsung menampilkan "Memuat data…", lalu <code>ambilData("wisata")</code> dipanggil.</span></li>
+        <li class="gelap"><b>ambilData() mengunduh CSV</b><span>Alamatnya <code>docs.google.com/spreadsheets/d/{ID}/gviz/tq?tqx=out:csv&amp;sheet=wisata</code>. Google mencari tab berdasarkan nama. Batas waktu 15 detik.</span></li>
+        <li class="gelap"><b>PapaParse membaca CSV</b><span>Baris pertama menjadi nama kolom: <code>"Jumlah KK"</code> → <code>jumlah_kk</code>. Setiap baris menjadi satu objek: <code>{ id: "W1", nama: "Danau Linow", … }</code>.</span></li>
+        <li class="gelap"><b>Data dirapikan</b><span>Kolom diperiksa terhadap <code>SKEMA</code>, kolom yang hilang diisi kosong, setiap nilai di-<em>escape</em> agar aman untuk HTML, baris yang kolom pertamanya kosong dibuang. Hasilnya disimpan di memori, jadi tab yang sama tidak diunduh dua kali.</span></li>
+        <li><b>Fungsi render membuat HTML</b><span><code>data.map(kartuWisata).join("")</code> menghasilkan satu string HTML yang dipasang ke wadah.</span></li>
+        <li><b>Sentuhan akhir</b><span><code>aturKolom()</code> menyusun kolom sesuai jumlah kartu, Lucide mengganti <code>&lt;i data-lucide&gt;</code> menjadi ikon, dan animasi muncul diaktifkan.</span></li>
+      </ol>
+      <div class="catatan">Bila langkah 4–6 gagal (sheet privat, tidak ada internet, nama tab salah), wadah menampilkan pesan ramah seperti "Daftar destinasi belum bisa dimuat saat ini", dan penyebab teknisnya dicatat di konsol browser dengan awalan <code>[data]</code>.</div>
+      <p>Mode <strong>data contoh</strong>: bila <code>PAKAI_DUMMY = true</code> di <code>data.js</code>, langkah 4–5 dilewati dan data diambil dari objek <code>DATA_DUMMY</code> di <code>data-contoh.js</code>. Langkah 6 tetap dijalankan persis sama, jadi tampilan kedua mode identik. Mode ini berguna untuk mencoba perubahan kode tanpa internet.</p>
+    </section>
+
+    <!-- 3 -->
+    <section class="bagian" id="berkas">
+      <span class="eyebrow">Isi setiap berkas</span>
+      <h2>Peta repositori</h2>
+      <div class="gulir">
+        <table>
+          <thead><tr><th>Berkas</th><th>Isi</th><th>Kapan diubah</th></tr></thead>
+          <tbody>
+            <tr><td><code>*.html</code></td><td>Satu berkas per halaman. Hanya markup: judul, kalimat pengantar, wadah ber-<code>id</code>. Tidak ada data dan tidak ada logika.</td><td>Mengubah judul/teks tetap, menambah seksi</td></tr>
+            <tr><td><code>assets/css/style.css</code></td><td>Sistem desain: warna (<code>:root</code>), tipografi, kartu, tombol, hero, kop, grid adaptif, bagan, tabel.</td><td>Mengubah rupa</td></tr>
+            <tr><td><code>assets/js/data.js</code></td><td>Pengaturan (<code>PAKAI_DUMMY</code>, <code>ID_SPREADSHEET</code>), <code>SKEMA</code> kolom tiap tab, <code>ambilData()</code>, normalisasi, dan utilitas nilai (<code>keAngka</code>, <code>escapeHtml</code>, <code>urlAman</code>).</td><td>Ganti sheet, tambah tab/kolom</td></tr>
+            <tr><td><code>assets/js/data-contoh.js</code></td><td><code>DATA_DUMMY</code>: data awal. Dipakai saat mode contoh, dan menjadi sumber template <code>.xlsx</code>.</td><td>Bersama perubahan <code>SKEMA</code></td></tr>
+            <tr><td><code>assets/js/ui.js</code></td><td>Kerangka yang sama di semua halaman: menu (<code>NAV_LINKS</code>), header, footer, breadcrumb, info kantor, animasi muncul, pesan memuat/gagal/kosong.</td><td>Menambah halaman ke menu, mengubah header/footer</td></tr>
+            <tr><td><code>assets/js/komponen.js</code></td><td>Registri <code>FOTO</code>, <code>isiDariData()</code>, <code>aturKolom()</code>, format angka, teks bertanda baris baru, kartu wisata, monogram aparat.</td><td>Menambah foto, mengubah potongan bersama</td></tr>
+            <tr><td><code>assets/js/halaman/*.js</code></td><td>Logika satu halaman: tab mana yang diambil dan bagaimana dirender. <code>index.html</code> memakai <code>beranda.js</code>; halaman lain bernama sama.</td><td>Mengubah isi satu halaman</td></tr>
+            <tr><td><code>img/</code></td><td>Gambar statis: ilustrasi hero, foto wisata, <code>placeholder.webp</code>, <code>emblem.svg</code>, dan (nanti) <code>peta-wilayah.png</code>.</td><td>Mengganti foto</td></tr>
+            <tr><td><code>data/template-data-lahendong.xlsx</code></td><td>Template spreadsheet (semua sel format Teks biasa) untuk diimpor ke Google Sheets.</td><td>Setelah <code>SKEMA</code>/data contoh berubah</td></tr>
+            <tr><td><code>docs/</code></td><td>Panduan Admin dan panduan ini.</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Urutan skrip penting: berkas yang dimuat belakangan memakai fungsi dari berkas sebelumnya. <code>halaman/*.js</code> boleh memanggil apa saja dari empat berkas di atasnya, tetapi tidak sebaliknya.</p>
+    </section>
+
+    <!-- 4 -->
+    <section class="bagian" id="fungsi">
+      <span class="eyebrow">Fungsi kunci</span>
+      <h2>Tujuh fungsi yang menopang semuanya</h2>
+
+      <article class="fungsi">
+        <header><code>SKEMA</code><span class="label">data.js</span></header>
+        <div class="badan">
+          <p>Daftar kolom setiap tab, berurutan seperti di sheet. Kolom pertama adalah <strong>kunci baris</strong>: baris yang kuncinya kosong diabaikan (cara admin menyembunyikan baris). Nama kolom yang hilang di sheet hanya memunculkan peringatan dan terbaca kosong. Namun bila kolom pertama hilang, tab dianggap salah dan data ditolak.</p>
+<pre><code><span class="k">const</span> SKEMA = {
+  profil:  [<span class="s">"kunci"</span>, <span class="s">"nilai"</span>, <span class="s">"keterangan"</span>],        <span class="c">// tab kunci-nilai</span>
+  wisata:  [<span class="s">"id"</span>, <span class="s">"nama"</span>, <span class="s">"ringkas"</span>, <span class="s">"deskripsi"</span>, <span class="s">"jam"</span>, <span class="s">"tiket"</span>, …],
+  aparat:  [<span class="s">"id"</span>, <span class="s">"nama"</span>, <span class="s">"jabatan"</span>, <span class="s">"urutan"</span>, <span class="s">"atasan"</span>, <span class="s">"nomor"</span>],
+  …
+};</code></pre>
+        </div>
+      </article>
+
+      <article class="fungsi">
+        <header><code>ambilData(namaTab) → Promise&lt;Array&gt;</code><span class="label">data.js</span></header>
+        <div class="badan">
+          <p>Satu-satunya pintu masuk data. Mengembalikan array objek yang sudah rapi dan aman. Setiap tab hanya diunduh sekali per kunjungan halaman (disimpan di <code>tembolokData</code>); bila gagal, simpanan dihapus agar pemanggilan berikutnya mencoba lagi.</p>
+<pre><code><span class="k">const</span> wisata = <span class="k">await</span> ambilData(<span class="s">"wisata"</span>);
+<span class="c">// [{ id: "W1", nama: "Danau Linow", ringkas: "…", jam: "…", … }, …]</span></code></pre>
+        </div>
+      </article>
+
+      <article class="fungsi">
+        <header><code>isiDariData(wadah, tab, render, opsi)</code><span class="label">komponen.js</span></header>
+        <div class="badan">
+          <p>Pola baku setiap blok data. Hampir semua isi situs dipasang lewat fungsi ini, sehingga penanganan memuat, kosong, dan gagal seragam di mana-mana.</p>
+          <ul>
+            <li><code>tab</code>: satu nama tab, atau array nama tab (render lalu menerima array hasil).</li>
+            <li><code>render(data)</code>: mengembalikan string HTML. String kosong berarti "tidak ada data".</li>
+            <li><code>opsi.kosong</code> / <code>opsi.gagal</code>: pesan. Isi <code>null</code> agar wadah dihapus diam-diam (untuk blok pelengkap).</li>
+            <li><code>opsi.setelah(data)</code>: dijalankan setelah HTML terpasang, misalnya untuk menggambar grafik.</li>
+          </ul>
+<pre><code>isiDariData(document.getElementById(<span class="s">"grid-wisata"</span>), <span class="s">"wisata"</span>,
+  (data) =&gt; data.map((item) =&gt; kartuWisata(item)).join(<span class="s">""</span>),
+  { gagal: <span class="s">"Daftar destinasi belum bisa dimuat saat ini."</span> }
+);</code></pre>
+        </div>
+      </article>
+
+      <article class="fungsi">
+        <header><code>aturKolom(wadah)</code><span class="label">komponen.js</span></header>
+        <div class="badan">
+          <p>Menghitung jumlah kolom dari jumlah kartu yang tampil, lalu menyimpannya di variabel CSS <code>--kolom</code> dan atribut <code>data-kolom</code>. Dipanggil otomatis oleh <code>isiDariData()</code> untuk setiap <code>.grid-adaptif</code> dan <code>.deret-statistik</code>, dan oleh penyaring Galeri setiap kali kartu disembunyikan. Rinciannya di bagian <a href="#grid">Grid adaptif</a>.</p>
+        </div>
+      </article>
+
+      <article class="fungsi">
+        <header><code>FOTO</code> &amp; <code>gambar(tab, item)</code><span class="label">komponen.js</span></header>
+        <div class="badan">
+          <p>Foto belum diatur dari sheet. Registri <code>FOTO</code> memetakan <code>id</code> baris ke nama berkas di <code>img/</code>. <code>gambar()</code> membuat <code>&lt;img&gt;</code> yang otomatis beralih ke <code>placeholder.webp</code> bila id belum terdaftar atau berkasnya tidak ada. Untuk aparat tanpa foto, <code>visualOrang()</code> membuat monogram inisial (gelar dilewati: "Reymon Stive Londok, S.T" → RL).</p>
+<pre><code><span class="k">const</span> FOTO = {
+  wisata: { W1: <span class="s">"wisata-danau-linow.webp"</span>, W2: <span class="s">"wisata-hutan-pinus.webp"</span>, … },
+  umkm:   { },   <span class="c">// U1: "umkm-kue-lapis.webp"</span>
+  aparat: { },   <span class="c">// A1: "aparat-lurah.webp"</span>
+};</code></pre>
+        </div>
+      </article>
+
+      <article class="fungsi">
+        <header><code>isiInfoKantor()</code><span class="label">ui.js</span></header>
+        <div class="badan">
+          <p>Mengisi setiap elemen bertanda <code>data-profil="kunci"</code> dari tab <code>profil</code>, di halaman mana pun, tanpa JavaScript tambahan. Bila nilainya kosong, wadah terdekat <code>[data-wadah-profil]</code> dihapus, sehingga situs tidak pernah menampilkan baris kosong atau isian karangan. <code>data-profil-tautan="tel"</code> atau <code>"mailto"</code> menjadikannya tautan telepon/email.</p>
+<pre><code>&lt;p data-wadah-profil&gt;Jam layanan: &lt;span data-profil=<span class="s">"jam_layanan"</span>&gt;&lt;/span&gt;&lt;/p&gt;</code></pre>
+        </div>
+      </article>
+
+      <article class="fungsi">
+        <header><code>escapeHtml()</code>, <code>teksPolos()</code>, <code>keAngka()</code>, <code>barisDari()</code></header>
+        <div class="badan">
+          <ul>
+            <li><code>escapeHtml</code>: setiap nilai sheet di-escape saat dirapikan, jadi tulisan <code>&lt;script&gt;</code> di sel tampil sebagai teks, tidak dijalankan. Karena itu nilai dari <code>ambilData()</code> aman disisipkan ke HTML.</li>
+            <li><code>teksPolos</code>: kebalikannya, untuk konteks yang bukan HTML (judul tab browser, label grafik, URL).</li>
+            <li><code>keAngka</code>: membaca "2235", "2.235", "7,85", "7.85" dengan benar; bukan angka → <code>null</code>. <code>formatAngka</code> menulis ulang gaya Indonesia (2.235 · 7,85).</li>
+            <li><code>barisDari</code>: memecah sel berdasarkan baris baru. <code>paragraf()</code>, <code>berbaris()</code>, dan <code>daftarAtauTeks()</code> memakainya untuk mengubah satu sel menjadi beberapa paragraf, baris, atau butir daftar.</li>
+          </ul>
+        </div>
+      </article>
+    </section>
+
+    <!-- 5 -->
+    <section class="bagian" id="grid">
+      <span class="eyebrow">Grid adaptif</span>
+      <h2>Susunan kartu mengikuti jumlahnya</h2>
+      <p>Wisata, UMKM, Galeri, aparat, lingkungan, dan kontak memakai kelas <code>.grid-adaptif</code>. Aturannya: bagi kartu ke <strong>baris sesedikit mungkin</strong> (maks. 4 per baris), lalu bagi rata per baris.</p>
+<pre><code><span class="k">function</span> hitungKolom(n, maks = <span class="s">4</span>) {
+  <span class="k">const</span> baris = Math.ceil(n / maks);   <span class="c">// 6 kartu → 2 baris</span>
+  <span class="k">return</span> Math.ceil(n / baris);          <span class="c">// 6 / 2 → 3 kolom</span>
+}</code></pre>
+      <div class="gulir">
+        <table>
+          <thead><tr><th>Jumlah kartu</th><th class="num">1</th><th class="num">2</th><th class="num">3</th><th class="num">4</th><th class="num">5</th><th class="num">6</th><th class="num">7</th><th class="num">8</th><th class="num">9</th></tr></thead>
+          <tbody>
+            <tr><td>Desktop (≥1024px)</td><td class="num">1</td><td class="num">2</td><td class="num">3</td><td class="num">4</td><td class="num">3+2</td><td class="num">3×2</td><td class="num">4+3</td><td class="num">4×2</td><td class="num">3×3</td></tr>
+            <tr><td>Tablet (640–1023px)</td><td class="num" colspan="9">2 kolom</td></tr>
+            <tr><td>HP</td><td class="num" colspan="9">1 kolom; 2 kolom untuk kartu kecil (<code>data-hp="2"</code>: aparat, lingkungan)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>CSS-nya memakai <em>flexbox</em>, bukan grid biasa, agar baris terakhir yang tidak penuh bisa diletakkan di tengah. Lebar tiap kartu dihitung dari <code>--kolom</code>:</p>
+<pre><code>.grid-adaptif { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--jarak); }
+@media (min-width: 1024px) {
+  .grid-adaptif &gt; * { flex-basis: calc((100% - (var(--kolom) - 1) * var(--jarak)) / var(--kolom)); }
+}</code></pre>
+      <p>Pengaturan per wadah lewat atribut HTML: <code>data-maks="3"</code> (paling banyak 3 per baris), <code>data-hp="2"</code> (2 kolom di HP), dan kelas <code>rata-kiri</code> (baris terakhir rata kiri, dipakai di Kontak). Deret angka statistik (<code>.deret-statistik</code>) memakai hitungan yang sama, sehingga bila satu angka dikosongkan, sisanya tetap mengisi lebar penuh.</p>
+    </section>
+
+    <!-- 6 -->
+    <section class="bagian" id="tampilan">
+      <span class="eyebrow">Sistem tampilan</span>
+      <h2>Di mana mengubah rupa</h2>
+      <ul>
+        <li><strong>Warna</strong>: hanya di <code>:root</code> pada awal <code>style.css</code>. Semua komponen memakai token (<code>var(--primary)</code>, dsb.), jadi mengganti satu nilai mengubah seluruh situs. Warna grafik ada di <code>WARNA</code> pada <code>penduduk.js</code> (Chart.js tidak bisa membaca variabel CSS).</li>
+        <li><strong>Huruf</strong>: Archivo (judul, angka) dan Plus Jakarta Sans (teks), dimuat di <code>&lt;head&gt;</code> setiap HTML dan diatur di <code>--font-judul</code> / <code>--font-teks</code>.</li>
+        <li><strong>Kelas Tailwind vs <code>style.css</code></strong>: Tailwind untuk jarak dan tata letak sekali pakai (<code>mt-4</code>, <code>md:col-span-7</code>); <code>style.css</code> untuk komponen yang berulang (<code>.kartu</code>, <code>.tombol</code>, <code>.eyebrow</code>). Tailwind dimuat belakangan, jadi pada spesifisitas yang sama kelas Tailwind yang menang. Jangan memasang kelas lebar kolom Tailwind (<code>lg:grid-cols-4</code>) pada <code>.grid-adaptif</code>.</li>
+        <li><strong>Kop halaman</strong> (bidang gelap di bawah menu) punya siluet punggungan gunung di tepi bawah. Warnanya mengikuti seksi di bawahnya; tambahkan kelas <code>tepi-putih</code> bila seksi itu berlatar putih.</li>
+        <li>Aturan desain lengkap: <code>DESIGN-SPEC.md</code>.</li>
+      </ul>
+    </section>
+
+    <!-- 7 -->
+    <section class="bagian" id="resep">
+      <span class="eyebrow">Resep perubahan</span>
+      <h2>Mengubah kode dengan aman</h2>
+
+      <h3>Menambah kolom ke tab yang ada</h3>
+      <p>Contoh: kolom <code>instagram</code> di tab <code>umkm</code>.</p>
+      <ol class="langkah">
+        <li>Tambahkan <code>"instagram"</code> di <code>SKEMA.umkm</code> (<code>data.js</code>).</li>
+        <li>Tambahkan <code>instagram: ""</code> ke setiap baris <code>umkm</code> di <code>data-contoh.js</code>.</li>
+        <li>Tampilkan di <code>kartuUmkm()</code> (<code>halaman/potensi.js</code>), dengan syarat kosong = tidak tampil:
+<pre><code>${item.instagram ? `&lt;p&gt;@${item.instagram}&lt;/p&gt;` : <span class="s">""</span>}</code></pre></li>
+        <li>Tambahkan kolom yang sama di Google Sheet (baris judul). Urutan kolom bebas; namanya yang penting.</li>
+      </ol>
+
+      <h3>Menambah tab dan seksi baru</h3>
+      <p>Contoh: tab <code>agenda</code> berisi kegiatan kelurahan, tampil di Beranda.</p>
+      <ol class="langkah">
+        <li><code>data.js</code>:
+<pre><code>agenda: [<span class="s">"id"</span>, <span class="s">"judul"</span>, <span class="s">"tanggal"</span>, <span class="s">"tempat"</span>],</code></pre></li>
+        <li><code>data-contoh.js</code>: tambahkan <code>agenda: [ { id: "G1", judul: "…", … } ]</code> ke <code>DATA_DUMMY</code>.</li>
+        <li><code>index.html</code>: tambahkan seksi dengan wadah kosong:
+<pre><code>&lt;div id=<span class="s">"grid-agenda"</span> class=<span class="s">"grid-adaptif"</span> data-maks=<span class="s">"3"</span>&gt;&lt;/div&gt;</code></pre></li>
+        <li><code>halaman/beranda.js</code>: isi wadah itu.
+<pre><code>isiDariData(document.getElementById(<span class="s">"grid-agenda"</span>), <span class="s">"agenda"</span>,
+  (data) =&gt; data.map((a) =&gt; `
+    &lt;article class=<span class="s">"kartu p-5"</span>&gt;
+      &lt;p class=<span class="s">"label-kecil"</span>&gt;${a.tanggal}&lt;/p&gt;
+      &lt;h3 class=<span class="s">"judul-kartu mt-2"</span>&gt;${a.judul}&lt;/h3&gt;
+    &lt;/article&gt;`).join(<span class="s">""</span>),
+  { kosong: <span class="s">"Belum ada agenda."</span>, gagal: <span class="s">"Agenda belum bisa dimuat."</span> }
+);</code></pre></li>
+        <li>Buat tab bernama persis <code>agenda</code> di Google Sheet, isi baris judulnya, dan format semua selnya sebagai Teks biasa.</li>
+        <li>Perbarui tab <code>petunjuk</code> di sheet dan tabel di README/Panduan Admin.</li>
+      </ol>
+
+      <h3>Menambah halaman baru</h3>
+      <ol class="langkah">
+        <li>Salin halaman yang mirip (mis. <code>layanan.html</code>) menjadi <code>agenda.html</code>; ganti <code>&lt;title&gt;</code>, kop, dan skrip terakhir menjadi <code>halaman/agenda.js</code>.</li>
+        <li>Buat <code>assets/js/halaman/agenda.js</code> berisi panggilan <code>isiDariData()</code>.</li>
+        <li>Tambahkan <code>{ href: "agenda.html", label: "Agenda" }</code> ke <code>NAV_LINKS</code> di <code>ui.js</code>. Menu dan breadcrumb semua halaman ikut berubah.</li>
+      </ol>
+
+      <h3>Mengganti atau menambah foto</h3>
+      <ol class="langkah">
+        <li>Simpan berkas <code>.webp</code> (lebar maks. 1600px, rasio 3:2 untuk kartu) di <code>img/</code>.</li>
+        <li>Daftarkan di <code>FOTO</code> (<code>komponen.js</code>) sesuai <code>id</code> barisnya. Mengganti berkas yang sudah terdaftar cukup dengan menimpa berkas bernama sama.</li>
+      </ol>
+
+      <div class="catatan bahaya">Jangan mengganti nama kolom pertama (<code>id</code>/<code>kunci</code>) atau nama tab tanpa mengubah <code>SKEMA</code> di saat yang sama. Google mengirim tab pertama bila nama tab tidak ditemukan; situs menolaknya dan bagian itu menampilkan pesan gagal.</div>
+    </section>
+
+    <!-- 8 -->
+    <section class="bagian" id="debug">
+      <span class="eyebrow">Mencari kesalahan</span>
+      <h2>Saat ada yang tidak tampil</h2>
+      <ol class="langkah">
+        <li><strong>Buka konsol</strong>: F12 → Console. Pesan situs berawalan <code>[data]</code> dan menyebut tab serta penyebabnya.</li>
+        <li><strong>Coba mode contoh</strong>: ubah <code>PAKAI_DUMMY</code> menjadi <code>true</code>. Bila masalah hilang, penyebabnya di sheet (akses, nama tab, nama kolom). Bila tetap ada, penyebabnya di kode.</li>
+        <li><strong>Jalankan di komputer sendiri</strong>: halaman harus dibuka lewat server lokal, bukan dobel-klik berkas; alamat <code>file://</code> membatasi sebagian fitur browser.
+<pre><code>cd web-lahendong
+python3 -m http.server 8000
+<span class="c"># buka http://localhost:8000</span></code></pre></li>
+        <li><strong>Periksa data mentah</strong> dari konsol:
+<pre><code><span class="k">await</span> ambilData(<span class="s">"lingkungan"</span>)      <span class="c">// array objek yang dipakai situs</span>
+<span class="k">await</span> fetch(URL_SHEET.lingkungan).then((r) =&gt; r.text())   <span class="c">// CSV mentah dari Google</span></code></pre></li>
+      </ol>
+      <div class="gulir">
+        <table>
+          <thead><tr><th>Gejala</th><th>Penyebab umum</th></tr></thead>
+          <tbody>
+            <tr><td>Semua bagian "belum bisa dimuat"</td><td>Sheet belum dibagikan "Siapa saja yang memiliki link", <code>ID_SPREADSHEET</code> salah, atau tidak ada internet.</td></tr>
+            <tr><td>Satu bagian gagal</td><td>Nama tab atau kolom pertamanya berubah.</td></tr>
+            <tr><td>Satu kolom selalu kosong</td><td>Nama kolom di baris judul sheet berbeda dari <code>SKEMA</code> (konsol: "tidak punya kolom").</td></tr>
+            <tr><td>Angka/teks hilang di beberapa baris</td><td>Sel tidak berformat Teks biasa; Google membuang nilai yang tipenya berbeda dari mayoritas kolom.</td></tr>
+            <tr><td>Perubahan sheet belum tampil</td><td>Muat ulang halaman. Bila masih lama, tunggu 1–2 menit: Google kadang menyimpan hasil ekspor sebentar.</td></tr>
+            <tr><td>Perubahan kode belum tampil di situs terbit</td><td>GitHub Pages butuh 1–2 menit setelah push, lalu browser menyimpan cache ±10 menit. Coba Ctrl+Shift+R.</td></tr>
+            <tr><td>Ikon tidak muncul</td><td>HTML baru disisipkan tanpa <code>segarkanTampilan()</code>. <code>isiDariData()</code> sudah memanggilnya otomatis.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 9 -->
+    <section class="bagian" id="terbit">
+      <span class="eyebrow">Menerbitkan</span>
+      <h2>Dari komputer ke GitHub Pages</h2>
+      <p>GitHub Pages menerbitkan cabang <code>main</code> apa adanya. Setiap <code>git push</code> ke <code>main</code> langsung menjadi versi situs yang baru dalam 1–2 menit.</p>
+<pre><code>git add -A
+git commit -m <span class="s">"feat: tambah tab agenda"</span>
+git push</code></pre>
+      <p>Urutan yang aman saat perubahan menyentuh sheet dan kode sekaligus:</p>
+      <ul>
+        <li><strong>Menambah kolom atau tab</strong>: push kode dulu atau sheet dulu sama-sama aman. Kolom yang belum ada terbaca kosong, tab yang belum ada menampilkan pesan gagal di bagian itu saja.</li>
+        <li><strong>Mengganti nama kolom/tab</strong>: siapkan keduanya, ubah sheet, lalu segera push kode. Di antara keduanya bagian itu kosong atau gagal.</li>
+        <li><strong>Setelah mengubah <code>SKEMA</code> atau data contoh</strong>: buat ulang <code>data/template-data-lahendong.xlsx</code> agar template tetap sama dengan situs.</li>
+      </ul>
+      <div class="catatan">Semua path di situs bersifat relatif (tanpa garis miring di depan, mis. <code>img/emblem.svg</code>), karena situs terbit di sub-folder <code>/web-lahendong/</code>. Pertahankan kebiasaan ini untuk berkas baru.</div>
+    </section>
+
+    <footer class="kaki">Panduan ini menjelaskan kode per September 2026. Bila kode berubah, perbarui bagian yang terkait di sini, di README, dan di Panduan Admin.</footer>
+  </main>
+</div>
+
+</body>
+</html>

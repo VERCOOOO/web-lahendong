@@ -21,9 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
 function kartuGaleri(item) {
   return `
     <figure data-kategori="${item.kategori}" class="kartu kartu-hover reveal overflow-hidden">
-      <div class="bingkai-foto aspect-[4/3]">${gambar(item.kategori, item)}</div>
+      <div class="bingkai-foto aspect-[3/2]">${gambar(item.kategori, item)}</div>
       <figcaption class="p-5 flex items-start justify-between gap-4">
-        <p class="font-judul text-[17px] leading-snug">${item.nama}</p>
+        <p class="font-judul text-[20px] leading-tight">${item.nama}</p>
         <span class="label-kecil whitespace-nowrap mt-1">${LABEL_KATEGORI[item.kategori]}</span>
       </figcaption>
     </figure>
@@ -41,4 +41,5 @@ function terapkanFilter(kategori) {
     tombol.setAttribute("aria-pressed", String(tombol.dataset.filter === kategori));
   });
   document.getElementById("jumlah-foto").textContent = terlihat + " foto";
+  aturKolom(document.getElementById("grid-galeri"));
 }

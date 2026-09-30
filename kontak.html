@@ -9,7 +9,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="assets/css/style.css" />
@@ -22,18 +22,11 @@
 
   <main id="konten-utama" class="flex-1">
 
-    <section class="kop-halaman bg-[var(--surface)] border-b border-[var(--line)]">
-      <div class="wadah py-12 md:py-16 grid md:grid-cols-12 gap-6">
-        <div class="md:col-span-7">
-          <nav class="remah" aria-label="Lokasi halaman" data-remah></nav>
-          <h1 class="judul-halaman mt-4">Kontak</h1>
-        </div>
-        <div class="md:col-span-5 md:self-end">
-          <p class="text-[var(--muted)] leading-[1.65]">
-            Nomor darurat, aparat kelurahan, dan layanan umum di Lahendong, beserta informasi
-            Kantor Kelurahan.
-          </p>
-        </div>
+    <section class="kop-halaman">
+      <div class="wadah kop-isi">
+        <nav class="remah" aria-label="Lokasi halaman" data-remah></nav>
+        <h1 class="judul-halaman">Kontak</h1>
+        <p class="kop-ringkas">Nomor darurat, aparat kelurahan, dan layanan umum di Lahendong, beserta informasi Kantor Kelurahan.</p>
       </div>
     </section>
 
@@ -43,7 +36,6 @@
         <!-- 01 · KANTOR — tab profil (alamat_kantor, jam_layanan, telepon_kantor, email).
              Baris yang nilainya kosong di sheet disembunyikan otomatis oleh ui.js. -->
         <div class="reveal lg:col-span-4">
-          <p class="no-seksi mb-3">01</p>
           <span class="eyebrow">Kantor Kelurahan</span>
           <h2 class="judul-seksi mt-4 mb-8">Kunjungi kami</h2>
 
@@ -87,7 +79,6 @@
 
         <!-- 02 · NARAHUBUNG — tab kontak (darurat & umum) + tab aparat (yang nomornya diisi) -->
         <div class="reveal lg:col-span-8">
-          <p class="no-seksi mb-3">02</p>
           <span class="eyebrow">Narahubung</span>
           <h2 class="judul-seksi mt-4 mb-8">Kontak penting</h2>
           <div id="daftar-narahubung" class="space-y-10"><!-- diisi oleh JS --></div>

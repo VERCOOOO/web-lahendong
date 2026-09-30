@@ -10,14 +10,14 @@ const FAKTA_PENDUDUK = [
 
 /* Warna grafik — hanya dari palet spec (lihat :root di style.css). */
 const WARNA = {
-  primary: "#2D5A4A",
-  accent: "#C07A1E",
-  line: "#DDE2DC",
-  ink: "#1B2420",
-  muted: "#5C6862",
+  primary: "#0B6B63",
+  accent: "#E0AE1E",
+  line: "#D3DDD8",
+  ink: "#10201C",
+  muted: "#4E605A",
   surface: "#FFFFFF",
 };
-const FONT = "'Source Sans 3', system-ui, sans-serif";
+const FONT = "'Plus Jakarta Sans', system-ui, sans-serif";
 
 /* Grafik ikut menghormati prefers-reduced-motion, sama seperti animasi CSS. */
 const ANIMASI = window.matchMedia("(prefers-reduced-motion: reduce)").matches
