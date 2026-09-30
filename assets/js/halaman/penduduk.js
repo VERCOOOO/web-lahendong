@@ -1,5 +1,5 @@
-/* Penduduk (penduduk.html): ringkasan, komposisi laki-laki/perempuan, jiwa per lingkungan.
-   Setiap grafik disertai tabel berisi angka yang sama. */
+/* Penduduk (penduduk.html): ringkasan, komposisi laki-laki/perempuan, rincian per lingkungan.
+   Sumber: tab statistik & lingkungan. Setiap grafik disertai tabel berisi angka yang sama. */
 
 const FAKTA_PENDUDUK = [
   { kunci: "jumlah_penduduk", label: "Jumlah penduduk", satuan: "jiwa" },
@@ -33,10 +33,16 @@ const GAYA_TOOLTIP = {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+  isiDariData(document.getElementById("sumber-data"), "statistik", (data) => {
+    const tahun = nilaiKunci(data, "tahun_data");
+    const sumber = nilaiKunci(data, "sumber_data");
+    return [tahun && `Data tahun ${tahun}`, sumber && `Sumber: ${sumber}`].filter(Boolean).join(" · ");
+  }, { kosong: null, gagal: null });
+
   isiDariData(document.getElementById("deret-statistik"), "statistik", (data) =>
     FAKTA_PENDUDUK
-      .filter((f) => nilaiStatistik(data, f.kunci) !== null)
-      .map((f) => selStatistik({ ...f, nilai: formatAngka(nilaiStatistik(data, f.kunci)) }))
+      .filter((f) => nilaiKunci(data, f.kunci))
+      .map((f) => selStatistik({ ...f, nilai: formatAngka(nilaiKunci(data, f.kunci)) }))
       .join("")
   );
 
@@ -53,8 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
 /* ---------------------------------------------------------------------- */
 
 function komposisiGender(data) {
-  const laki = keAngka(nilaiStatistik(data, "laki")) ?? 0;
-  const perempuan = keAngka(nilaiStatistik(data, "perempuan")) ?? 0;
+  const laki = keAngka(nilaiKunci(data, "laki")) ?? 0;
+  const perempuan = keAngka(nilaiKunci(data, "perempuan")) ?? 0;
   return { laki, perempuan, total: laki + perempuan };
 }
 
@@ -104,16 +110,20 @@ function grafikGender(data) {
 /* Jiwa per lingkungan                                                     */
 /* ---------------------------------------------------------------------- */
 
+const KOLOM_ANGKA_LINGKUNGAN = ["jumlah_kk", "jumlah_jiwa", "laki", "perempuan", "jumlah_lansia", "jumlah_rumah"];
+
 function tabelLingkungan(data) {
-  return data.map((item) => `
-    <tr>
-      <td>${item.nama}</td>
-      <td class="num">${formatAngka(item.jumlah_kk)}</td>
-      <td class="num">${formatAngka(item.jumlah_jiwa)}</td>
-      <td class="num">${formatAngka(item.laki)}</td>
-      <td class="num">${formatAngka(item.perempuan)}</td>
-    </tr>
-  `).join("");
+  if (!data.length) return "";
+  const sel = (nilai) => `<td class="num">${nilai === "" ? "—" : formatAngka(nilai)}</td>`;
+  const baris = data.map((item) => `<tr><td>${item.nama}</td>${KOLOM_ANGKA_LINGKUNGAN.map((k) => sel(item[k])).join("")}</tr>`);
+
+  // Baris total dihitung dari tabel ini, bukan dari tab statistik.
+  const total = KOLOM_ANGKA_LINGKUNGAN.map((k) => {
+    const angka = data.map((item) => keAngka(item[k]));
+    return angka.some((n) => n === null) ? "" : String(angka.reduce((a, b) => a + b, 0));
+  });
+  baris.push(`<tr class="baris-total"><td>Total</td>${total.map(sel).join("")}</tr>`);
+  return baris.join("");
 }
 
 function grafikLingkungan(data) {

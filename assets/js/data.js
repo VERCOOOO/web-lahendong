@@ -18,19 +18,26 @@ const ID_SPREADSHEET = "11f8D-qzWt1rdkin7uBMmrbrEkZmc4dih39ruUwTh1gQ";
 /* Struktur sheet                                                          */
 /* ---------------------------------------------------------------------- */
 
-/* Kolom tiap tab. Baris judul di sheet harus memakai nama-nama ini;
-   huruf besar/kecil dan spasi diabaikan ("Jumlah KK" dibaca "jumlah_kk").
-   Kolom pertama adalah kunci baris: baris yang kuncinya kosong diabaikan. */
+/* Kolom tiap tab, berurutan seperti di sheet. Baris judul di sheet harus memakai
+   nama-nama ini; huruf besar/kecil dan spasi diabaikan ("Jumlah KK" → "jumlah_kk").
+   Kolom pertama adalah kunci baris: baris yang kuncinya kosong diabaikan.
+   Kolom "keterangan" hanya catatan untuk admin dan tidak dibaca situs.
+   Peta tab → halaman ada di tab "petunjuk" pada sheet dan di README.md. */
 const SKEMA = {
-  statistik: ["kunci", "nilai"],
-  lingkungan: ["id", "nama", "kepala", "jumlah_kk", "jumlah_jiwa", "laki", "perempuan"],
-  wisata: ["id", "nama", "ringkas", "deskripsi", "foto", "jam", "tiket", "fasilitas", "waktu_terbaik", "cara_kesana", "maps_link"],
-  umkm: ["id", "nama", "produk", "kontak", "lingkungan", "foto"],
-  // Sumber tunggal identitas aparat. Aparat yang nomornya diisi tampil di halaman Kontak.
-  aparat: ["id", "nama", "jabatan", "urutan", "foto", "nomor"],
+  // Informasi umum kelurahan: kantor, wilayah, sejarah, legenda.
+  profil: ["kunci", "nilai", "keterangan"],
+  // Angka kependudukan (sumber: HUMAS).
+  statistik: ["kunci", "nilai", "keterangan"],
+  lingkungan: ["id", "nama", "kepala", "jumlah_kk", "jumlah_jiwa", "laki", "perempuan", "jumlah_lansia", "jumlah_rumah"],
+  // Sumber tunggal identitas aparat. "atasan" berisi id aparat di atasnya (untuk bagan).
+  // Aparat yang nomornya diisi tampil di halaman Kontak.
+  aparat: ["id", "nama", "jabatan", "urutan", "atasan", "nomor"],
+  // Narahubung non-aparat. kategori: "darurat" atau "umum".
+  kontak: ["id", "nama", "peran", "nomor", "kategori"],
+  wisata: ["id", "nama", "ringkas", "deskripsi", "jam", "tiket", "fasilitas", "waktu_terbaik", "cara_kesana", "pengelola", "maps_link"],
+  potensi: ["id", "judul", "deskripsi"],
+  umkm: ["id", "nama", "produk", "kontak", "lingkungan"],
   layanan: ["id", "nama_surat", "syarat", "alur", "waktu", "biaya"],
-  // Khusus narahubung yang bukan aparat (kantor, pos kamling, dsb.).
-  kontak: ["id", "nama", "peran", "nomor"],
 };
 
 /** URL CSV satu tab, dicari berdasarkan nama tab. */
@@ -157,7 +164,8 @@ function rapikanBaris(namaTab, baris) {
     kolom.forEach((k) => {
       if (!(k in bersih)) bersih[k] = "";
     });
-    if (namaTab === "statistik") bersih.kunci = normalisasiKunci(bersih.kunci);
+    // Tab kunci-nilai (profil, statistik): "Luas Wilayah" dibaca "luas_wilayah".
+    if (kolom[0] === "kunci") bersih.kunci = normalisasiKunci(bersih.kunci);
     return bersih;
   });
 }
@@ -170,12 +178,6 @@ function saringBarisKosong(namaTab, baris) {
 /* ---------------------------------------------------------------------- */
 /* Utilitas nilai                                                          */
 /* ---------------------------------------------------------------------- */
-
-function urlFoto(nilai) {
-  const teks = String(nilai || "").trim();
-  if (teks === "") return "img/placeholder.webp";
-  return teks.startsWith("http") ? teks : "img/" + teks;
-}
 
 /** Hanya tautan http(s) yang diterima; nilai lain (mis. "javascript:") dikosongkan. */
 function urlAman(nilai) {

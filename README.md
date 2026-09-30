@@ -3,51 +3,89 @@
 Situs resmi Kelurahan Lahendong, Kecamatan Tomohon Selatan, Kota Tomohon, Sulawesi Utara.
 HTML + Tailwind (CDN) + JavaScript biasa — tanpa build step. Desain mengikuti [DESIGN-SPEC.md](DESIGN-SPEC.md).
 
-## Mengelola data dengan Google Sheets
+## Cara kerja: spreadsheet → situs
 
-Seluruh isi situs (statistik, lingkungan, wisata, UMKM, aparat, layanan surat, kontak) dibaca dari
-satu Google Sheet. Mengubah isi sheet = mengubah isi situs, tanpa menyentuh kode. Perubahan tampil
-begitu halaman situs dimuat ulang.
+Semua **isi** situs (angka, nama, teks, daftar) dibaca dari satu Google Sheet setiap kali halaman
+dibuka. Mengubah sel di sheet = mengubah isi situs; hasilnya tampil saat halaman dimuat ulang.
+Kode hanya menentukan **tampilan**.
 
-> **Penting:** sheet ini dapat dibaca publik. Jangan menyimpan data pribadi yang tidak untuk
-> diumumkan (NIK, alamat rumah, nomor pribadi) di tab mana pun dalam spreadsheet ini.
+| Tab sheet | Tampil di halaman | Isi |
+|---|---|---|
+| `profil` | Profil, Legenda, Kontak, header & footer semua halaman | Alamat, telepon, email & jam layanan kantor; luas, ketinggian, suhu; batas wilayah; sejarah; legenda |
+| `statistik` | Beranda (angka ringkas), Penduduk | Jumlah penduduk, laki-laki, perempuan, KK, lingkungan; tahun & sumber data |
+| `lingkungan` | Penduduk (tabel & grafik), Pemerintahan (kepala lingkungan) | Satu baris per lingkungan |
+| `aparat` | Pemerintahan (bagan & profil), Beranda (pimpinan), Kontak | Satu baris per aparat |
+| `kontak` | Kontak | Nomor darurat & layanan umum selain aparat |
+| `wisata` | Wisata, detail wisata, Beranda, Galeri | Satu baris per destinasi |
+| `potensi` | Potensi, Beranda | Satu baris per potensi |
+| `umkm` | Potensi (bagian UMKM), Galeri | Satu baris per usaha |
+| `layanan` | Layanan | Satu baris per jenis surat |
 
-### Susunan sheet
+Tabel yang sama ada di tab `petunjuk` pada spreadsheet.
 
-Delapan tab: `petunjuk` (catatan) dan tujuh tab data. **Jangan ganti nama tab maupun baris judul.**
+**Tidak diatur dari spreadsheet** (iterasi ini):
 
-| Tab | Kolom |
-|---|---|
-| `statistik` | kunci, nilai |
-| `lingkungan` | id, nama, kepala, jumlah_kk, jumlah_jiwa, laki, perempuan |
-| `wisata` | id, nama, ringkas, deskripsi, foto, jam, tiket, fasilitas, waktu_terbaik, cara_kesana, maps_link |
-| `umkm` | id, nama, produk, kontak, lingkungan, foto |
-| `aparat` | id, nama, jabatan, urutan, foto, nomor |
-| `layanan` | id, nama_surat, syarat, alur, waktu, biaya |
-| `kontak` | id, nama, peran, nomor |
+- **Foto** — statis di folder `img/`, dipetakan ke id baris di [`assets/js/komponen.js`](assets/js/komponen.js)
+  (bagian `FOTO`). Contoh: `W1: "wisata-danau-linow.webp"` = foto untuk baris W1 di tab `wisata`.
+  Id tanpa foto memakai `img/placeholder.webp`; aparat tanpa foto memakai monogram inisial.
+- **Peta wilayah (gambar)** — simpan sebagai `img/peta-wilayah.png`. Halaman Profil menampilkannya
+  otomatis di atas peta Google; selama file belum ada, bagian itu disembunyikan.
+- **Judul dan kalimat pengantar** tiap halaman — di berkas HTML.
 
-### Aparat dan kontak
+## Mengelola spreadsheet
 
-**Satu orang cukup ditulis sekali, di tab `aparat`.** Nama dan jabatannya dipakai di halaman
-Pemerintahan, beranda (urutan 1 tampil sebagai pimpinan), dan halaman Kontak. Mengganti Lurah
-cukup dengan mengubah satu baris.
+### Tab kunci-nilai (`profil`, `statistik`)
 
-- Isi kolom `nomor` di tab `aparat` bila nomor orang itu boleh tampil di halaman Kontak.
-  Kosongkan bila tidak.
-- Tab `kontak` **hanya** untuk narahubung yang bukan aparat: kantor kelurahan, pos kamling,
-  puskesmas, dan sebagainya.
-- Nama aparat yang belum diketahui: kosongkan selnya. Situs menampilkan "Nama belum tersedia".
+Satu baris = satu informasi. Kolom `kunci` adalah nama tetap yang dicari situs (jangan diubah),
+`nilai` isinya, `keterangan` catatan untuk admin (tidak tampil di situs).
 
-Bila tab `kontak` masih memuat baris untuk jabatan yang sudah ada di `aparat` (misalnya
-"Lurah Lahendong"), situs tetap memakai nama dari `aparat` dan tidak menampilkannya dua kali.
-Konsol browser akan mengingatkan untuk memindahkan nomornya ke tab `aparat` lalu menghapus baris itu.
+### Tab daftar (tab lainnya)
+
+Satu baris = satu data, kolom `id` sebagai pengenal unik.
+
+- **Menambah**: isi baris baru dengan id baru (mis. `W5`).
+- **Menyembunyikan**: kosongkan `id`-nya — baris tidak tampil, datanya tetap tersimpan.
+- **Mengurutkan**: urutan di situs = urutan baris di sheet (tab `aparat`: kolom `urutan`).
+
+### Aparat, bagan, dan kontak
+
+- Satu orang cukup ditulis **sekali**, di tab `aparat`.
+- Kolom **`atasan`** berisi id aparat di atasnya; bagan di halaman Pemerintahan tersusun dari kolom
+  ini. Kosong = puncak bagan. Contoh: Sekretaris `atasan = A1` (Lurah).
+- Isi kolom **`nomor`** bila nomor aparat itu boleh tampil di halaman Kontak.
+- Tab `kontak` untuk nomor **selain aparat**. Kolom `kategori`: `darurat` (polisi, pemadam
+  kebakaran, ambulans) atau `umum` (puskesmas, polsek, dsb.). Kontak tanpa nomor tidak ditampilkan.
+
+### Aturan pengisian
+
+- **Sel kosong = bagian itu disembunyikan** di situs. Situs tidak pernah mengisi data karangan.
+- **Beberapa paragraf/butir dalam satu sel**: pisahkan dengan baris baru (Ctrl+Enter atau
+  Alt+Enter; Mac: Cmd+Enter). Contoh: rute wisata tampil sebagai daftar langkah.
+- **Angka** tanpa pemisah ribuan (`2235`); desimal boleh koma (`7,85`).
+- **Semua sel berformat Teks biasa** — jangan diubah. Tanpa itu Google bisa mengubah isian diam-diam
+  (angka 0 di depan nomor telepon hilang, atau nilai di tab `profil` terbaca kosong).
+- **`id` wisata** jangan diubah: id menjadi alamat halaman detail (`wisata-detail.html?id=W1`)
+  sekaligus penentu fotonya.
+- **`maps_link`**: tautan Google Maps lengkap berawalan `https://`.
+- **Sheet dapat dibaca publik** — jangan simpan NIK, alamat rumah, atau nomor pribadi di tab mana pun.
+
+### Data yang masih contoh
+
+Nilai yang belum ada data resminya ditandai **CONTOH** di kolom `keterangan` dan wajib diganti
+sebelum situs diumumkan:
+
+- Tab `profil`: jam layanan, luas, ketinggian, suhu, batas wilayah, sejarah, legenda.
+- Tab `layanan`: syarat, alur, waktu, dan biaya setiap surat.
+- Masih kosong: telepon & email kantor, nama kepala lingkungan, nomor aparat, UMKM.
 
 ### Menyambungkan sheet ke situs
 
-1. Di Google Sheets: **Bagikan → Akses umum → Siapa saja yang memiliki link → Pelihat**.
-2. Salin ID dari tautan sheet — bagian di antara `/d/` dan `/edit`:
-   `https://docs.google.com/spreadsheets/d/`**`11f8D-qzWt…`**`/edit`
-3. Tempel ke [`assets/js/data.js`](assets/js/data.js):
+1. Buat spreadsheet dari [`data/template-data-lahendong.xlsx`](data/template-data-lahendong.xlsx):
+   **File → Impor → Upload → Ganti spreadsheet**. (Mengimpor ke spreadsheet yang sudah ada
+   mempertahankan ID dan tautannya.)
+2. **Bagikan → Akses umum → Siapa saja yang memiliki link → Pelihat**.
+3. Salin ID dari tautan sheet — bagian di antara `/d/` dan `/edit` — ke
+   [`assets/js/data.js`](assets/js/data.js):
 
    ```js
    const PAKAI_DUMMY = false;
@@ -55,73 +93,60 @@ Konsol browser akan mengingatkan untuk memindahkan nomornya ke tab `aparat` lalu
    ```
 
 Situs mencari setiap tab berdasarkan namanya, jadi hanya ID ini yang perlu diisi.
-
-Membuat sheet baru dari nol? Impor [`data/template-data-lahendong.xlsx`](data/template-data-lahendong.xlsx)
-lewat **File → Impor → Upload → Ganti spreadsheet**.
-
-### Aturan pengisian
-
-- **Baris tanpa `id`** (tab `statistik`: tanpa `kunci`) tidak ditampilkan. Kosongkan id untuk
-  menyembunyikan data sementara tanpa menghapusnya.
-- **Satu kolom, satu jenis isi.** Kolom angka jangan diisi teks seperti `-` atau `belum ada` —
-  kosongkan saja. Google menentukan jenis kolom dari mayoritas isinya, dan sel yang berbeda jenis
-  terbaca kosong.
-- **Angka** ditulis tanpa pemisah ribuan: `3241`, bukan `3.241`. Desimal boleh pakai koma: `7,85`.
-- **Nomor telepon** ditulis dengan tanda hubung (`0812-3456-7801`) agar angka 0 di depan tidak hilang.
-- **`foto`**: nama file di folder `img/` (mis. `danau-linow.webp`) atau URL gambar lengkap
-  berawalan `https://`. Kosong = gambar pengganti.
-- **`maps_link`**: tautan Google Maps lengkap berawalan `https://`; tautan lain diabaikan.
-- **`id` wisata** menjadi alamat halaman detail (`wisata-detail.html?id=W1`) — jangan diubah setelah
-  tautannya dibagikan.
+Untuk kembali memakai data contoh (tanpa sheet), ubah `PAKAI_DUMMY` menjadi `true`.
 
 ### Jika data tidak muncul
 
-Situs akan menampilkan "Data … belum bisa dimuat". Buka konsol browser (F12 → Console); pesan
-berawalan `[data]` menyebut penyebabnya:
+Situs menampilkan "… belum bisa dimuat". Buka konsol browser (F12 → Console); pesan berawalan
+`[data]` menyebut penyebabnya:
 
 | Pesan | Artinya |
 |---|---|
 | `permintaan gagal` / `yang diterima halaman HTML` | Akses sheet bukan "Siapa saja yang memiliki link", atau tidak ada koneksi |
-| `tab "…" tidak ditemukan` | Nama tab diubah, atau kolom pertamanya (`id` / `kunci`) hilang |
-| `tidak punya kolom: …` | Nama kolom di baris judul berubah — samakan dengan tabel di atas |
-| `server membalas HTTP 404` | ID spreadsheet salah ketik, atau sheet sudah dihapus |
+| `tab "…" tidak ditemukan` | Nama tab diubah atau belum ada, atau kolom pertamanya (`id` / `kunci`) hilang |
+| `tidak punya kolom: …` | Nama kolom di baris judul berubah — samakan dengan template |
+| `atasan "…" tidak ditemukan` | Kolom atasan di tab `aparat` berisi id yang tidak ada |
 | `jabatan "…" sudah ada di tab "aparat"` | Baris ganda di tab `kontak` — pindahkan nomornya ke tab `aparat`, lalu hapus barisnya |
-
-Untuk kembali memakai data contoh, ubah `PAKAI_DUMMY` menjadi `true`.
+| `server membalas HTTP 404` | ID spreadsheet salah ketik, atau sheet sudah dihapus |
 
 ## Struktur kode
 
 ```
 ├── *.html               satu berkas per halaman — hanya markup, tanpa logika
-├── assets/css/style.css sistem desain: palet, tipografi, komponen
+├── assets/css/style.css sistem desain: palet, tipografi, komponen, bagan
 ├── assets/js/
-│   ├── data.js          pengaturan (PAKAI_DUMMY, ID_SPREADSHEET) + ambilData()
-│   ├── data-contoh.js   data contoh untuk PAKAI_DUMMY = true
-│   ├── ui.js            kerangka situs: header, footer, breadcrumb, animasi, status memuat
-│   ├── komponen.js      potongan yang dipakai lebih dari satu halaman + isiDariData()
+│   ├── data.js          pengaturan (PAKAI_DUMMY, ID_SPREADSHEET), SKEMA tab, ambilData()
+│   ├── data-contoh.js   data awal: isi template spreadsheet & data saat PAKAI_DUMMY = true
+│   ├── ui.js            kerangka: header, footer, breadcrumb, info kantor, animasi, status memuat
+│   ├── komponen.js      FOTO statis, isiDariData(), potongan HTML bersama
 │   └── halaman/         logika per halaman (index.html → beranda.js)
-├── img/                 gambar (placeholder.webp dipakai bila foto kosong/gagal dimuat)
+├── img/                 gambar statis
 └── data/                template spreadsheet
 ```
 
 Setiap halaman memuat skrip dengan urutan yang sama:
 `data.js` → `data-contoh.js` → `ui.js` → `komponen.js` → `halaman/<nama>.js`.
 
-**Menambah blok data baru** cukup satu panggilan `isiDariData()`. Fungsi ini menampilkan
-"Memuat data…", mengambil tab, merender, lalu menangani kondisi kosong atau gagal, termasuk bila
-wadahnya `<tbody>`:
+**Menambah kolom atau tab**: tambahkan di `SKEMA` ([`data.js`](assets/js/data.js)) dan di
+[`data-contoh.js`](assets/js/data-contoh.js), lalu buat ulang template. Kolom baru yang belum ada
+di sheet terbaca kosong, jadi situs tetap berjalan.
+
+**Menambah blok data** cukup satu panggilan `isiDariData()` — fungsi ini menampilkan "Memuat data…",
+mengambil tab, merender, dan menangani kondisi kosong atau gagal (termasuk bila wadahnya `<tbody>`):
 
 ```js
-isiDariData(document.getElementById("grid-umkm"), "umkm",
-  (data) => data.map(kartuUmkm).join(""),
-  { kosong: "Belum ada data UMKM.", gagal: "Data UMKM belum bisa dimuat saat ini." }
+isiDariData(document.getElementById("daftar-potensi"), "potensi",
+  (data) => data.map(blokPotensi).join(""),
+  { kosong: "Data potensi belum tersedia.", gagal: "Data potensi belum bisa dimuat saat ini." }
 );
 ```
+
+**Informasi kantor** di elemen mana pun cukup ditandai `data-profil="kunci"` (mis.
+`<span data-profil="jam_layanan">`); `ui.js` mengisinya dari tab `profil` dan menyembunyikan
+wadah `[data-wadah-profil]` bila nilainya kosong.
 
 Nilai dari `ambilData()` sudah di-escape, jadi aman disisipkan ke HTML. Untuk konteks non-HTML
 (judul tab, label grafik), pakai `teksPolos()`.
 
-**Kelas CSS bersama:** `.wadah` (lebar konten + tepi layar), `.seksi` (jarak antarseksi),
-`.label-kecil` (label huruf besar kecil), `.kartu`, `.tabel`, `.angka`, `.eyebrow`, `.judul-*`.
 Untuk pratinjau lokal, jalankan server sederhana di folder repo, mis. `python3 -m http.server`,
 lalu buka `http://localhost:8000`.

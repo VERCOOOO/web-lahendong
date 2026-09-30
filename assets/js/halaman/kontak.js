@@ -1,30 +1,44 @@
-/* Kontak (kontak.html): narahubung = aparat yang punya nomor + kontak non-aparat. */
+/* Kontak (kontak.html): narahubung dikelompokkan menjadi darurat, aparat, dan layanan umum.
+   Sumber: tab kontak (kolom kategori) & aparat (yang nomornya diisi).
+   Informasi kantor di kolom kiri diisi otomatis oleh ui.js dari tab profil. */
+
+/* Ikon untuk nomor darurat yang dikenal; nomor lain memakai ikon telepon. */
+const IKON_DARURAT = { 110: "shield", 112: "siren", 113: "flame", 118: "ambulance", 119: "ambulance" };
 
 document.addEventListener("DOMContentLoaded", () => {
-  isiDariData(document.getElementById("daftar-kontak"), ["aparat", "kontak"],
-    ([aparat, kontak]) => gabungNarahubung(aparat, kontak).map(kartuNarahubung).join(""),
-    { kosong: "Belum ada data kontak.", gagal: "Data kontak belum bisa dimuat saat ini." }
-  );
+  isiDariData(document.getElementById("daftar-narahubung"), ["aparat", "kontak"], ([aparat, kontak]) => {
+    const { darurat, dariAparat, umum } = kelompokkanNarahubung(aparat, kontak);
+    return [
+      grup("Darurat", darurat.map(kartuDarurat), "sm:grid-cols-3"),
+      grup("Aparat kelurahan", dariAparat.map(kartuNarahubung)),
+      grup("Layanan umum", umum.map(kartuNarahubung)),
+    ].join("");
+  }, { kosong: "Belum ada data kontak.", gagal: "Data kontak belum bisa dimuat saat ini." });
 });
 
 /**
  * Identitas aparat hanya bersumber dari tab "aparat", sehingga Lurah atau
- * Sekretaris cukup diubah di satu tempat.
+ * Sekretaris cukup diubah di satu tempat. Baris tanpa nomor tidak ditampilkan.
  *
- * Masa transisi: baris di tab "kontak" yang perannya sama dengan jabatan aparat
- * dianggap orang yang sama. Namanya tetap diambil dari tab aparat; nomornya hanya
- * dipakai bila aparat itu belum punya nomor. Admin diingatkan lewat console.
+ * Baris "umum" di tab kontak yang perannya sama dengan jabatan aparat dianggap
+ * orang yang sama: namanya diambil dari tab aparat, nomornya hanya dipakai bila
+ * aparat itu belum punya nomor. Admin diingatkan lewat console.
  */
-function gabungNarahubung(aparat, kontak) {
-  const kunci = (jabatan) => teksPolos(jabatan).trim().toLowerCase();
+function kelompokkanNarahubung(aparat, kontak) {
+  const kunci = (teks) => teksPolos(teks).trim().toLowerCase();
   const aparatPerJabatan = new Map(aparat.filter((a) => a.jabatan).map((a) => [kunci(a.jabatan), a]));
   const nomorLama = new Map();
-  const bukanAparat = [];
+  const darurat = [];
+  const umum = [];
 
   kontak.forEach((baris) => {
+    if (kunci(baris.kategori) === "darurat") {
+      darurat.push(baris);
+      return;
+    }
     const pemilik = baris.peran && aparatPerJabatan.get(kunci(baris.peran));
     if (!pemilik) {
-      bukanAparat.push(baris);
+      umum.push(baris);
       return;
     }
     console.warn(`[data] Tab "kontak" baris ${baris.id}: jabatan "${teksPolos(baris.peran)}" sudah ada di tab "aparat". ` +
@@ -33,15 +47,42 @@ function gabungNarahubung(aparat, kontak) {
   });
 
   const dariAparat = urutkanAparat(aparat)
-    .map((a) => ({ nama: a.nama, peran: a.jabatan, foto: a.foto, nomor: a.nomor || nomorLama.get(a) || "" }))
-    .filter((orang) => orang.nomor);
+    .map((a) => ({ id: a.id, nama: a.nama, peran: a.jabatan, nomor: a.nomor || nomorLama.get(a) || "" }));
 
-  return [...dariAparat, ...bukanAparat];
+  const adaNomor = (orang) => orang.nomor;
+  return { darurat: darurat.filter(adaNomor), dariAparat: dariAparat.filter(adaNomor), umum: umum.filter(adaNomor) };
+}
+
+/** Satu kelompok berjudul; kelompok tanpa isi tidak ditampilkan. */
+function grup(judul, kartu, kolom = "sm:grid-cols-2") {
+  if (!kartu.length) return "";
+  return `
+    <section>
+      <h3 class="label-kecil mb-4">${judul}</h3>
+      <div class="grid ${kolom} gap-4 md:gap-5">${kartu.join("")}</div>
+    </section>
+  `;
+}
+
+function kartuDarurat(item) {
+  const ikon = IKON_DARURAT[teksPolos(item.nomor).trim()] || "phone";
+  return `
+    <a href="${hrefTelepon(item.nomor)}" class="kartu kartu-hover p-5 flex items-center gap-4">
+      <span class="w-11 h-11 rounded-full bg-[var(--bg)] border border-[var(--line)] flex items-center justify-center shrink-0">
+        <i data-lucide="${ikon}" class="w-5 h-5 text-[var(--danger)]"></i>
+      </span>
+      <span class="min-w-0">
+        <span class="block font-judul text-[26px] leading-none text-[var(--ink)]">${item.nomor}</span>
+        <span class="block text-sm font-semibold mt-1.5">${item.nama}</span>
+        <span class="block text-[12px] text-[var(--muted)]">${item.peran}</span>
+      </span>
+    </a>
+  `;
 }
 
 function kartuNarahubung(orang) {
   return `
-    <div class="kartu kartu-hover reveal p-5 flex items-start gap-4">
+    <div class="kartu kartu-hover p-5 flex items-start gap-4">
       ${visualOrang(orang, "w-12 h-12 rounded-[4px] text-[16px] border border-[var(--line)] shrink-0")}
       <div class="min-w-0">
         <p class="font-judul text-[16px] leading-snug">${namaOrang(orang.nama)}</p>

@@ -37,7 +37,7 @@
       </div>
     </section>
 
-    <!-- 01 · SEJARAH -->
+    <!-- 01 · SEJARAH — tab profil, kunci "sejarah" -->
     <section class="wadah seksi">
       <div class="grid md:grid-cols-12 gap-8 md:gap-12">
         <div class="reveal md:col-span-4">
@@ -45,29 +45,11 @@
           <span class="eyebrow">Sejarah</span>
           <h2 class="judul-seksi mt-4">Asal usul Lahendong</h2>
         </div>
-        <div class="reveal md:col-span-8">
-          <p class="lead">
-            Lahendong tumbuh dari perkampungan kecil di sekitar sumber panas bumi alami
-            di kaki pegunungan Tomohon.
-          </p>
-          <div class="prosa mt-6">
-            <p>
-              Nama "Lahendong" dipercaya masyarakat setempat berkaitan dengan uap panas bumi
-              yang kerap muncul di kawasan ini sejak lama. Kemunculan uap dari perut bumi
-              menjadi penanda yang melekat pada identitas wilayah.
-            </p>
-            <p>
-              Seiring waktu, wilayah ini berkembang menjadi salah satu kelurahan definitif
-              di Kecamatan Tomohon Selatan. Mata pencaharian warga bertumpu pada pertanian,
-              usaha mikro rumahan, serta pariwisata yang tumbuh di sekitar Danau Linow dan
-              kawasan panas bumi.
-            </p>
-          </div>
-        </div>
+        <div id="sejarah" class="reveal md:col-span-8 prosa"><!-- diisi oleh JS --></div>
       </div>
     </section>
 
-    <!-- 02 · GEOGRAFI -->
+    <!-- 02 · GEOGRAFI — tab profil (luas, ketinggian, suhu) & statistik (jumlah lingkungan) -->
     <section class="bg-[var(--surface)] border-y border-[var(--line)]">
       <div class="wadah seksi">
         <div class="reveal mb-10 md:mb-12 grid md:grid-cols-12 gap-6">
@@ -78,18 +60,16 @@
           </div>
           <div class="md:col-span-6 md:self-end">
             <p class="text-[var(--muted)] leading-[1.65]">
-              Berada di dataran tinggi dekat kawasan vulkanik aktif, Lahendong memiliki udara
-              sejuk sepanjang tahun dengan topografi berbukit.
+              Lahendong berada di dataran tinggi Kota Tomohon, di kawasan vulkanik yang kaya
+              sumber panas bumi.
             </p>
           </div>
         </div>
-        <div id="grid-geografi" class="reveal deret-statistik grid grid-cols-2 lg:grid-cols-4 pt-2">
-          <!-- diisi oleh JS -->
-        </div>
+        <div id="grid-geografi" class="reveal deret-statistik grid grid-cols-2 lg:grid-cols-4 pt-2"><!-- diisi oleh JS --></div>
       </div>
     </section>
 
-    <!-- 03 · BATAS WILAYAH -->
+    <!-- 03 · BATAS WILAYAH — tab profil, kunci batas_utara/selatan/timur/barat -->
     <section class="wadah seksi">
       <div class="grid md:grid-cols-12 gap-8 md:gap-12">
         <div class="reveal md:col-span-4">
@@ -102,18 +82,13 @@
             <thead>
               <tr><th>Arah</th><th>Berbatasan dengan</th></tr>
             </thead>
-            <tbody>
-              <tr><td>Utara</td><td>Kelurahan Kakaskasen</td></tr>
-              <tr><td>Selatan</td><td>Kelurahan Kumelembuai</td></tr>
-              <tr><td>Timur</td><td>Kecamatan Tondano Selatan</td></tr>
-              <tr><td>Barat</td><td>Kelurahan Walian</td></tr>
-            </tbody>
+            <tbody id="tabel-batas"></tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- 04 · PETA -->
+    <!-- 04 · PETA — peta statis (img/peta-wilayah.png) + peta interaktif Google -->
     <section class="bg-[var(--surface)] border-y border-[var(--line)]">
       <div class="wadah seksi">
         <div class="reveal mb-10">
@@ -121,13 +96,26 @@
           <span class="eyebrow">Lokasi</span>
           <h2 class="judul-seksi garis-aksen mt-4">Peta Kelurahan Lahendong</h2>
         </div>
-        <div class="reveal border border-[var(--line)] rounded-[6px] overflow-hidden aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9]">
-          <iframe
-            src="https://www.google.com/maps?q=Lahendong,+Tomohon+Selatan,+Sulawesi+Utara&output=embed"
-            class="w-full h-full" style="border:0;" loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-            title="Peta lokasi Kelurahan Lahendong"></iframe>
-        </div>
+
+        <!-- Letakkan peta wilayah di img/peta-wilayah.png; bila belum ada, figur ini dihapus otomatis. -->
+        <figure class="reveal mb-10">
+          <div class="border border-[var(--line)] rounded-[6px] overflow-hidden bg-[var(--bg)]">
+            <img src="img/peta-wilayah.png" alt="Peta wilayah Kelurahan Lahendong" class="w-full h-auto"
+                 onerror="this.closest('figure').remove()" />
+          </div>
+          <figcaption class="label-kecil mt-3">Peta wilayah Kelurahan Lahendong</figcaption>
+        </figure>
+
+        <figure class="reveal">
+          <div class="border border-[var(--line)] rounded-[6px] overflow-hidden aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9] bg-[var(--bg)]">
+            <iframe
+              src="https://maps.google.com/maps?q=Lahendong%2C%20Tomohon%20Selatan%2C%20Kota%20Tomohon&t=&z=14&ie=UTF8&iwloc=&output=embed"
+              class="w-full h-full" style="border:0;" loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title="Peta interaktif lokasi Kelurahan Lahendong"></iframe>
+          </div>
+          <figcaption class="label-kecil mt-3">Peta interaktif — geser dan perbesar untuk menjelajah</figcaption>
+        </figure>
       </div>
     </section>
   </main>

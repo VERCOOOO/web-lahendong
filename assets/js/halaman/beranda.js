@@ -1,19 +1,22 @@
-/* Beranda (index.html): fakta ringkas, pimpinan kelurahan, destinasi wisata. */
+/* Beranda (index.html): fakta ringkas, pimpinan, destinasi wisata, potensi.
+   Sumber: tab statistik & profil (fakta), aparat (pimpinan), wisata, potensi. */
 
 const FAKTA_BERANDA = [
-  { kunci: "jumlah_penduduk", label: "Jumlah penduduk", satuan: "jiwa" },
-  { kunci: "jumlah_kk", label: "Kepala keluarga", satuan: "KK" },
-  { kunci: "jumlah_lingkungan", label: "Lingkungan" },
-  { kunci: "luas_wilayah", label: "Luas wilayah", satuan: "km²" },
+  { tab: "statistik", kunci: "jumlah_penduduk", label: "Jumlah penduduk", satuan: "jiwa" },
+  { tab: "statistik", kunci: "jumlah_kk", label: "Kepala keluarga", satuan: "KK" },
+  { tab: "statistik", kunci: "jumlah_lingkungan", label: "Lingkungan" },
+  { tab: "profil", kunci: "luas_wilayah", label: "Luas wilayah", satuan: "km²" },
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
-  isiDariData(document.getElementById("deret-statistik"), "statistik", (data) =>
-    FAKTA_BERANDA
-      .filter((f) => nilaiStatistik(data, f.kunci) !== null)
-      .map((f) => selStatistik({ ...f, nilai: formatAngka(nilaiStatistik(data, f.kunci)) }))
-      .join("")
-  );
+  isiDariData(document.getElementById("deret-statistik"), ["statistik", "profil"], ([statistik, profil]) => {
+    const sumber = { statistik, profil };
+    return FAKTA_BERANDA
+      .map((f) => ({ ...f, nilai: nilaiKunci(sumber[f.tab], f.kunci) }))
+      .filter((f) => f.nilai)
+      .map((f) => selStatistik({ ...f, nilai: formatAngka(f.nilai) }))
+      .join("");
+  });
 
   // Pelengkap: bila gagal atau kosong, bloknya cukup tidak ditampilkan.
   isiDariData(document.getElementById("pimpinan"), "aparat", renderPimpinan, { kosong: null, gagal: null });
@@ -21,6 +24,11 @@ document.addEventListener("DOMContentLoaded", () => {
   isiDariData(document.getElementById("grid-wisata"), "wisata",
     (data) => data.slice(0, 4).map((item, i) => kartuWisata(item, i)).join(""),
     { gagal: "Daftar destinasi belum bisa dimuat saat ini." }
+  );
+
+  isiDariData(document.getElementById("daftar-potensi"), "potensi",
+    (data) => data.map(ringkasanPotensi).join(""),
+    { kosong: "Data potensi belum tersedia.", gagal: "Data potensi belum bisa dimuat saat ini." }
   );
 });
 
@@ -36,5 +44,17 @@ function renderPimpinan(aparat) {
         <span class="block text-[13px] text-[var(--muted)] mt-1">${lurah.jabatan}</span>
       </span>
     </a>
+  `;
+}
+
+function ringkasanPotensi(item, i) {
+  return `
+    <div class="flex gap-5 md:gap-8 py-7 border-b border-[var(--line)]">
+      <span class="no-seksi shrink-0 mt-1.5">${nomorUrut(i)}</span>
+      <div>
+        <h3 class="judul-kartu">${item.judul}</h3>
+        <p class="text-[var(--muted)] mt-2 max-w-[520px]">${kalimatPertama(item.deskripsi)}</p>
+      </div>
+    </div>
   `;
 }

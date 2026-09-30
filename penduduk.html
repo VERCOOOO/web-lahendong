@@ -31,9 +31,9 @@
         </div>
         <div class="md:col-span-5 md:self-end">
           <p class="text-[var(--muted)] leading-[1.65]">
-            Statistik kependudukan Kelurahan Lahendong berdasarkan data terbaru dari
-            delapan lingkungan.
+            Statistik kependudukan Kelurahan Lahendong, lengkap dengan rincian per lingkungan.
           </p>
+          <p id="sumber-data" class="label-kecil mt-4"><!-- diisi oleh JS: tahun & sumber data --></p>
         </div>
       </div>
     </section>
@@ -96,7 +96,7 @@
         </div>
 
         <div class="reveal gulir-x border-t border-[var(--line)]">
-          <table class="tabel min-w-[560px]">
+          <table class="tabel min-w-[720px]">
             <thead>
               <tr>
                 <th>Lingkungan</th>
@@ -104,6 +104,8 @@
                 <th class="num">Jiwa</th>
                 <th class="num">Laki-laki</th>
                 <th class="num">Perempuan</th>
+                <th class="num">Lansia</th>
+                <th class="num">Rumah</th>
               </tr>
             </thead>
             <tbody id="tabel-lingkungan"></tbody>

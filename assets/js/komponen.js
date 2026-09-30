@@ -5,6 +5,38 @@
    ========================================================================== */
 
 /* ---------------------------------------------------------------------- */
+/* Foto statis                                                             */
+/* ---------------------------------------------------------------------- */
+
+/* Pada iterasi ini foto TIDAK diatur dari spreadsheet. Letakkan file di img/,
+   lalu daftarkan di sini berdasarkan id baris di sheet (mis. W1 = baris W1 di
+   tab wisata). Id yang tidak terdaftar memakai gambar pengganti; aparat tanpa
+   foto memakai monogram inisial. */
+const FOTO = {
+  wisata: {
+    W1: "wisata-danau-linow.webp",
+    W2: "wisata-hutan-pinus.webp",
+    W3: "wisata-mahwatu.webp",
+    W4: "wisata-toulangkow.webp",
+  },
+  umkm: {},
+  aparat: {},
+};
+
+const FOTO_PENGGANTI = "img/placeholder.webp";
+
+/** Path foto untuk satu baris, atau null bila belum terdaftar. */
+function fotoUntuk(tab, id) {
+  const berkas = FOTO[tab]?.[teksPolos(id)];
+  return berkas ? "img/" + berkas : null;
+}
+
+/** <img> berfoto statis; kembali ke gambar pengganti bila file tidak ada. */
+function gambar(tab, item, kelas = "") {
+  return `<img src="${fotoUntuk(tab, item.id) || FOTO_PENGGANTI}" alt="${item.nama}" class="${kelas}" loading="lazy" onerror="this.onerror=null;this.src='${FOTO_PENGGANTI}'" />`;
+}
+
+/* ---------------------------------------------------------------------- */
 /* Pola baku blok data                                                     */
 /* ---------------------------------------------------------------------- */
 
@@ -45,8 +77,13 @@ async function isiDariData(wadah, tab, render, opsi = {}) {
 }
 
 /* ---------------------------------------------------------------------- */
-/* Format                                                                  */
+/* Membaca nilai                                                           */
 /* ---------------------------------------------------------------------- */
+
+/** Nilai dari tab kunci-nilai (profil, statistik), atau "" bila tidak ada. */
+function nilaiKunci(data, kunci) {
+  return data.find((row) => row.kunci === kunci)?.nilai ?? "";
+}
 
 /** Format angka gaya Indonesia: 3241 → "3.241", 7.85 → "7,85". Bukan angka → apa adanya. */
 function formatAngka(nilai) {
@@ -64,9 +101,38 @@ function hrefTelepon(nomor) {
   return "tel:" + teksPolos(nomor).replace(/[^0-9+]/g, "");
 }
 
-/** Nilai kolom "statistik" berdasarkan kuncinya, atau null bila tidak ada. */
-function nilaiStatistik(data, kunci) {
-  return data.find((row) => row.kunci === kunci)?.nilai ?? null;
+/* ---------------------------------------------------------------------- */
+/* Teks bertanda baris baru — satu baris di sel = satu paragraf/butir      */
+/* ---------------------------------------------------------------------- */
+
+function barisDari(teks) {
+  return String(teks || "").split(/\n+/).map((b) => b.trim()).filter(Boolean);
+}
+
+/** Tiap baris menjadi <p>; bila lead = true, paragraf pertama memakai gaya .lead. */
+function paragraf(teks, { lead = false } = {}) {
+  return barisDari(teks)
+    .map((b, i) => `<p${lead && i === 0 ? ' class="lead"' : ""}>${b}</p>`)
+    .join("");
+}
+
+/** Satu baris → teks biasa; beberapa baris → dipisah <br>. */
+function berbaris(teks) {
+  return barisDari(teks).join("<br>");
+}
+
+/** Satu baris → teks biasa; beberapa baris → daftar berbutir. */
+function daftarAtauTeks(teks) {
+  const baris = barisDari(teks);
+  if (baris.length <= 1) return baris[0] || "";
+  return `<ul class="daftar-baris">${baris.map((b) => `<li>${b}</li>`).join("")}</ul>`;
+}
+
+/** Kalimat pertama sebuah teks, untuk ringkasan. */
+function kalimatPertama(teks) {
+  const t = barisDari(teks)[0] || "";
+  const akhir = t.search(/[.!?](\s|$)/);
+  return akhir === -1 ? t : t.slice(0, akhir + 1);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -87,9 +153,7 @@ function selStatistik({ nilai, satuan = "", label }) {
 function kartuWisata(item, i, { denganTautan = false } = {}) {
   return `
     <a href="wisata-detail.html?id=${encodeURIComponent(teksPolos(item.id))}" class="kartu reveal block overflow-hidden">
-      <div class="bingkai-foto aspect-[4/3]">
-        <img src="${urlFoto(item.foto)}" alt="${item.nama}" loading="lazy" onerror="this.src='img/placeholder.webp'" />
-      </div>
+      <div class="bingkai-foto aspect-[4/3]">${gambar("wisata", item)}</div>
       <div class="p-5">
         <p class="no-seksi">${nomorUrut(i)}</p>
         <h3 class="judul-kartu mt-2">${item.nama}</h3>
@@ -115,23 +179,24 @@ function urutkanAparat(data) {
 
 /** Nama untuk ditampilkan; sel nama yang kosong tidak dibiarkan tampil kosong. */
 function namaOrang(nama) {
-  return nama ? nama : `<span class="text-[var(--muted)] font-normal">Nama belum tersedia</span>`;
+  return nama || `<span class="text-[var(--muted)] font-normal">Nama belum tersedia</span>`;
 }
 
 /**
- * Foto orang bila ada, selain itu monogram inisial (lebih jujur daripada foto palsu).
- * @param {object} orang  baris berkolom nama & foto
+ * Foto statis orang bila terdaftar di FOTO.aparat, selain itu monogram inisial.
+ * @param {object} orang  baris berkolom id & nama
  * @param {string} kelas  kelas ukuran/bentuk, mis. "aspect-[4/3]" atau "w-14 h-14 rounded-full"
  */
 function visualOrang(orang, kelas) {
-  if (orang.foto) {
-    return `<img src="${urlFoto(orang.foto)}" alt="${orang.nama}" class="${kelas} object-cover" loading="lazy" onerror="this.src='img/placeholder.webp'" />`;
+  const foto = orang.id && fotoUntuk("aparat", orang.id);
+  if (foto) {
+    return `<img src="${foto}" alt="${orang.nama}" class="${kelas} object-cover" loading="lazy" />`;
   }
   const isi = orang.nama ? inisial(orang.nama) : '<i data-lucide="user-round" class="w-1/3 h-1/3"></i>';
   return `<span class="monogram ${kelas}" aria-hidden="true">${isi}</span>`;
 }
 
-/** Inisial nama untuk monogram, melewati gelar: "Raymon S. Londok S.T" → "RL". */
+/** Inisial nama untuk monogram, melewati gelar: "Reymon Stive Londok, S.T" → "RL". */
 function inisial(nama) {
   const kata = teksPolos(nama)
     .split(",")[0] // gelar di belakang koma: "Nama, S.STP"

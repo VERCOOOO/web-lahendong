@@ -37,50 +37,52 @@
       </div>
     </section>
 
-    <!-- 01 · APARAT -->
+    <!-- 01 · BAGAN — tab aparat (kolom atasan) -->
     <section class="wadah seksi">
-      <div class="reveal mb-10 md:mb-12">
-        <p class="no-seksi mb-3">01</p>
-        <span class="eyebrow">Struktur Organisasi</span>
-        <h2 class="judul-seksi garis-aksen mt-4">Aparat Kelurahan</h2>
+      <div class="reveal mb-10 md:mb-12 grid md:grid-cols-12 gap-6">
+        <div class="md:col-span-6">
+          <p class="no-seksi mb-3">01</p>
+          <span class="eyebrow">Struktur Organisasi</span>
+          <h2 class="judul-seksi garis-aksen mt-4">Bagan Pemerintahan Kelurahan</h2>
+        </div>
+        <div class="md:col-span-6 md:self-end">
+          <p class="text-[var(--muted)] leading-[1.65]">
+            Susunan aparat Kelurahan Lahendong beserta garis koordinasinya.
+          </p>
+        </div>
       </div>
-      <div id="grid-aparat" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
-        <!-- diisi oleh JS -->
+      <div id="bagan" class="reveal bagan"><!-- diisi oleh JS --></div>
+    </section>
+
+    <!-- 02 · PROFIL APARAT — tab aparat -->
+    <section class="bg-[var(--surface)] border-y border-[var(--line)]">
+      <div class="wadah seksi">
+        <div class="reveal mb-10 md:mb-12">
+          <p class="no-seksi mb-3">02</p>
+          <span class="eyebrow">Aparat Kelurahan</span>
+          <h2 class="judul-seksi garis-aksen mt-4">Profil Aparat</h2>
+        </div>
+        <div id="grid-aparat" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"><!-- diisi oleh JS --></div>
       </div>
     </section>
 
-    <!-- 02 · LINGKUNGAN -->
-    <section class="bg-[var(--surface)] border-y border-[var(--line)]">
-      <div class="wadah seksi">
-        <div class="reveal mb-10 md:mb-12 grid md:grid-cols-12 gap-6">
-          <div class="md:col-span-6">
-            <p class="no-seksi mb-3">02</p>
-            <span class="eyebrow">Wilayah</span>
-            <h2 class="judul-seksi garis-aksen mt-4">Data Delapan Lingkungan</h2>
-          </div>
-          <div class="md:col-span-6 md:self-end">
-            <p class="text-[var(--muted)] leading-[1.65]">
-              Rincian kepala lingkungan beserta jumlah kepala keluarga dan jiwa per lingkungan.
-            </p>
-          </div>
+    <!-- 03 · LINGKUNGAN — tab lingkungan (kolom nama & kepala) -->
+    <section class="wadah seksi">
+      <div class="reveal mb-10 md:mb-12 grid md:grid-cols-12 gap-6">
+        <div class="md:col-span-6">
+          <p class="no-seksi mb-3">03</p>
+          <span class="eyebrow">Wilayah</span>
+          <h2 class="judul-seksi garis-aksen mt-4">Lingkungan &amp; Kepala Lingkungan</h2>
         </div>
-
-        <div class="reveal gulir-x border-t border-[var(--line)]">
-          <table class="tabel min-w-[680px]">
-            <thead>
-              <tr>
-                <th>Lingkungan</th>
-                <th>Kepala Lingkungan</th>
-                <th class="num">KK</th>
-                <th class="num">Jiwa</th>
-                <th class="num">Laki-laki</th>
-                <th class="num">Perempuan</th>
-              </tr>
-            </thead>
-            <tbody id="tabel-lingkungan"></tbody>
-          </table>
+        <div class="md:col-span-6 md:self-end">
+          <p class="text-[var(--muted)] leading-[1.65]">
+            Kelurahan Lahendong terbagi ke dalam beberapa lingkungan yang masing-masing dipimpin
+            oleh kepala lingkungan. Data kependudukannya ada di halaman
+            <a href="penduduk.html" class="text-[var(--primary)] font-semibold hover:underline">Penduduk</a>.
+          </p>
         </div>
       </div>
+      <div id="grid-lingkungan" class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5"><!-- diisi oleh JS --></div>
     </section>
   </main>
 

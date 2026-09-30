@@ -30,8 +30,8 @@
         </div>
         <div class="md:col-span-5 md:self-end">
           <p class="text-[var(--muted)] leading-[1.65]">
-            Hubungi Kantor Kelurahan Lahendong untuk keperluan administrasi maupun
-            informasi lainnya.
+            Nomor darurat, aparat kelurahan, dan layanan umum di Lahendong, beserta informasi
+            Kantor Kelurahan.
           </p>
         </div>
       </div>
@@ -40,56 +40,57 @@
     <section class="wadah seksi">
       <div class="grid lg:grid-cols-12 gap-10 lg:gap-16">
 
-        <!-- INFO KANTOR -->
+        <!-- 01 · KANTOR — tab profil (alamat_kantor, jam_layanan, telepon_kantor, email).
+             Baris yang nilainya kosong di sheet disembunyikan otomatis oleh ui.js. -->
         <div class="reveal lg:col-span-4">
           <p class="no-seksi mb-3">01</p>
           <span class="eyebrow">Kantor Kelurahan</span>
           <h2 class="judul-seksi mt-4 mb-8">Kunjungi kami</h2>
 
           <div class="border-t border-[var(--line)]">
-            <div class="py-5 border-b border-[var(--line)] flex gap-4">
+            <div class="py-5 border-b border-[var(--line)] flex gap-4" data-wadah-profil>
               <i data-lucide="map-pin" class="w-[18px] h-[18px] text-[var(--primary)] shrink-0 mt-1"></i>
               <div>
                 <p class="label-kecil">Alamat</p>
-                <p class="text-[15px] mt-1 leading-[1.6]">Jl. Raya Lahendong, Kecamatan Tomohon Selatan, Kota Tomohon, Sulawesi Utara</p>
-                <a href="https://maps.google.com/?q=Lahendong,+Tomohon+Selatan,+Sulawesi+Utara" target="_blank" rel="noopener noreferrer"
+                <p class="text-[15px] mt-1 leading-[1.6]" data-profil="alamat_kantor"></p>
+                <a href="https://maps.google.com/?q=Kelurahan+Lahendong+Tomohon" target="_blank" rel="noopener noreferrer"
                    class="inline-flex items-center gap-2 text-sm text-[var(--primary)] font-semibold hover:underline mt-2.5">
                   <i data-lucide="map" class="w-4 h-4"></i> Buka di Google Maps
                 </a>
               </div>
             </div>
-            <div class="py-5 border-b border-[var(--line)] flex gap-4">
+            <div class="py-5 border-b border-[var(--line)] flex gap-4" data-wadah-profil>
               <i data-lucide="clock" class="w-[18px] h-[18px] text-[var(--primary)] shrink-0 mt-1"></i>
               <div>
                 <p class="label-kecil">Jam layanan</p>
-                <p class="text-[15px] mt-1">Senin – Jumat, 08.00 – 15.00 WITA</p>
+                <p class="text-[15px] mt-1" data-profil="jam_layanan"></p>
               </div>
             </div>
-            <div class="py-5 border-b border-[var(--line)] flex gap-4">
+            <div class="py-5 border-b border-[var(--line)] flex gap-4" data-wadah-profil>
               <i data-lucide="phone" class="w-[18px] h-[18px] text-[var(--primary)] shrink-0 mt-1"></i>
               <div>
                 <p class="label-kecil">Telepon kantor</p>
-                <a href="tel:0431654321" class="text-[15px] mt-1 inline-block text-[var(--primary)] font-semibold hover:underline">0431-654321</a>
+                <a class="text-[15px] mt-1 inline-block text-[var(--primary)] font-semibold hover:underline"
+                   data-profil="telepon_kantor" data-profil-tautan="tel"></a>
               </div>
             </div>
-            <div class="py-5 border-b border-[var(--line)] flex gap-4">
+            <div class="py-5 border-b border-[var(--line)] flex gap-4" data-wadah-profil>
               <i data-lucide="mail" class="w-[18px] h-[18px] text-[var(--primary)] shrink-0 mt-1"></i>
               <div class="min-w-0">
                 <p class="label-kecil">Email</p>
-                <a href="mailto:kelurahan.lahendong@tomohonkota.go.id" class="text-[15px] mt-1 inline-block text-[var(--primary)] font-semibold hover:underline break-all">kelurahan.lahendong@tomohonkota.go.id</a>
+                <a class="text-[15px] mt-1 inline-block text-[var(--primary)] font-semibold hover:underline break-all"
+                   data-profil="email" data-profil-tautan="mailto"></a>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- DAFTAR KONTAK -->
+        <!-- 02 · NARAHUBUNG — tab kontak (darurat & umum) + tab aparat (yang nomornya diisi) -->
         <div class="reveal lg:col-span-8">
           <p class="no-seksi mb-3">02</p>
           <span class="eyebrow">Narahubung</span>
           <h2 class="judul-seksi mt-4 mb-8">Kontak penting</h2>
-          <div id="daftar-kontak" class="grid sm:grid-cols-2 gap-5">
-            <!-- diisi oleh JS -->
-          </div>
+          <div id="daftar-narahubung" class="space-y-10"><!-- diisi oleh JS --></div>
         </div>
       </div>
     </section>

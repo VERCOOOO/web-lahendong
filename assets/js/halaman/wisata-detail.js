@@ -1,4 +1,5 @@
-/* Detail wisata (wisata-detail.html?id=W1): mencari destinasi berdasarkan ?id=. */
+/* Detail wisata (wisata-detail.html?id=W1): mencari destinasi berdasarkan ?id=.
+   Sumber: tab wisata. Foto statis dari FOTO.wisata di komponen.js. */
 
 document.addEventListener("DOMContentLoaded", async () => {
   const wadah = document.getElementById("konten-detail");
@@ -50,17 +51,30 @@ function barisInfo(ikon, label, nilai, { terakhir = false } = {}) {
       <i data-lucide="${ikon}" class="w-[18px] h-[18px] text-[var(--primary)] shrink-0 mt-1"></i>
       <div>
         <p class="label-kecil">${label}</p>
-        <p class="text-[15px] mt-1">${nilai}</p>
+        <div class="text-[15px] mt-1 leading-[1.6]">${nilai}</div>
       </div>
     </div>
   `;
+}
+
+/** Baris informasi di kartu samping; baris yang kosong di sheet tidak ditampilkan. */
+function infoKunjungan(item) {
+  const info = [
+    ["clock", "Jam operasional", berbaris(item.jam)],
+    ["ticket", "Tiket masuk", berbaris(item.tiket)],
+    ["layout-grid", "Fasilitas", item.fasilitas],
+    ["sun", "Waktu terbaik", daftarAtauTeks(item.waktu_terbaik)],
+  ].filter(([, , nilai]) => nilai);
+  return info
+    .map(([ikon, label, nilai], i) => barisInfo(ikon, label, nilai, { terakhir: i === info.length - 1 }))
+    .join("");
 }
 
 function tampilanDetail(item) {
   const tautanPeta = escapeHtml(urlAman(teksPolos(item.maps_link)));
   return `
     <section class="relative h-[45vh] max-h-[420px] min-h-[300px] flex items-end overflow-hidden">
-      <img src="${urlFoto(item.foto)}" alt="${item.nama}" class="absolute inset-0 w-full h-full object-cover" onerror="this.src='img/placeholder.webp'" />
+      ${gambar("wisata", item, "absolute inset-0 w-full h-full object-cover")}
       <div class="absolute inset-0 bg-black/35"></div>
       <div class="absolute inset-x-0 bottom-0 h-1/2" style="background:linear-gradient(to top, rgba(0,0,0,.30), transparent);"></div>
       <div class="relative wadah w-full pb-10 md:pb-12">
@@ -76,10 +90,15 @@ function tampilanDetail(item) {
         <div class="lg:col-span-7">
           <span class="eyebrow">Tentang destinasi</span>
           <h2 class="judul-seksi mt-4 mb-5">${item.nama}</h2>
-          <div class="prosa"><p>${item.deskripsi}</p></div>
+          <div class="prosa">${paragraf(item.deskripsi)}</div>
 
-          <h3 class="judul-kartu mt-12 mb-4">Cara menuju lokasi</h3>
-          <div class="prosa"><p>${item.cara_kesana}</p></div>
+          ${item.cara_kesana ? `
+            <h3 class="judul-kartu mt-12 mb-4">Cara menuju lokasi</h3>
+            <div class="prosa">${daftarAtauTeks(item.cara_kesana)}</div>` : ""}
+
+          ${item.pengelola ? `
+            <h3 class="judul-kartu mt-12 mb-4">Pengelola</h3>
+            <div class="prosa">${daftarAtauTeks(item.pengelola)}</div>` : ""}
 
           ${tautanPeta ? `
             <a href="${tautanPeta}" target="_blank" rel="noopener noreferrer" class="tombol tombol-sekunder mt-7">
@@ -90,10 +109,7 @@ function tampilanDetail(item) {
         <aside class="lg:col-span-5">
           <div class="kartu p-6 md:p-7">
             <p class="label-kecil pb-4 border-b border-[var(--line)]">Informasi kunjungan</p>
-            ${barisInfo("clock", "Jam operasional", item.jam)}
-            ${barisInfo("ticket", "Tiket masuk", item.tiket)}
-            ${barisInfo("layout-grid", "Fasilitas", item.fasilitas)}
-            ${barisInfo("sun", "Waktu terbaik", item.waktu_terbaik, { terakhir: true })}
+            ${infoKunjungan(item)}
           </div>
         </aside>
       </div>

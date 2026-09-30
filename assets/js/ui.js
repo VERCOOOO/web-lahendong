@@ -16,12 +16,11 @@ const NAV_LINKS = [
   { href: "kontak.html", label: "Kontak" },
 ];
 
-const JAM_LAYANAN = "Senin – Jumat, 08.00 – 15.00 WITA";
-
 document.addEventListener("DOMContentLoaded", () => {
   renderHeader();
   renderFooter();
   isiRemah();
+  isiInfoKantor();
   segarkanTampilan();
 });
 
@@ -90,7 +89,7 @@ function renderHeader() {
           <span class="truncate">Situs resmi Kelurahan Lahendong, Kota Tomohon</span>
         </p>
         <div class="hidden md:flex items-center gap-5 shrink-0">
-          <span class="flex items-center gap-1.5"><i data-lucide="clock" class="w-3.5 h-3.5 text-white/60"></i>${JAM_LAYANAN}</span>
+          <span class="flex items-center gap-1.5" data-wadah-profil><i data-lucide="clock" class="w-3.5 h-3.5 text-white/60"></i><span data-profil="jam_layanan"></span></span>
           <a href="kontak.html" class="flex items-center gap-1.5 hover:text-white"><i data-lucide="phone" class="w-3.5 h-3.5 text-white/60"></i>Hubungi kami</a>
         </div>
       </div>
@@ -188,17 +187,17 @@ function renderFooter() {
           <div class="md:col-span-4">
             <h4 class="label-kecil text-white/60 mb-4">Kantor Kelurahan</h4>
             <ul class="space-y-3 text-sm text-white/85">
-              <li class="flex items-start gap-3">
+              <li class="flex items-start gap-3" data-wadah-profil>
                 <i data-lucide="map-pin" class="w-4 h-4 mt-1 shrink-0 text-white/60"></i>
-                <span>Jl. Raya Lahendong, Tomohon Selatan, Kota Tomohon, Sulawesi Utara</span>
+                <span data-profil="alamat_kantor"></span>
               </li>
-              <li class="flex items-center gap-3">
+              <li class="flex items-center gap-3" data-wadah-profil>
                 <i data-lucide="phone" class="w-4 h-4 shrink-0 text-white/60"></i>
-                <a href="tel:0431654321" class="hover:text-white">0431-654321</a>
+                <a data-profil="telepon_kantor" data-profil-tautan="tel" class="hover:text-white"></a>
               </li>
-              <li class="flex items-center gap-3">
+              <li class="flex items-center gap-3" data-wadah-profil>
                 <i data-lucide="clock" class="w-4 h-4 shrink-0 text-white/60"></i>
-                <span>${JAM_LAYANAN}</span>
+                <span data-profil="jam_layanan"></span>
               </li>
             </ul>
           </div>
@@ -212,6 +211,39 @@ function renderFooter() {
       </div>
     </footer>
   `;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Informasi kantor dari tab "profil"                                      */
+/* ---------------------------------------------------------------------- */
+
+/**
+ * Mengisi setiap elemen [data-profil="kunci"] di halaman mana pun dengan nilai
+ * dari tab profil. Bila nilainya kosong (atau tab gagal dimuat), wadah terdekat
+ * [data-wadah-profil] disembunyikan — tidak pernah menampilkan isian karangan.
+ * data-profil-tautan="tel" / "mailto" menjadikan elemen <a> tautan telepon/email.
+ */
+async function isiInfoKantor() {
+  const elemen = document.querySelectorAll("[data-profil]");
+  if (!elemen.length) return;
+
+  let profil = [];
+  try {
+    profil = await ambilData("profil");
+  } catch (err) {
+    // Pesan sudah dicatat di console oleh ambilData; elemen cukup disembunyikan.
+  }
+
+  elemen.forEach((el) => {
+    const nilai = nilaiKunci(profil, el.dataset.profil);
+    if (!nilai) {
+      (el.closest("[data-wadah-profil]") || el).remove();
+      return;
+    }
+    el.innerHTML = nilai;
+    if (el.dataset.profilTautan === "tel") el.href = hrefTelepon(nilai);
+    if (el.dataset.profilTautan === "mailto") el.href = "mailto:" + teksPolos(nilai);
+  });
 }
 
 /* ---------------------------------------------------------------------- */

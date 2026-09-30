@@ -1,11 +1,12 @@
-/* Galeri (galeri.html): foto wisata + UMKM dengan penyaring kategori. */
+/* Galeri (galeri.html): foto wisata + UMKM dengan penyaring kategori.
+   Sumber: tab wisata & umkm; fotonya statis dari FOTO di komponen.js. */
 
 const LABEL_KATEGORI = { wisata: "Wisata", umkm: "UMKM" };
 
 document.addEventListener("DOMContentLoaded", () => {
   isiDariData(document.getElementById("grid-galeri"), ["wisata", "umkm"], ([wisata, umkm]) => [
-    ...wisata.map((row) => ({ nama: row.nama, foto: row.foto, kategori: "wisata" })),
-    ...umkm.map((row) => ({ nama: row.nama, foto: row.foto, kategori: "umkm" })),
+    ...wisata.map((row) => ({ id: row.id, nama: row.nama, kategori: "wisata" })),
+    ...umkm.map((row) => ({ id: row.id, nama: row.nama, kategori: "umkm" })),
   ].map(kartuGaleri).join(""), {
     kosong: "Belum ada foto untuk ditampilkan.",
     gagal: "Galeri belum bisa dimuat saat ini.",
@@ -20,9 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function kartuGaleri(item) {
   return `
     <figure data-kategori="${item.kategori}" class="kartu kartu-hover reveal overflow-hidden">
-      <div class="bingkai-foto aspect-[4/3]">
-        <img src="${urlFoto(item.foto)}" alt="${item.nama}" loading="lazy" onerror="this.src='img/placeholder.webp'" />
-      </div>
+      <div class="bingkai-foto aspect-[4/3]">${gambar(item.kategori, item)}</div>
       <figcaption class="p-5 flex items-start justify-between gap-4">
         <p class="font-judul text-[17px] leading-snug">${item.nama}</p>
         <span class="label-kecil whitespace-nowrap mt-1">${LABEL_KATEGORI[item.kategori]}</span>
