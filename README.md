@@ -3,6 +3,10 @@
 Situs resmi Kelurahan Lahendong, Kecamatan Tomohon Selatan, Kota Tomohon, Sulawesi Utara.
 HTML + Tailwind (CDN) + JavaScript biasa — tanpa build step. Desain mengikuti [DESIGN-SPEC.md](DESIGN-SPEC.md).
 
+> **Admin kelurahan:** baca [**Panduan Admin**](docs/panduan-admin.html) — versi visual dari README ini,
+> lengkap dengan tabel tab ↔ halaman yang bisa disorot dan langkah untuk tugas sehari-hari.
+> Versi terbit: <https://vercoooo.github.io/web-lahendong/docs/panduan-admin.html>
+
 ## Cara kerja: spreadsheet → situs
 
 Semua **isi** situs (angka, nama, teks, daftar) dibaca dari satu Google Sheet setiap kali halaman

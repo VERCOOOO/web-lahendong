@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Panduan admin Website Kelurahan Lahendong: isi situs, hubungan tab spreadsheet dengan halaman, dan cara mengelola data.">
+<link rel="icon" href="../img/emblem.svg" type="image/svg+xml">
+<title>Panduan Admin Lahendong</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Satu tema terang — mengikuti aturan situs Lahendong ("mode terang saja"). */
+  :root {
+    --ink: #1B2420; --muted: #5C6862; --line: #DDE2DC; --bg: #F7F6F1; --surface: #FFFFFF;
+    --primary: #2D5A4A; --primary-d: #1F4034; --primary-tint: #E8EFEB; --accent: #C07A1E; --accent-tint: #F6ECDD;
+    --danger: #A33B2A; --danger-tint: #F5E3DF;
+    --serif: "Fraunces", Georgia, serif;
+    --sans: "Source Sans 3", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3 { font-family: var(--serif); font-weight: 600; text-wrap: balance; margin: 0; line-height: 1.2; }
+  p { margin: 0; }
+  a { color: var(--primary); font-weight: 600; }
+  code, .kode { font-family: var(--mono); font-size: 0.86em; background: var(--primary-tint); color: var(--primary-d); padding: 1px 6px; border-radius: 4px; white-space: nowrap; }
+  :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 3px; }
+
+  .wadah { max-width: 1080px; margin-inline: auto; padding-inline: 20px; }
+  .label { font-size: 11.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .muted { color: var(--muted); }
+
+  /* --- Kepala --------------------------------------------------------- */
+  .kepala { background: var(--primary); color: #fff; padding-block: 44px 40px; }
+  .kepala .label { color: rgba(255,255,255,.7); }
+  .kepala h1 { font-size: clamp(30px, 6vw, 44px); margin-top: 10px; color: #fff; }
+  .kepala p.ringkas { max-width: 640px; margin-top: 14px; font-size: 18px; color: rgba(255,255,255,.88); }
+  .alur { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 12px; align-items: stretch; margin-top: 30px; }
+  .alur .kotak { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); border-radius: 8px; padding: 14px 16px; }
+  .alur .kotak b { display: block; font-family: var(--serif); font-size: 18px; font-weight: 600; }
+  .alur .kotak span { font-size: 14px; color: rgba(255,255,255,.78); }
+  .alur .panah { align-self: center; font-size: 22px; color: rgba(255,255,255,.55); }
+  .tautan-utama { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .tautan-utama a { color: #fff; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25); border-radius: 6px; padding: 8px 14px; font-size: 14px; text-decoration: none; }
+  .tautan-utama a:hover { background: rgba(255,255,255,.2); }
+  @media (max-width: 720px) {
+    .alur { grid-template-columns: 1fr; }
+    .alur .panah { transform: rotate(90deg); justify-self: center; }
+  }
+
+  /* --- Navigasi isi --------------------------------------------------- */
+  .navisi { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); }
+  .navisi ul { display: flex; gap: 4px; overflow-x: auto; list-style: none; margin: 0; padding: 10px 0; scrollbar-width: thin; }
+  .navisi a { display: block; white-space: nowrap; padding: 6px 12px; border-radius: 5px; font-size: 14px; color: var(--ink); text-decoration: none; }
+  .navisi a:hover { background: var(--primary-tint); color: var(--primary-d); }
+
+  /* --- Bagian --------------------------------------------------------- */
+  section.bagian { padding-block: 56px; border-bottom: 1px solid var(--line); }
+  section.bagian:nth-of-type(even) { background: var(--surface); }
+  .judul-bagian { display: grid; gap: 8px; margin-bottom: 26px; max-width: 700px; }
+  .judul-bagian h2 { font-size: clamp(24px, 4.4vw, 32px); }
+  .judul-bagian p { color: var(--muted); }
+
+  .aturan-inti { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .aturan-inti div { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 18px; }
+  .aturan-inti b { display: block; font-family: var(--serif); font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+  .aturan-inti p { color: var(--muted); font-size: 15px; }
+
+  /* --- Tabel silang --------------------------------------------------- */
+  .pilih-tab { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .pilih-tab button { font-family: var(--mono); font-size: 13.5px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 6px 13px; cursor: pointer; }
+  .pilih-tab button:hover { border-color: var(--primary); }
+  .pilih-tab button[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .pilih-tab .reset { font-family: var(--sans); color: var(--muted); }
+  .gulir { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+  table.silang { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 14px; }
+  .silang th, .silang td { padding: 9px 10px; border-bottom: 1px solid var(--line); text-align: center; }
+  .silang thead th { font-weight: 600; font-size: 12.5px; color: var(--muted); background: var(--bg); vertical-align: bottom; }
+  .silang tbody th { text-align: left; font-family: var(--mono); font-weight: 500; white-space: nowrap; position: sticky; left: 0; background: var(--surface); }
+  .silang tr:last-child th, .silang tr:last-child td { border-bottom: 0; }
+  .titik { display: inline-block; width: 11px; height: 11px; border-radius: 50%; background: var(--primary); }
+  .silang tr.redup { opacity: 0.28; }
+  .silang tr.sorot th, .silang tr.sorot td { background: var(--primary-tint); }
+
+  /* --- Peta halaman --------------------------------------------------- */
+  .halaman-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-top: 28px; }
+  .halaman { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 18px 18px 8px; transition: opacity .2s ease-out, border-color .2s ease-out; }
+  .halaman header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+  .halaman h3 { font-size: 19px; }
+  .halaman header .kode { background: transparent; color: var(--muted); padding: 0; }
+  .halaman ul { list-style: none; margin: 0; padding: 0; }
+  .halaman li { display: grid; gap: 3px; padding-block: 10px; border-top: 1px solid var(--line); }
+  .halaman li .isi { font-weight: 600; font-size: 15px; }
+  .halaman li .sumber { font-size: 13.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+  .halaman li.tetap .isi::after { content: "tetap"; margin-left: 8px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); background: var(--accent-tint); padding: 1px 6px; border-radius: 3px; }
+  .halaman.redup { opacity: 0.35; }
+  .halaman li.sorot { background: var(--primary-tint); margin-inline: -18px; padding-inline: 18px; }
+
+  /* --- Tab spreadsheet ----------------------------------------------- */
+  .tab-list { display: grid; gap: 18px; }
+  .tab { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .tab > header { display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; padding: 18px 20px; border-bottom: 1px solid var(--line); background: var(--bg); }
+  .tab > header .nama-tab { font-family: var(--mono); font-size: 18px; font-weight: 500; color: var(--primary-d); grid-row: span 2; align-self: center; background: var(--primary-tint); padding: 6px 12px; border-radius: 6px; }
+  .tab > header p { font-size: 15px; }
+  .tab > header .dipakai { font-size: 13.5px; color: var(--muted); }
+  .kolom { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  .kolom th, .kolom td { text-align: left; padding: 9px 20px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .kolom th { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .kolom tr:last-child td { border-bottom: 0; }
+  .kolom td:first-child { white-space: nowrap; width: 1%; }
+  .kolom td.contoh { color: var(--muted); font-size: 13.5px; }
+  .tab .catatan { padding: 12px 20px; font-size: 14px; background: var(--accent-tint); border-top: 1px solid var(--line); }
+  .mb { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: .05em; color: var(--primary); border: 1px solid var(--primary); border-radius: 3px; padding: 0 5px; margin-left: 6px; vertical-align: 1px; white-space: nowrap; }
+
+  /* --- Resep ---------------------------------------------------------- */
+  .resep-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 16px; }
+  .resep { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 18px 20px; }
+  .resep h3 { font-size: 18px; margin-bottom: 10px; }
+  .resep ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; font-size: 15px; }
+  .resep .hasil { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); font-size: 14px; color: var(--muted); }
+  .resep.pengembang { border-style: dashed; }
+
+  /* --- Status data ---------------------------------------------------- */
+  .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .status { border-radius: 8px; padding: 18px; border: 1px solid var(--line); background: var(--surface); }
+  .status h3 { font-family: var(--sans); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .status h3::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: currentColor; }
+  .status ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 14.5px; }
+  .status.asli h3 { color: var(--primary); }
+  .status.contoh h3 { color: var(--accent); }
+  .status.contoh { background: var(--accent-tint); border-color: #EBD6B8; }
+  .status.kosong h3 { color: var(--muted); }
+  .status.salah h3 { color: var(--danger); }
+  .status.salah { background: var(--danger-tint); border-color: #E7C6BF; }
+  .angka { font-variant-numeric: tabular-nums; }
+
+  /* --- Tabel masalah & pengembang ------------------------------------ */
+  .masalah { width: 100%; border-collapse: collapse; font-size: 15px; background: var(--surface); }
+  .masalah th, .masalah td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .masalah th { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--bg); }
+  details.dev { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+  details.dev summary { cursor: pointer; padding: 16px 20px; font-weight: 600; }
+  details.dev .isi-dev { padding: 0 20px 20px; display: grid; gap: 14px; font-size: 15px; }
+  pre { font-family: var(--mono); font-size: 13px; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 14px; overflow-x: auto; margin: 0; line-height: 1.55; }
+
+  footer.kaki { padding-block: 30px 48px; font-size: 14px; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<header class="kepala">
+  <div class="wadah">
+    <p class="label">Website Kelurahan Lahendong · Panduan admin</p>
+    <h1>Situs menampilkan, spreadsheet mengisi.</h1>
+    <p class="ringkas">Hampir semua yang tampil di situs — angka, nama, teks, daftar — dibaca dari satu Google Sheet setiap kali halaman dibuka. Ubah selnya, muat ulang halaman, dan situs ikut berubah.</p>
+    <div class="alur" aria-label="Alur data">
+      <div class="kotak"><b>Google Sheet</b><span>9 tab data + tab <em>petunjuk</em>. Admin mengedit di sini.</span></div>
+      <div class="panah" aria-hidden="true">→</div>
+      <div class="kotak"><b>Dibaca saat halaman dibuka</b><span>Tanpa commit, tanpa push. Cukup muat ulang.</span></div>
+      <div class="panah" aria-hidden="true">→</div>
+      <div class="kotak"><b>11 halaman situs</b><span>Kode hanya mengatur tampilan dan tata letak.</span></div>
+    </div>
+    <div class="tautan-utama">
+      <a href="https://docs.google.com/spreadsheets/d/11f8D-qzWt1rdkin7uBMmrbrEkZmc4dih39ruUwTh1gQ/edit" target="_blank" rel="noopener">Buka spreadsheet ↗</a>
+      <a href="https://vercoooo.github.io/web-lahendong/" target="_blank" rel="noopener">Buka situs ↗</a>
+      <a href="https://github.com/VERCOOOO/web-lahendong" target="_blank" rel="noopener">Repo GitHub ↗</a>
+    </div>
+  </div>
+</header>
+
+<nav class="navisi" aria-label="Isi panduan">
+  <div class="wadah">
+    <ul>
+      <li><a href="#aturan">Aturan inti</a></li>
+      <li><a href="#peta">Tab → halaman</a></li>
+      <li><a href="#halaman">Isi tiap halaman</a></li>
+      <li><a href="#tab">Kolom tiap tab</a></li>
+      <li><a href="#resep">Cara melakukan…</a></li>
+      <li><a href="#status">Status data</a></li>
+      <li><a href="#masalah">Jika ada masalah</a></li>
+      <li><a href="#pengembang">Untuk pengembang</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <!-- ATURAN INTI -->
+  <section class="bagian" id="aturan">
+    <div class="wadah">
+      <div class="judul-bagian">
+        <p class="label">Mulai dari sini</p>
+        <h2>Enam aturan yang berlaku di semua tab</h2>
+        <p>Ingat keenam hal ini, dan hampir semua pekerjaan admin jadi jelas.</p>
+      </div>
+      <div class="aturan-inti">
+        <div><b>Satu baris = satu data</b><p>Satu destinasi, satu aparat, satu lingkungan. Urutan baris di sheet = urutan tampil di situs.</p></div>
+        <div><b>Kolom pertama wajib diisi</b><p>Baris yang <code>id</code> (atau <code>kunci</code>) kosong tidak ditampilkan. Kosongkan id untuk menyembunyikan data tanpa menghapusnya.</p></div>
+        <div><b>Sel kosong = disembunyikan</b><p>Situs tidak pernah mengarang isi. Telepon kantor kosong? Barisnya tidak muncul sama sekali.</p></div>
+        <div><b>Jangan ubah nama tab &amp; baris judul</b><p>Situs mencari tab berdasarkan namanya (<code>wisata</code>, <code>aparat</code>, …) dan kolom berdasarkan judulnya.</p></div>
+        <div><b>Semua sel berformat Teks biasa</b><p>Biarkan begitu. Tanpa itu Google bisa membuang angka 0 di depan nomor telepon, atau membuat nilai hilang diam-diam.</p></div>
+        <div><b>Satu orang, satu baris</b><p>Aparat cukup ditulis sekali di tab <code>aparat</code>. Halaman Pemerintahan, Beranda, dan Kontak semuanya membaca dari sana.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TABEL SILANG -->
+  <section class="bagian" id="peta">
+    <div class="wadah">
+      <div class="judul-bagian">
+        <p class="label">Hubungan spreadsheet ↔ situs</p>
+        <h2>Tab mana mengisi halaman mana</h2>
+        <p>Pilih satu tab untuk menyorot semua halaman dan bagian yang ikut berubah bila tab itu diedit — di tabel ini dan di daftar halaman di bawahnya.</p>
+      </div>
+
+      <div class="pilih-tab" id="pilih-tab" role="group" aria-label="Sorot tab">
+        <button type="button" data-tab="profil" aria-pressed="false">profil</button>
+        <button type="button" data-tab="statistik" aria-pressed="false">statistik</button>
+        <button type="button" data-tab="lingkungan" aria-pressed="false">lingkungan</button>
+        <button type="button" data-tab="aparat" aria-pressed="false">aparat</button>
+        <button type="button" data-tab="kontak" aria-pressed="false">kontak</button>
+        <button type="button" data-tab="wisata" aria-pressed="false">wisata</button>
+        <button type="button" data-tab="potensi" aria-pressed="false">potensi</button>
+        <button type="button" data-tab="umkm" aria-pressed="false">umkm</button>
+        <button type="button" data-tab="layanan" aria-pressed="false">layanan</button>
+        <button type="button" class="reset" data-tab="" aria-pressed="true">Tampilkan semua</button>
+      </div>
+
+      <div class="gulir">
+        <table class="silang" id="silang">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Beranda</th><th scope="col">Profil</th><th scope="col">Pemerin&shy;tahan</th><th scope="col">Pendu&shy;duk</th>
+              <th scope="col">Wisata</th><th scope="col">Detail wisata</th><th scope="col">Potensi</th><th scope="col">Galeri</th>
+              <th scope="col">Legenda</th><th scope="col">Layanan</th><th scope="col">Kontak</th><th scope="col">Header &amp; footer</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ISI TIAP HALAMAN -->
+  <section class="bagian" id="halaman">
+    <div class="wadah">
+      <div class="judul-bagian">
+        <p class="label">Apa saja isi situsnya</p>
+        <h2>Isi tiap halaman, bagian demi bagian</h2>
+        <p>Di bawah setiap bagian tertulis sumbernya. Bagian bertanda <span class="kode" style="background:var(--accent-tint);color:var(--accent)">tetap</span> ditulis di kode, bukan di spreadsheet.</p>
+      </div>
+      <div class="halaman-grid" id="halaman-grid"></div>
+    </div>
+  </section>
+
+  <!-- KOLOM TIAP TAB -->
+  <section class="bagian" id="tab">
+    <div class="wadah">
+      <div class="judul-bagian">
+        <p class="label">Isi spreadsheet</p>
+        <h2>Kolom tiap tab dan artinya</h2>
+        <p>Tanda <span class="mb">↵ baris</span> berarti sel boleh berisi beberapa baris (Ctrl+Enter atau Alt+Enter; Mac: Cmd+Enter). Situs menampilkannya sebagai paragraf atau daftar.</p>
+      </div>
+      <div class="tab-list" id="tab-list"></div>
+    </div>
+  </section>
+
+  <!-- RESEP -->
+  <section class="bagian" id="resep">
+    <div class="wadah">
+      <div class="judul-bagian">
+        <p class="label">Pekerjaan sehari-hari</p>
+        <h2>Cara melakukan…</h2>
+        <p>Langkah untuk tugas yang paling sering. Kartu bergaris putus-putus perlu bantuan pengembang karena menyentuh berkas situs.</p>
+      </div>
+      <div class="resep-grid">
+        <article class="resep">
+          <h3>Mengganti pejabat (mis. Lurah baru)</h3>
+          <ol>
+            <li>Buka tab <code>aparat</code>, cari baris jabatannya (Lurah = <code>A1</code>).</li>
+            <li>Ganti isi kolom <code>nama</code>. Id, jabatan, dan atasan dibiarkan.</li>
+            <li>Muat ulang situs.</li>
+          </ol>
+          <p class="hasil">Berubah di: bagan &amp; profil (Pemerintahan), blok pimpinan (Beranda), dan Kontak bila nomornya diisi.</p>
+        </article>
+        <article class="resep">
+          <h3>Menambah aparat ke bagan</h3>
+          <ol>
+            <li>Tab <code>aparat</code> → isi baris baru dengan id baru, mis. <code>A4</code>.</li>
+            <li>Isi <code>nama</code>, <code>jabatan</code>, dan <code>urutan</code> (angka urut tampil).</li>
+            <li>Isi <code>atasan</code> dengan id orang di atasnya, mis. <code>A1</code> (Lurah) atau <code>A2</code> (Sekretaris).</li>
+          </ol>
+          <p class="hasil">Bagan otomatis menambah kotak di bawah atasannya. Atasan kosong = kotak berdiri di puncak.</p>
+        </article>
+        <article class="resep">
+          <h3>Menampilkan nomor aparat di Kontak</h3>
+          <ol>
+            <li>Tab <code>aparat</code> → isi kolom <code>nomor</code> orang tersebut, pakai tanda hubung: <code>0812-3456-7890</code>.</li>
+            <li>Muat ulang halaman Kontak.</li>
+          </ol>
+          <p class="hasil">Muncul di kelompok “Aparat kelurahan”. Jangan tambahkan orang yang sama di tab <code>kontak</code>.</p>
+        </article>
+        <article class="resep">
+          <h3>Menambah nomor darurat atau layanan umum</h3>
+          <ol>
+            <li>Tab <code>kontak</code> → baris baru dengan id baru, mis. <code>K4</code>.</li>
+            <li>Isi <code>nama</code> (Puskesmas Tomohon Selatan), <code>peran</code>, dan <code>nomor</code>.</li>
+            <li>Isi <code>kategori</code>: <code>darurat</code> atau <code>umum</code>.</li>
+          </ol>
+          <p class="hasil">Tampil di kelompok Darurat atau Layanan umum pada halaman Kontak. Tanpa nomor = tidak ditampilkan.</p>
+        </article>
+        <article class="resep">
+          <h3>Memperbarui data penduduk tahunan</h3>
+          <ol>
+            <li>Tab <code>statistik</code> → ganti <code>tahun_data</code>, <code>jumlah_penduduk</code>, <code>laki</code>, <code>perempuan</code>, <code>jumlah_kk</code>.</li>
+            <li>Tab <code>lingkungan</code> → ganti angka tiap lingkungan.</li>
+            <li>Cek: jumlah jiwa semua lingkungan = <code>jumlah_penduduk</code>, dan laki + perempuan tiap baris = jiwa.</li>
+          </ol>
+          <p class="hasil">Grafik, tabel, dan baris total di halaman Penduduk dihitung ulang otomatis.</p>
+        </article>
+        <article class="resep">
+          <h3>Mengubah jam layanan, alamat, atau telepon kantor</h3>
+          <ol>
+            <li>Tab <code>profil</code> → cari <code>kunci</code>-nya (<code>jam_layanan</code>, <code>alamat_kantor</code>, <code>telepon_kantor</code>, <code>email</code>).</li>
+            <li>Ganti kolom <code>nilai</code> saja.</li>
+          </ol>
+          <p class="hasil">Satu kali ubah, tampil di bilah atas, footer, halaman Kontak, dan halaman Layanan sekaligus.</p>
+        </article>
+        <article class="resep">
+          <h3>Menambah destinasi wisata</h3>
+          <ol>
+            <li>Tab <code>wisata</code> → baris baru, id <code>W5</code>. Isi minimal <code>nama</code>, <code>ringkas</code>, <code>deskripsi</code>.</li>
+            <li>Kolom lain boleh kosong — bagiannya tidak ditampilkan.</li>
+            <li>Rute bertahap: satu langkah per baris dalam sel <code>cara_kesana</code>.</li>
+          </ol>
+          <p class="hasil">Muncul di Wisata, Galeri, dan halaman detail <code>wisata-detail.html?id=W5</code>. Tanpa foto terdaftar, kartunya memakai gambar pengganti.</p>
+        </article>
+        <article class="resep">
+          <h3>Menambah potensi atau UMKM</h3>
+          <ol>
+            <li>Potensi: tab <code>potensi</code> → id <code>P5</code>, <code>judul</code>, <code>deskripsi</code> (boleh beberapa paragraf).</li>
+            <li>UMKM: tab <code>umkm</code> → id <code>U1</code>, <code>nama</code>, <code>produk</code>, <code>kontak</code>, <code>lingkungan</code>.</li>
+          </ol>
+          <p class="hasil">Potensi tampil di halaman Potensi dan Beranda (kalimat pertamanya saja). UMKM tampil di Potensi dan Galeri.</p>
+        </article>
+        <article class="resep">
+          <h3>Menyembunyikan sementara</h3>
+          <ol>
+            <li>Kosongkan kolom <code>id</code> baris itu (tab <code>profil</code>/<code>statistik</code>: kosongkan <code>kunci</code>).</li>
+            <li>Untuk menampilkan lagi, isi kembali id yang sama.</li>
+          </ol>
+          <p class="hasil">Datanya tetap tersimpan di sheet, hanya tidak dibaca situs.</p>
+        </article>
+        <article class="resep pengembang">
+          <h3>Mengganti atau menambah foto</h3>
+          <ol>
+            <li>Simpan foto (format <code>.webp</code>, lebar maks. 1600px) di folder <code>img/</code>.</li>
+            <li>Daftarkan di <code>assets/js/komponen.js</code>, bagian <code>FOTO</code>: <code>W5: "nama-file.webp"</code>.</li>
+            <li>Commit &amp; push.</li>
+          </ol>
+          <p class="hasil">Foto sengaja tidak diatur dari spreadsheet pada iterasi ini.</p>
+        </article>
+        <article class="resep pengembang">
+          <h3>Memasang peta wilayah (PNG)</h3>
+          <ol>
+            <li>Simpan gambarnya sebagai <code>img/peta-wilayah.png</code>.</li>
+            <li>Commit &amp; push.</li>
+          </ol>
+          <p class="hasil">Halaman Profil menampilkannya otomatis di atas peta Google. Selama berkasnya belum ada, bagian itu disembunyikan.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATUS DATA -->
+  <section class="bagian" id="status">
+    <div class="wadah">
+      <div class="judul-bagian">
+        <p class="label">Kondisi saat ini</p>
+        <h2>Mana yang sudah asli, mana yang belum</h2>
+        <p>Nilai yang belum ada data resminya ditandai <strong>CONTOH</strong> di kolom <code>keterangan</code> pada sheet. Semuanya perlu beres sebelum situs diumumkan.</p>
+      </div>
+      <div class="status-grid">
+        <div class="status asli">
+          <h3>Sudah data asli</h3>
+          <ul>
+            <li><code>statistik</code> &amp; <code>lingkungan</code> — HUMAS 2026</li>
+            <li><code>aparat</code> — Lurah, Sekretaris Kelurahan, Kasi Pemerintahan</li>
+            <li><code>wisata</code> — 4 destinasi</li>
+            <li><code>potensi</code> — 4 potensi</li>
+            <li><code>kontak</code> — nomor darurat nasional 110, 113, 119</li>
+          </ul>
+        </div>
+        <div class="status contoh">
+          <h3>Masih contoh — ganti</h3>
+          <ul>
+            <li><strong>Legenda &amp; sejarah</strong> — tulisan sementara, bukan tuturan warga</li>
+            <li>Jam layanan, luas, ketinggian, suhu</li>
+            <li>Batas wilayah (utara, selatan, timur, barat)</li>
+            <li>Syarat, alur, waktu &amp; biaya di tab <code>layanan</code></li>
+            <li>Semua foto — masih ilustrasi pengganti</li>
+          </ul>
+        </div>
+        <div class="status kosong">
+          <h3>Masih kosong</h3>
+          <ul>
+            <li>Telepon &amp; email kantor</li>
+            <li>Nama kepala lingkungan (8)</li>
+            <li>Nomor aparat</li>
+            <li>Data UMKM</li>
+            <li>Peta wilayah PNG</li>
+          </ul>
+        </div>
+        <div class="status salah">
+          <h3>Perlu dibetulkan</h3>
+          <ul class="angka">
+            <li>Lingkungan 2: laki 172 + perempuan 156 = 328, tertulis 326</li>
+            <li>Lingkungan 7: laki 109 + perempuan 113 = 222, tertulis 221</li>
+            <li>Akibatnya total di tabel Penduduk <strong>2.232</strong>, sedangkan ringkasan <strong>2.235</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MASALAH -->
+  <section class="bagian" id="masalah">
+    <div class="wadah">
+      <div class="judul-bagian">
+        <p class="label">Pemecahan masalah</p>
+        <h2>Jika ada yang tidak beres</h2>
+        <p>Pesan teknis ada di konsol browser (F12 → Console), diawali <code>[data]</code>.</p>
+      </div>
+      <div class="gulir">
+        <table class="masalah">
+          <thead><tr><th>Yang terlihat</th><th>Penyebab paling mungkin</th><th>Yang dilakukan</th></tr></thead>
+          <tbody>
+            <tr><td>Perubahan di sheet belum tampil</td><td>Halaman belum dimuat ulang</td><td>Muat ulang halaman. Perubahan sheet tampil seketika.</td></tr>
+            <tr><td>Tampilan situs masih versi lama setelah push</td><td>Browser menyimpan salinan kode (hingga ±10 menit)</td><td>Ctrl+Shift+R, atau tunggu sebentar di HP</td></tr>
+            <tr><td>“… belum bisa dimuat” di semua halaman</td><td>Akses sheet berubah dari “Siapa saja yang memiliki link”</td><td>Bagikan → Akses umum → Siapa saja yang memiliki link → Pelihat</td></tr>
+            <tr><td>Satu bagian “belum bisa dimuat”, bagian lain normal</td><td>Nama tab diubah, atau kolom pertamanya hilang</td><td>Samakan nama tab &amp; baris judul dengan tabel di panduan ini</td></tr>
+            <tr><td>Satu nilai hilang padahal sel terisi</td><td>Format sel berubah dari Teks biasa</td><td>Pilih kolom → Format → Angka → Teks biasa</td></tr>
+            <tr><td>Nomor telepon kehilangan angka 0 di depan</td><td>Sel diformat angka</td><td>Format Teks biasa, lalu ketik ulang nomornya</td></tr>
+            <tr><td>Kotak di bagan tidak di bawah atasannya</td><td>Kolom <code>atasan</code> berisi id yang tidak ada</td><td>Isi dengan id aparat yang benar (mis. <code>A1</code>)</td></tr>
+            <tr><td>Orang yang sama muncul dua kali di Kontak</td><td>Ditulis di tab <code>aparat</code> dan <code>kontak</code></td><td>Hapus barisnya dari tab <code>kontak</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- PENGEMBANG -->
+  <section class="bagian" id="pengembang">
+    <div class="wadah">
+      <div class="judul-bagian">
+        <p class="label">Di balik layar</p>
+        <h2>Untuk pengembang</h2>
+        <p>Hanya perlu dibaca bila mengubah kode, foto, atau susunan kolom. Detail lengkap ada di README repo.</p>
+      </div>
+      <details class="dev">
+        <summary>Susunan berkas dan cara menerbitkan</summary>
+        <div class="isi-dev">
+<pre>*.html                satu berkas per halaman — markup saja
+assets/css/style.css  sistem desain (palet, tipografi, komponen, bagan)
+assets/js/data.js     PAKAI_DUMMY, ID_SPREADSHEET, SKEMA tab, ambilData()
+assets/js/data-contoh.js  data awal = isi template sheet
+assets/js/ui.js       header, footer, info kantor, animasi, status memuat
+assets/js/komponen.js FOTO statis + potongan HTML bersama
+assets/js/halaman/    logika per halaman (index.html → beranda.js)
+data/template-data-lahendong.xlsx  template spreadsheet</pre>
+          <p><strong>Menambah kolom atau tab:</strong> tambahkan di <code>SKEMA</code> (<code>data.js</code>) dan <code>data-contoh.js</code>, buat ulang template, <strong>perbarui sheet lebih dulu</strong>, baru commit &amp; push. Urutan ini mencegah situs live sempat menampilkan “belum bisa dimuat”.</p>
+          <p><strong>Tanpa sheet:</strong> ubah <code>PAKAI_DUMMY</code> menjadi <code>true</code> di <code>data.js</code> — situs memakai <code>data-contoh.js</code>.</p>
+          <p><strong>Pratinjau lokal:</strong> jalankan <code>python3 -m http.server</code> di folder repo, lalu buka <code>http://localhost:8000</code>.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+</main>
+
+<footer class="kaki">
+  <div class="wadah">Panduan ini disimpan di repo sebagai <code>docs/panduan-admin.html</code>. Bila susunan tab berubah, perbarui panduan ini bersama README dan tab <em>petunjuk</em> di spreadsheet.</div>
+</footer>
+
+<script>
+  /* Pemakaian tab per halaman — sumber tunggal untuk tabel silang, daftar halaman, dan sorotan. */
+  const HALAMAN = [
+    { nama: "Beranda", berkas: "index.html", bagian: [
+      { isi: "Judul besar & kalimat pengantar", tetap: true },
+      { isi: "Angka ringkas", tab: ["statistik", "profil"], kolom: "statistik: jumlah_penduduk, jumlah_kk, jumlah_lingkungan · profil: luas_wilayah" },
+      { isi: "Sambutan", tetap: true },
+      { isi: "Pimpinan kelurahan", tab: ["aparat"], kolom: "aparat dengan urutan terkecil (Lurah)" },
+      { isi: "Destinasi wisata (4 pertama)", tab: ["wisata"], kolom: "nama, ringkas + foto statis" },
+      { isi: "Potensi", tab: ["potensi"], kolom: "judul + kalimat pertama deskripsi" },
+      { isi: "Panel “Butuh surat keterangan?”", tetap: true },
+    ]},
+    { nama: "Profil", berkas: "profil.html", bagian: [
+      { isi: "Asal usul (sejarah)", tab: ["profil"], kolom: "profil: sejarah" },
+      { isi: "Kondisi wilayah", tab: ["profil", "statistik"], kolom: "profil: luas_wilayah, ketinggian, suhu · statistik: jumlah_lingkungan" },
+      { isi: "Batas wilayah", tab: ["profil"], kolom: "profil: batas_utara, batas_selatan, batas_timur, batas_barat" },
+      { isi: "Peta wilayah (gambar)", tetap: true, kolom: "berkas img/peta-wilayah.png — tampil bila ada" },
+      { isi: "Peta interaktif Google", tetap: true },
+    ]},
+    { nama: "Pemerintahan", berkas: "pemerintahan.html", bagian: [
+      { isi: "Bagan struktur", tab: ["aparat"], kolom: "jabatan, nama, atasan" },
+      { isi: "Profil aparat", tab: ["aparat"], kolom: "jabatan, nama, diurutkan menurut urutan" },
+      { isi: "Lingkungan & kepala lingkungan", tab: ["lingkungan"], kolom: "nama, kepala" },
+    ]},
+    { nama: "Penduduk", berkas: "penduduk.html", bagian: [
+      { isi: "Tahun & sumber data", tab: ["statistik"], kolom: "tahun_data, sumber_data" },
+      { isi: "Angka ringkas", tab: ["statistik"], kolom: "jumlah_penduduk, jumlah_kk, laki, perempuan" },
+      { isi: "Grafik & tabel laki-laki/perempuan", tab: ["statistik"], kolom: "laki, perempuan" },
+      { isi: "Grafik & tabel per lingkungan + total", tab: ["lingkungan"], kolom: "jumlah_kk, jumlah_jiwa, laki, perempuan, jumlah_lansia, jumlah_rumah" },
+    ]},
+    { nama: "Wisata", berkas: "wisata.html", bagian: [
+      { isi: "Kartu semua destinasi", tab: ["wisata"], kolom: "nama, ringkas + foto statis" },
+    ]},
+    { nama: "Detail wisata", berkas: "wisata-detail.html?id=W1", bagian: [
+      { isi: "Tentang, rute, pengelola", tab: ["wisata"], kolom: "deskripsi, cara_kesana, pengelola, maps_link" },
+      { isi: "Informasi kunjungan", tab: ["wisata"], kolom: "jam, tiket, fasilitas, waktu_terbaik" },
+    ]},
+    { nama: "Potensi", berkas: "potensi.html", bagian: [
+      { isi: "Daftar potensi", tab: ["potensi"], kolom: "judul, deskripsi" },
+      { isi: "UMKM", tab: ["umkm"], kolom: "nama, produk, lingkungan, kontak" },
+    ]},
+    { nama: "Galeri", berkas: "galeri.html", bagian: [
+      { isi: "Foto wisata & UMKM + penyaring", tab: ["wisata", "umkm"], kolom: "nama + foto statis" },
+    ]},
+    { nama: "Legenda", berkas: "legenda.html", bagian: [
+      { isi: "Kisah Danau Linow", tab: ["profil"], kolom: "profil: legenda" },
+    ]},
+    { nama: "Layanan", berkas: "layanan.html", bagian: [
+      { isi: "Daftar surat (bisa dibuka-tutup)", tab: ["layanan"], kolom: "nama_surat, syarat, alur, waktu, biaya" },
+      { isi: "Kartu jam layanan", tab: ["profil"], kolom: "profil: jam_layanan" },
+    ]},
+    { nama: "Kontak", berkas: "kontak.html", bagian: [
+      { isi: "Kantor kelurahan", tab: ["profil"], kolom: "profil: alamat_kantor, jam_layanan, telepon_kantor, email" },
+      { isi: "Darurat & layanan umum", tab: ["kontak"], kolom: "nama, peran, nomor, kategori" },
+      { isi: "Aparat kelurahan", tab: ["aparat"], kolom: "aparat yang kolom nomor-nya diisi" },
+    ]},
+    { nama: "Header & footer", berkas: "semua halaman", bagian: [
+      { isi: "Bilah atas: jam layanan", tab: ["profil"], kolom: "profil: jam_layanan" },
+      { isi: "Footer: alamat, telepon, jam", tab: ["profil"], kolom: "profil: alamat_kantor, telepon_kantor, jam_layanan" },
+      { isi: "Menu & tautan cepat", tetap: true },
+    ]},
+  ];
+
+  const TAB = [
+    { nama: "profil", isi: "Informasi umum kelurahan. Satu baris = satu informasi: kolom kunci adalah nama tetap yang dicari situs, nilai adalah isinya.",
+      kolom: [
+        ["kunci", "Nama informasi — jangan diubah", "jam_layanan"],
+        ["nilai", "Isinya", "Senin – Jumat, 08.00 – 15.00 WITA"],
+        ["keterangan", "Catatan untuk admin, tidak tampil di situs", "CONTOH — ganti…"],
+      ],
+      catatan: "Kunci yang dikenal: alamat_kantor, telepon_kantor, email, jam_layanan, luas_wilayah (angka, km²), ketinggian (mdpl), suhu (°C), batas_utara, batas_selatan, batas_timur, batas_barat, sejarah ↵, legenda ↵." },
+    { nama: "statistik", isi: "Angka kependudukan keseluruhan. Bentuknya sama dengan tab profil: kunci, nilai, keterangan.",
+      kolom: [
+        ["kunci", "Nama angka — jangan diubah", "jumlah_penduduk"],
+        ["nilai", "Angka tanpa pemisah ribuan", "2235"],
+        ["keterangan", "Catatan untuk admin", "Sumber: HUMAS 2026"],
+      ],
+      catatan: "Kunci yang dikenal: tahun_data, sumber_data, jumlah_penduduk, laki, perempuan, jumlah_kk, jumlah_lingkungan." },
+    { nama: "lingkungan", isi: "Satu baris per lingkungan.",
+      kolom: [
+        ["id", "Pengenal unik", "L1"], ["nama", "Nama lingkungan", "Lingkungan 1"], ["kepala", "Nama kepala lingkungan", "(belum diisi)"],
+        ["jumlah_kk", "Kepala keluarga", "124"], ["jumlah_jiwa", "Jumlah penduduk", "345"], ["laki", "Laki-laki", "169"], ["perempuan", "Perempuan", "176"],
+        ["jumlah_lansia", "Lansia", "37"], ["jumlah_rumah", "Rumah", "106"],
+      ] },
+    { nama: "aparat", isi: "Satu baris per aparat — sumber tunggal nama & jabatan.",
+      kolom: [
+        ["id", "Pengenal unik", "A1"], ["nama", "Nama lengkap dengan gelar", "Reymon Stive Londok, S.T"], ["jabatan", "Jabatan", "Lurah"],
+        ["urutan", "Urutan tampil; 1 = pimpinan di Beranda", "1"], ["atasan", "Id aparat di atasnya pada bagan; kosong = puncak", "A1"],
+        ["nomor", "Diisi bila boleh tampil di halaman Kontak", "0812-3456-7890"],
+      ] },
+    { nama: "kontak", isi: "Nomor penting selain aparat.",
+      kolom: [
+        ["id", "Pengenal unik", "K1"], ["nama", "Nama layanan", "Polisi"], ["peran", "Keterangan singkat", "Kepolisian"],
+        ["nomor", "Nomor telepon", "110"], ["kategori", "darurat atau umum", "darurat"],
+      ] },
+    { nama: "wisata", isi: "Satu baris per destinasi. Id menjadi alamat halaman detail (wisata-detail.html?id=W1) — jangan diubah.",
+      kolom: [
+        ["id", "Pengenal unik", "W1"], ["nama", "Nama destinasi", "Danau Linow"], ["ringkas", "Satu kalimat untuk kartu", "Danau vulkanik dengan warna air…"],
+        ["deskripsi", "Uraian lengkap ↵", "(paragraf)"], ["jam", "Jam operasional ↵", "Setiap hari, 10.00 – 20.00 WITA"], ["tiket", "Harga tiket ↵", "Rp40.000 per orang"],
+        ["fasilitas", "Dipisah koma", "Kafe, area parkir, toilet"], ["waktu_terbaik", "Waktu berkunjung ↵", "Pagi hari atau sore…"],
+        ["cara_kesana", "Rute, satu langkah per baris ↵", "(langkah)"], ["pengelola", "Pengelola ↵", "PT Karyadeka Alam Asri"], ["maps_link", "Tautan Google Maps (https://)", "https://maps.google.com/?q=…"],
+      ] },
+    { nama: "potensi", isi: "Satu baris per potensi.",
+      kolom: [["id", "Pengenal unik", "P1"], ["judul", "Nama potensi", "Sumber Air Panas Alami"], ["deskripsi", "Uraian ↵; kalimat pertamanya dipakai di Beranda", "(paragraf)"]] },
+    { nama: "umkm", isi: "Satu baris per usaha. Saat ini masih kosong.",
+      kolom: [["id", "Pengenal unik", "U1"], ["nama", "Nama usaha", "Nama usaha"], ["produk", "Produk utama", "Kue khas Minahasa"], ["kontak", "Nomor telepon", "0812-…"], ["lingkungan", "Lokasi", "Lingkungan 2"]] },
+    { nama: "layanan", isi: "Satu baris per jenis surat.",
+      kolom: [["id", "Pengenal unik", "S1"], ["nama_surat", "Nama surat", "Surat Keterangan Domisili"], ["syarat", "Berkas yang dibawa", "Fotokopi KTP, KK, …"], ["alur", "Tahapan", "Ajukan → verifikasi → …"], ["waktu", "Lama proses", "1 hari kerja"], ["biaya", "Biaya", "Gratis"]] },
+  ];
+
+  const tabDipakai = (h, tab) => h.bagian.some((b) => (b.tab || []).includes(tab));
+
+  // Tabel silang
+  document.querySelector("#silang tbody").innerHTML = TAB.map((t) => `
+    <tr data-tab="${t.nama}"><th scope="row">${t.nama}</th>${HALAMAN.map((h) =>
+      `<td>${tabDipakai(h, t.nama) ? `<span class="titik" role="img" aria-label="dipakai"></span>` : ""}</td>`).join("")}</tr>`).join("");
+
+  // Daftar halaman
+  const tanda = (s) => s.replace(/­/g, "");
+  document.getElementById("halaman-grid").innerHTML = HALAMAN.map((h) => `
+    <article class="halaman" data-tab="${[...new Set(h.bagian.flatMap((b) => b.tab || []))].join(" ")}">
+      <header><h3>${tanda(h.nama)}</h3><span class="kode">${h.berkas}</span></header>
+      <ul>${h.bagian.map((b) => `
+        <li class="${b.tetap ? "tetap" : ""}" data-tab="${(b.tab || []).join(" ")}">
+          <span class="isi">${b.isi}</span>
+          ${b.tab ? `<span class="sumber">${b.tab.map((t) => `<code>${t}</code>`).join(" ")} ${b.kolom ? "· " + b.kolom : ""}</span>`
+                  : b.kolom ? `<span class="sumber">${b.kolom}</span>` : `<span class="sumber">ditulis di kode</span>`}
+        </li>`).join("")}
+      </ul>
+    </article>`).join("");
+
+  // Kolom tiap tab
+  const bagian = (t) => HALAMAN.filter((h) => tabDipakai(h, t.nama)).map((h) => tanda(h.nama)).join(", ");
+  document.getElementById("tab-list").innerHTML = TAB.map((t) => `
+    <article class="tab" id="tab-${t.nama}">
+      <header>
+        <span class="nama-tab">${t.nama}</span>
+        <p>${t.isi}</p>
+        <p class="dipakai">Tampil di: ${bagian(t)}</p>
+      </header>
+      <div class="gulir" style="border:0;border-radius:0">
+        <table class="kolom">
+          <thead><tr><th>Kolom</th><th>Isi</th><th>Contoh</th></tr></thead>
+          <tbody>${t.kolom.map(([k, arti, contoh]) => {
+            const baris = arti.includes("↵");
+            return `<tr><td><code>${k}</code></td><td>${arti.replace(" ↵", "").replace("↵", "")}${baris ? '<span class="mb">↵ baris</span>' : ""}</td><td class="contoh">${contoh}</td></tr>`;
+          }).join("")}</tbody>
+        </table>
+      </div>
+      ${t.catatan ? `<p class="catatan">${t.catatan.replace(/ ↵/g, " <span class=\"mb\">↵ baris</span>")}</p>` : ""}
+    </article>`).join("");
+
+  // Sorot satu tab
+  function sorot(tab) {
+    document.querySelectorAll("#pilih-tab button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tab === tab)));
+    document.querySelectorAll("#silang tbody tr").forEach((tr) => {
+      tr.classList.toggle("sorot", !!tab && tr.dataset.tab === tab);
+      tr.classList.toggle("redup", !!tab && tr.dataset.tab !== tab);
+    });
+    document.querySelectorAll(".halaman").forEach((el) => {
+      const pakai = el.dataset.tab.split(" ").includes(tab);
+      el.classList.toggle("redup", !!tab && !pakai);
+      el.querySelectorAll("li").forEach((li) => li.classList.toggle("sorot", !!tab && li.dataset.tab.split(" ").includes(tab)));
+    });
+  }
+  document.getElementById("pilih-tab").addEventListener("click", (e) => {
+    const tombol = e.target.closest("button");
+    if (tombol) sorot(tombol.dataset.tab);
+  });
+</script>
+</body>
+</html>
