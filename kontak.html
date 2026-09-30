@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kontak — Kelurahan Lahendong</title>
   <meta name="description" content="Alamat, jam layanan, dan kontak penting Kelurahan Lahendong, Tomohon Selatan." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' rx='9' fill='%232D5A4A'/><path d='M5 31 L15 16.5 H25 L35 31 Z' fill='%23F7F6F1'/><path d='M17.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4 M22.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4' fill='none' stroke='%23C07A1E' stroke-width='2.4' stroke-linecap='round'/></svg>" />
+  <link rel="icon" href="img/emblem.svg" type="image/svg+xml" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -23,7 +23,7 @@
   <main id="konten-utama" class="flex-1">
 
     <section class="kop-halaman bg-[var(--surface)] border-b border-[var(--line)]">
-      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-12 md:py-16 grid md:grid-cols-12 gap-6">
+      <div class="wadah py-12 md:py-16 grid md:grid-cols-12 gap-6">
         <div class="md:col-span-7">
           <nav class="remah" aria-label="Lokasi halaman" data-remah></nav>
           <h1 class="judul-halaman mt-4">Kontak</h1>
@@ -37,7 +37,7 @@
       </div>
     </section>
 
-    <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+    <section class="wadah seksi">
       <div class="grid lg:grid-cols-12 gap-10 lg:gap-16">
 
         <!-- INFO KANTOR -->
@@ -50,7 +50,7 @@
             <div class="py-5 border-b border-[var(--line)] flex gap-4">
               <i data-lucide="map-pin" class="w-[18px] h-[18px] text-[var(--primary)] shrink-0 mt-1"></i>
               <div>
-                <p class="text-[11px] font-semibold tracking-[0.08em] uppercase text-[var(--muted)]">Alamat</p>
+                <p class="label-kecil">Alamat</p>
                 <p class="text-[15px] mt-1 leading-[1.6]">Jl. Raya Lahendong, Kecamatan Tomohon Selatan, Kota Tomohon, Sulawesi Utara</p>
                 <a href="https://maps.google.com/?q=Lahendong,+Tomohon+Selatan,+Sulawesi+Utara" target="_blank" rel="noopener noreferrer"
                    class="inline-flex items-center gap-2 text-sm text-[var(--primary)] font-semibold hover:underline mt-2.5">
@@ -61,21 +61,21 @@
             <div class="py-5 border-b border-[var(--line)] flex gap-4">
               <i data-lucide="clock" class="w-[18px] h-[18px] text-[var(--primary)] shrink-0 mt-1"></i>
               <div>
-                <p class="text-[11px] font-semibold tracking-[0.08em] uppercase text-[var(--muted)]">Jam layanan</p>
+                <p class="label-kecil">Jam layanan</p>
                 <p class="text-[15px] mt-1">Senin – Jumat, 08.00 – 15.00 WITA</p>
               </div>
             </div>
             <div class="py-5 border-b border-[var(--line)] flex gap-4">
               <i data-lucide="phone" class="w-[18px] h-[18px] text-[var(--primary)] shrink-0 mt-1"></i>
               <div>
-                <p class="text-[11px] font-semibold tracking-[0.08em] uppercase text-[var(--muted)]">Telepon kantor</p>
+                <p class="label-kecil">Telepon kantor</p>
                 <a href="tel:0431654321" class="text-[15px] mt-1 inline-block text-[var(--primary)] font-semibold hover:underline">0431-654321</a>
               </div>
             </div>
             <div class="py-5 border-b border-[var(--line)] flex gap-4">
               <i data-lucide="mail" class="w-[18px] h-[18px] text-[var(--primary)] shrink-0 mt-1"></i>
               <div class="min-w-0">
-                <p class="text-[11px] font-semibold tracking-[0.08em] uppercase text-[var(--muted)]">Email</p>
+                <p class="label-kecil">Email</p>
                 <a href="mailto:kelurahan.lahendong@tomohonkota.go.id" class="text-[15px] mt-1 inline-block text-[var(--primary)] font-semibold hover:underline break-all">kelurahan.lahendong@tomohonkota.go.id</a>
               </div>
             </div>
@@ -99,46 +99,9 @@
   <div id="footer"></div>
 
   <script src="assets/js/data.js"></script>
+  <script src="assets/js/data-contoh.js"></script>
   <script src="assets/js/ui.js"></script>
-  <script>
-    function kartuKontak(item) {
-      const nomorBersih = String(item.nomor).replace(/[^0-9+]/g, "");
-      return `
-        <div class="kartu kartu-hover reveal p-5 flex items-start gap-4">
-          <span class="monogram w-12 h-12 rounded-[4px] text-[16px] border border-[var(--line)] shrink-0" aria-hidden="true">${inisial(item.nama)}</span>
-          <div class="min-w-0">
-            <p class="font-judul text-[16px] leading-snug">${item.nama}</p>
-            <p class="text-[11px] text-[var(--muted)] uppercase tracking-[0.08em] mt-1.5">${item.peran}</p>
-            <a href="tel:${nomorBersih}" class="inline-flex items-center gap-2 text-sm text-[var(--primary)] font-semibold hover:underline mt-3">
-              <i data-lucide="phone" class="w-4 h-4"></i> ${item.nomor}
-            </a>
-          </div>
-        </div>
-      `;
-    }
-
-    async function muatKontak() {
-      const container = document.getElementById("daftar-kontak");
-      tampilkanMemuat(container);
-      try {
-        const data = await ambilData("kontak");
-        if (!data.length) {
-          tampilkanGagal(container, "Belum ada data kontak.");
-          return;
-        }
-        container.innerHTML = data.map(kartuKontak).join("");
-        if (window.lucide) lucide.createIcons();
-        aktifkanReveal();
-      } catch (err) {
-        tampilkanGagal(container, "Data kontak belum bisa dimuat saat ini.");
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      muatKontak();
-      aktifkanReveal();
-      if (window.lucide) lucide.createIcons();
-    });
-  </script>
+  <script src="assets/js/komponen.js"></script>
+  <script src="assets/js/halaman/kontak.js"></script>
 </body>
 </html>

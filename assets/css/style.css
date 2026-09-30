@@ -60,6 +60,32 @@ h1, h2, h3, h4, .font-judul {
 
 img { max-width: 100%; }
 
+/* --- Tata letak --------------------------------------------------------- */
+
+/* Wadah konten: lebar maks 1120px, tepi 16px (HP) / 24px (desktop) — spec §4 */
+.wadah {
+  max-width: var(--konten);
+  margin-inline: auto;
+  padding-inline: 16px;
+}
+
+/* Jarak antarseksi: 56px (HP) / 96px (desktop) — spec §4 */
+.seksi { padding-block: 56px; }
+
+@media (min-width: 768px) {
+  .wadah { padding-inline: 24px; }
+  .seksi { padding-block: 96px; }
+}
+
+/* Label kecil huruf besar (spec §3: all-caps hanya untuk label kecil) */
+.label-kecil {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
 /* --- Tipografi terukur -------------------------------------------------- */
 
 /* Ukuran ikut lebar layar agar tidak pernah menyentuh tepi di 360–375px */

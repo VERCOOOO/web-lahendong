@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Penduduk — Kelurahan Lahendong</title>
   <meta name="description" content="Statistik dan grafik kependudukan Kelurahan Lahendong, Tomohon Selatan." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' rx='9' fill='%232D5A4A'/><path d='M5 31 L15 16.5 H25 L35 31 Z' fill='%23F7F6F1'/><path d='M17.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4 M22.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4' fill='none' stroke='%23C07A1E' stroke-width='2.4' stroke-linecap='round'/></svg>" />
+  <link rel="icon" href="img/emblem.svg" type="image/svg+xml" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -24,7 +24,7 @@
   <main id="konten-utama" class="flex-1">
 
     <section class="kop-halaman bg-[var(--surface)] border-b border-[var(--line)]">
-      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-12 md:py-16 grid md:grid-cols-12 gap-6">
+      <div class="wadah py-12 md:py-16 grid md:grid-cols-12 gap-6">
         <div class="md:col-span-7">
           <nav class="remah" aria-label="Lokasi halaman" data-remah></nav>
           <h1 class="judul-halaman mt-4">Data Penduduk</h1>
@@ -40,13 +40,13 @@
 
     <!-- RINGKASAN -->
     <section class="bg-[var(--surface)] border-b border-[var(--line)]">
-      <div id="deret-statistik" class="deret-statistik max-w-[var(--konten)] mx-auto px-4 md:px-6 py-10 md:py-12 grid grid-cols-2 lg:grid-cols-4">
+      <div id="deret-statistik" class="deret-statistik wadah py-10 md:py-12 grid grid-cols-2 lg:grid-cols-4">
         <!-- diisi oleh JS -->
       </div>
     </section>
 
     <!-- 01 · KOMPOSISI -->
-    <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+    <section class="wadah seksi">
       <div class="reveal mb-10 md:mb-12">
         <p class="no-seksi mb-3">01</p>
         <span class="eyebrow">Komposisi Penduduk</span>
@@ -76,7 +76,7 @@
 
     <!-- 02 · SEBARAN -->
     <section class="bg-[var(--surface)] border-y border-[var(--line)]">
-      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+      <div class="wadah seksi">
         <div class="reveal mb-10 md:mb-12 grid md:grid-cols-12 gap-6">
           <div class="md:col-span-6">
             <p class="no-seksi mb-3">02</p>
@@ -116,186 +116,9 @@
   <div id="footer"></div>
 
   <script src="assets/js/data.js"></script>
+  <script src="assets/js/data-contoh.js"></script>
   <script src="assets/js/ui.js"></script>
-  <script>
-    const WARNA = {
-      primary: "#2D5A4A",
-      accent: "#C07A1E",
-      line: "#DDE2DC",
-      ink: "#1B2420",
-      muted: "#5C6862",
-      surface: "#FFFFFF",
-    };
-    const FONT = "'Source Sans 3', system-ui, sans-serif";
-
-    /* Grafik ikut menghormati prefers-reduced-motion, sama seperti animasi CSS. */
-    const KURANGI_GERAK = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const ANIMASI = KURANGI_GERAK ? false : { duration: 600, easing: "easeOutQuart" };
-
-    const FAKTA = {
-      jumlah_penduduk: { label: "Jumlah penduduk", satuan: "jiwa" },
-      jumlah_kk: { label: "Kepala keluarga", satuan: "KK" },
-      laki: { label: "Laki-laki", satuan: "jiwa" },
-      perempuan: { label: "Perempuan", satuan: "jiwa" },
-    };
-
-    function nilaiStatistik(data, kunci) {
-      const baris = data.find((row) => row.kunci === kunci);
-      return baris ? keAngka(baris.nilai) ?? 0 : 0;
-    }
-
-    async function muatRingkasan() {
-      const grid = document.getElementById("deret-statistik");
-      tampilkanMemuat(grid);
-      try {
-        const data = await ambilData("statistik");
-        grid.innerHTML = Object.keys(FAKTA)
-          .map((kunci) => {
-            const baris = data.find((row) => row.kunci === kunci);
-            if (!baris) return "";
-            const info = FAKTA[kunci];
-            return `
-              <div>
-                <p class="angka">${formatAngka(baris.nilai)}<span class="satuan">${info.satuan}</span></p>
-                <p class="label-angka">${info.label}</p>
-              </div>
-            `;
-          })
-          .join("");
-      } catch (err) {
-        tampilkanGagal(grid);
-      }
-    }
-
-    async function muatGrafikGender() {
-      const tbody = document.getElementById("tabel-gender");
-      try {
-        const data = await ambilData("statistik");
-        const laki = nilaiStatistik(data, "laki");
-        const perempuan = nilaiStatistik(data, "perempuan");
-        const total = laki + perempuan;
-        const persen = (n) => (total ? ((n / total) * 100).toFixed(1).replace(".", ",") : "0") + "%";
-
-        new Chart(document.getElementById("grafik-gender"), {
-          type: "doughnut",
-          data: {
-            labels: ["Laki-laki", "Perempuan"],
-            datasets: [{
-              data: [laki, perempuan],
-              backgroundColor: [WARNA.primary, WARNA.accent],
-              borderColor: WARNA.surface,
-              borderWidth: 3,
-            }],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: ANIMASI,
-            cutout: "58%",
-            plugins: {
-              legend: {
-                position: "bottom",
-                labels: { color: WARNA.ink, font: { family: FONT, size: 13 }, padding: 18, boxWidth: 10, boxHeight: 10, usePointStyle: true, pointStyle: "circle" },
-              },
-              tooltip: {
-                backgroundColor: WARNA.ink,
-                titleFont: { family: FONT },
-                bodyFont: { family: FONT },
-                padding: 10,
-                displayColors: false,
-                callbacks: {
-                  label: (ctx) => ctx.label + ": " + ctx.parsed.toLocaleString("id-ID") + " jiwa",
-                },
-              },
-            },
-          },
-        });
-
-        tbody.innerHTML = `
-          <tr><td>Laki-laki</td><td class="num">${formatAngka(laki)}</td><td class="num">${persen(laki)}</td></tr>
-          <tr><td>Perempuan</td><td class="num">${formatAngka(perempuan)}</td><td class="num">${persen(perempuan)}</td></tr>
-          <tr><td>Total</td><td class="num">${formatAngka(total)}</td><td class="num">100%</td></tr>
-        `;
-      } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-10">Data belum bisa dimuat saat ini.</td></tr>`;
-      }
-    }
-
-    async function muatGrafikLingkungan() {
-      const tbody = document.getElementById("tabel-lingkungan");
-      try {
-        const data = await ambilData("lingkungan");
-        if (!data.length) {
-          tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10">Belum ada data lingkungan.</td></tr>`;
-          return;
-        }
-
-        new Chart(document.getElementById("grafik-lingkungan"), {
-          type: "bar",
-          data: {
-            labels: data.map((row) => teksPolos(row.nama)),
-            datasets: [{
-              label: "Jumlah jiwa",
-              data: data.map((row) => keAngka(row.jumlah_jiwa) ?? 0),
-              backgroundColor: WARNA.primary,
-              hoverBackgroundColor: WARNA.accent,
-              borderRadius: 3,
-              maxBarThickness: 22,
-            }],
-          },
-          options: {
-            indexAxis: "y",
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: ANIMASI,
-            plugins: {
-              legend: { display: false },
-              tooltip: {
-                backgroundColor: WARNA.ink,
-                titleFont: { family: FONT },
-                bodyFont: { family: FONT },
-                padding: 10,
-                displayColors: false,
-                callbacks: { label: (ctx) => ctx.parsed.x.toLocaleString("id-ID") + " jiwa" },
-              },
-            },
-            scales: {
-              x: {
-                border: { display: false },
-                grid: { color: WARNA.line, drawTicks: false },
-                ticks: { color: WARNA.muted, font: { family: FONT, size: 12 }, padding: 8 },
-              },
-              y: {
-                border: { color: WARNA.line },
-                grid: { display: false },
-                ticks: { color: WARNA.ink, font: { family: FONT, size: 13 }, padding: 8 },
-              },
-            },
-          },
-        });
-
-        tbody.innerHTML = data
-          .map((item) => `
-            <tr>
-              <td>${item.nama}</td>
-              <td class="num">${formatAngka(item.jumlah_kk)}</td>
-              <td class="num">${formatAngka(item.jumlah_jiwa)}</td>
-              <td class="num">${formatAngka(item.laki)}</td>
-              <td class="num">${formatAngka(item.perempuan)}</td>
-            </tr>
-          `)
-          .join("");
-      } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-10">Data belum bisa dimuat saat ini.</td></tr>`;
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      muatRingkasan();
-      muatGrafikGender();
-      muatGrafikLingkungan();
-      aktifkanReveal();
-    });
-  </script>
+  <script src="assets/js/komponen.js"></script>
+  <script src="assets/js/halaman/penduduk.js"></script>
 </body>
 </html>

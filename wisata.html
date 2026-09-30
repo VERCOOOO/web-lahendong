@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Wisata — Kelurahan Lahendong</title>
   <meta name="description" content="Daftar destinasi wisata di Kelurahan Lahendong: Danau Linow, Hutan Pinus, Kawah Belerang, dan Pemandian Air Panas." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' rx='9' fill='%232D5A4A'/><path d='M5 31 L15 16.5 H25 L35 31 Z' fill='%23F7F6F1'/><path d='M17.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4 M22.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4' fill='none' stroke='%23C07A1E' stroke-width='2.4' stroke-linecap='round'/></svg>" />
+  <link rel="icon" href="img/emblem.svg" type="image/svg+xml" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -23,7 +23,7 @@
   <main id="konten-utama" class="flex-1">
 
     <section class="kop-halaman bg-[var(--surface)] border-b border-[var(--line)]">
-      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-12 md:py-16 grid md:grid-cols-12 gap-6">
+      <div class="wadah py-12 md:py-16 grid md:grid-cols-12 gap-6">
         <div class="md:col-span-7">
           <nav class="remah" aria-label="Lokasi halaman" data-remah></nav>
           <h1 class="judul-halaman mt-4">Destinasi Wisata</h1>
@@ -37,7 +37,7 @@
       </div>
     </section>
 
-    <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+    <section class="wadah seksi">
       <div id="grid-wisata" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
         <!-- diisi oleh JS -->
       </div>
@@ -47,45 +47,9 @@
   <div id="footer"></div>
 
   <script src="assets/js/data.js"></script>
+  <script src="assets/js/data-contoh.js"></script>
   <script src="assets/js/ui.js"></script>
-  <script>
-    function kartuWisata(item, i) {
-      return `
-        <a href="wisata-detail.html?id=${encodeURIComponent(teksPolos(item.id))}" class="kartu reveal block overflow-hidden">
-          <div class="bingkai-foto aspect-[4/3]">
-            <img src="${urlFoto(item.foto)}" alt="${item.nama}" loading="lazy" onerror="this.src='img/placeholder.webp'" />
-          </div>
-          <div class="p-5">
-            <p class="no-seksi">${nomorUrut(i)}</p>
-            <h2 class="judul-kartu mt-2">${item.nama}</h2>
-            <p class="text-sm text-[var(--muted)] mt-2 leading-[1.6]">${item.ringkas}</p>
-            <span class="tautan mt-5">
-              <span class="relative">Lihat detail<span class="garis absolute left-0 -bottom-0.5"></span></span>
-              <i data-lucide="arrow-right" class="w-4 h-4"></i>
-            </span>
-          </div>
-        </a>
-      `;
-    }
-
-    async function muatDaftarWisata() {
-      const grid = document.getElementById("grid-wisata");
-      tampilkanMemuat(grid);
-      try {
-        const data = await ambilData("wisata");
-        if (!data.length) {
-          tampilkanGagal(grid, "Belum ada data destinasi wisata.");
-          return;
-        }
-        grid.innerHTML = data.map(kartuWisata).join("");
-        if (window.lucide) lucide.createIcons();
-        aktifkanReveal();
-      } catch (err) {
-        tampilkanGagal(grid, "Daftar destinasi belum bisa dimuat saat ini.");
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", muatDaftarWisata);
-  </script>
+  <script src="assets/js/komponen.js"></script>
+  <script src="assets/js/halaman/wisata.js"></script>
 </body>
 </html>

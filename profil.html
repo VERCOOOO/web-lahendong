@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Profil — Kelurahan Lahendong</title>
   <meta name="description" content="Sejarah, geografi, batas wilayah, dan peta lokasi Kelurahan Lahendong, Tomohon Selatan." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' rx='9' fill='%232D5A4A'/><path d='M5 31 L15 16.5 H25 L35 31 Z' fill='%23F7F6F1'/><path d='M17.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4 M22.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4' fill='none' stroke='%23C07A1E' stroke-width='2.4' stroke-linecap='round'/></svg>" />
+  <link rel="icon" href="img/emblem.svg" type="image/svg+xml" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -23,7 +23,7 @@
   <main id="konten-utama" class="flex-1">
 
     <section class="kop-halaman bg-[var(--surface)] border-b border-[var(--line)]">
-      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-12 md:py-16 grid md:grid-cols-12 gap-6">
+      <div class="wadah py-12 md:py-16 grid md:grid-cols-12 gap-6">
         <div class="md:col-span-7">
           <nav class="remah" aria-label="Lokasi halaman" data-remah></nav>
           <h1 class="judul-halaman mt-4">Profil Kelurahan</h1>
@@ -38,7 +38,7 @@
     </section>
 
     <!-- 01 · SEJARAH -->
-    <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+    <section class="wadah seksi">
       <div class="grid md:grid-cols-12 gap-8 md:gap-12">
         <div class="reveal md:col-span-4">
           <p class="no-seksi mb-3">01</p>
@@ -69,7 +69,7 @@
 
     <!-- 02 · GEOGRAFI -->
     <section class="bg-[var(--surface)] border-y border-[var(--line)]">
-      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+      <div class="wadah seksi">
         <div class="reveal mb-10 md:mb-12 grid md:grid-cols-12 gap-6">
           <div class="md:col-span-6">
             <p class="no-seksi mb-3">02</p>
@@ -90,7 +90,7 @@
     </section>
 
     <!-- 03 · BATAS WILAYAH -->
-    <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+    <section class="wadah seksi">
       <div class="grid md:grid-cols-12 gap-8 md:gap-12">
         <div class="reveal md:col-span-4">
           <p class="no-seksi mb-3">03</p>
@@ -115,7 +115,7 @@
 
     <!-- 04 · PETA -->
     <section class="bg-[var(--surface)] border-y border-[var(--line)]">
-      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+      <div class="wadah seksi">
         <div class="reveal mb-10">
           <p class="no-seksi mb-3">04</p>
           <span class="eyebrow">Lokasi</span>
@@ -135,42 +135,9 @@
   <div id="footer"></div>
 
   <script src="assets/js/data.js"></script>
+  <script src="assets/js/data-contoh.js"></script>
   <script src="assets/js/ui.js"></script>
-  <script>
-    async function muatGeografi() {
-      const grid = document.getElementById("grid-geografi");
-      tampilkanMemuat(grid);
-      try {
-        const data = await ambilData("statistik");
-        const cari = (k) => {
-          const baris = data.find((row) => row.kunci === k);
-          return baris ? baris.nilai : "—";
-        };
-
-        const kartu = [
-          { nilai: formatAngka(cari("luas_wilayah")), satuan: "km²", label: "Luas wilayah" },
-          { nilai: "800–950", satuan: "mdpl", label: "Ketinggian" },
-          { nilai: "22–26", satuan: "°C", label: "Suhu rata-rata" },
-          { nilai: formatAngka(cari("jumlah_lingkungan")), satuan: "", label: "Jumlah lingkungan" },
-        ];
-
-        grid.innerHTML = kartu
-          .map((item) => `
-            <div>
-              <p class="angka">${item.nilai}${item.satuan ? `<span class="satuan">${item.satuan}</span>` : ""}</p>
-              <p class="label-angka">${item.label}</p>
-            </div>
-          `)
-          .join("");
-      } catch (err) {
-        tampilkanGagal(grid, "Data geografis belum bisa dimuat saat ini.");
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      muatGeografi();
-      aktifkanReveal();
-    });
-  </script>
+  <script src="assets/js/komponen.js"></script>
+  <script src="assets/js/halaman/profil.js"></script>
 </body>
 </html>

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kelurahan Lahendong — Tomohon Selatan</title>
   <meta name="description" content="Situs resmi Kelurahan Lahendong, Kecamatan Tomohon Selatan, Kota Tomohon, Sulawesi Utara." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' rx='9' fill='%232D5A4A'/><path d='M5 31 L15 16.5 H25 L35 31 Z' fill='%23F7F6F1'/><path d='M17.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4 M22.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4' fill='none' stroke='%23C07A1E' stroke-width='2.4' stroke-linecap='round'/></svg>" />
+  <link rel="icon" href="img/emblem.svg" type="image/svg+xml" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -29,7 +29,7 @@
       <div class="absolute inset-0 bg-black/35"></div>
       <div class="absolute inset-x-0 bottom-0 h-1/2" style="background:linear-gradient(to top, rgba(0,0,0,.30), transparent);"></div>
 
-      <div class="relative max-w-[var(--konten)] mx-auto w-full px-4 md:px-6 pb-12 md:pb-14">
+      <div class="relative wadah w-full pb-12 md:pb-14">
         <span class="eyebrow eyebrow-terang">Tomohon Selatan · Sulawesi Utara</span>
         <h1 class="judul-hero text-white mt-5 max-w-[720px]">Kelurahan Lahendong</h1>
         <p class="text-white/85 text-[17px] md:text-[19px] leading-[1.6] mt-5 max-w-[520px]">
@@ -41,13 +41,13 @@
 
     <!-- FAKTA RINGKAS -->
     <section class="bg-[var(--surface)] border-b border-[var(--line)]">
-      <div id="deret-statistik" class="deret-statistik max-w-[var(--konten)] mx-auto px-4 md:px-6 py-10 md:py-12 grid grid-cols-2 lg:grid-cols-4">
+      <div id="deret-statistik" class="deret-statistik wadah py-10 md:py-12 grid grid-cols-2 lg:grid-cols-4">
         <!-- diisi oleh JS -->
       </div>
     </section>
 
     <!-- 01 · SAMBUTAN -->
-    <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+    <section class="wadah seksi">
       <div class="grid md:grid-cols-12 gap-8 md:gap-12">
         <div class="reveal md:col-span-4">
           <p class="no-seksi mb-3">01</p>
@@ -81,7 +81,7 @@
 
     <!-- 02 · WISATA -->
     <section class="bg-[var(--surface)] border-y border-[var(--line)]">
-      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+      <div class="wadah seksi">
         <div class="reveal flex flex-wrap items-end justify-between gap-6 mb-10 md:mb-12">
           <div>
             <p class="no-seksi mb-3">02</p>
@@ -106,7 +106,7 @@
     </section>
 
     <!-- 03 · POTENSI -->
-    <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+    <section class="wadah seksi">
       <div class="grid md:grid-cols-12 gap-8 md:gap-12">
         <div class="reveal md:col-span-4">
           <p class="no-seksi mb-3">03</p>
@@ -156,7 +156,7 @@
     </section>
 
     <!-- CTA LAYANAN — panel terpisah agar tidak menyatu dengan footer yang juga hijau -->
-    <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 pb-14 md:pb-24">
+    <section class="wadah pb-14 md:pb-24">
       <div class="panel-ajakan reveal px-6 py-10 md:px-12 md:py-14 grid md:grid-cols-12 gap-8 items-center">
         <div class="md:col-span-8">
           <span class="eyebrow eyebrow-terang">Pelayanan Warga</span>
@@ -178,101 +178,9 @@
   <div id="footer"></div>
 
   <script src="assets/js/data.js"></script>
+  <script src="assets/js/data-contoh.js"></script>
   <script src="assets/js/ui.js"></script>
-  <script>
-    const FAKTA = {
-      jumlah_penduduk: { label: "Jumlah penduduk", satuan: "jiwa" },
-      jumlah_kk: { label: "Kepala keluarga", satuan: "KK" },
-      jumlah_lingkungan: { label: "Lingkungan", satuan: "" },
-      luas_wilayah: { label: "Luas wilayah", satuan: "km²" },
-    };
-
-    async function muatFakta() {
-      const grid = document.getElementById("deret-statistik");
-      tampilkanMemuat(grid);
-      try {
-        const data = await ambilData("statistik");
-        const urutan = Object.keys(FAKTA);
-        const kartu = urutan
-          .map((kunci) => {
-            const baris = data.find((row) => row.kunci === kunci);
-            if (!baris) return "";
-            const info = FAKTA[kunci];
-            return `
-              <div>
-                <p class="angka">${formatAngka(baris.nilai)}${info.satuan ? `<span class="satuan">${info.satuan}</span>` : ""}</p>
-                <p class="label-angka">${info.label}</p>
-              </div>
-            `;
-          })
-          .join("");
-        grid.innerHTML = kartu;
-      } catch (err) {
-        tampilkanGagal(grid);
-      }
-    }
-
-    function kartuWisata(item, i) {
-      return `
-        <a href="wisata-detail.html?id=${encodeURIComponent(teksPolos(item.id))}" class="kartu reveal group block overflow-hidden">
-          <div class="bingkai-foto aspect-[4/3]">
-            <img src="${urlFoto(item.foto)}" alt="${item.nama}" loading="lazy" onerror="this.src='img/placeholder.webp'" />
-          </div>
-          <div class="p-5">
-            <p class="no-seksi">${nomorUrut(i)}</p>
-            <h3 class="judul-kartu mt-2">${item.nama}</h3>
-            <p class="text-sm text-[var(--muted)] mt-2 leading-[1.6]">${item.ringkas}</p>
-          </div>
-        </a>
-      `;
-    }
-
-    async function muatWisata() {
-      const grid = document.getElementById("grid-wisata");
-      tampilkanMemuat(grid);
-      try {
-        const data = await ambilData("wisata");
-        grid.innerHTML = data.slice(0, 4).map(kartuWisata).join("");
-        aktifkanReveal();
-      } catch (err) {
-        tampilkanGagal(grid, "Daftar destinasi belum bisa dimuat saat ini.");
-      }
-    }
-
-    /* Pimpinan diambil dari tab aparat (urutan terkecil), bukan ditulis di HTML.
-       Blok ini pelengkap, jadi bila gagal dimuat cukup tidak ditampilkan. */
-    async function muatPimpinan() {
-      const wadah = document.getElementById("pimpinan");
-      try {
-        const data = await ambilData("aparat");
-        if (!data.length) return;
-        const lurah = data.sort((a, b) => (keAngka(a.urutan) ?? 999) - (keAngka(b.urutan) ?? 999))[0];
-        const adaFoto = lurah.foto && String(lurah.foto).trim() !== "";
-        const visual = adaFoto
-          ? `<img src="${urlFoto(lurah.foto)}" alt="${lurah.nama}" class="w-14 h-14 rounded-full object-cover border border-[var(--line)] shrink-0" onerror="this.src='img/placeholder.webp'" />`
-          : `<span class="monogram w-14 h-14 rounded-full border border-[var(--line)] text-[18px] shrink-0" aria-hidden="true">${inisial(lurah.nama)}</span>`;
-        wadah.innerHTML = `
-          <p class="text-[11px] font-semibold tracking-[0.08em] uppercase text-[var(--muted)] mb-4">Pimpinan kelurahan</p>
-          <a href="pemerintahan.html" class="flex items-center gap-4 pt-5 border-t border-[var(--line)] group">
-            ${visual}
-            <span class="min-w-0">
-              <span class="block font-judul text-[17px] leading-snug group-hover:text-[var(--primary)]">${lurah.nama}</span>
-              <span class="block text-[13px] text-[var(--muted)] mt-1">${lurah.jabatan}</span>
-            </span>
-          </a>
-        `;
-      } catch (err) {
-        wadah.remove();
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      muatFakta();
-      muatPimpinan();
-      muatWisata();
-      aktifkanReveal();
-      if (window.lucide) lucide.createIcons();
-    });
-  </script>
+  <script src="assets/js/komponen.js"></script>
+  <script src="assets/js/halaman/beranda.js"></script>
 </body>
 </html>

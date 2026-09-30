@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title id="judul-tab">Detail Wisata — Kelurahan Lahendong</title>
+  <title>Detail Wisata — Kelurahan Lahendong</title>
   <meta name="description" content="Detail destinasi wisata Kelurahan Lahendong: jam operasional, tiket, fasilitas, dan cara menuju lokasi." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' rx='9' fill='%232D5A4A'/><path d='M5 31 L15 16.5 H25 L35 31 Z' fill='%23F7F6F1'/><path d='M17.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4 M22.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4' fill='none' stroke='%23C07A1E' stroke-width='2.4' stroke-linecap='round'/></svg>" />
+  <link rel="icon" href="img/emblem.svg" type="image/svg+xml" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -22,7 +22,7 @@
 
   <main id="konten-utama" class="flex-1">
     <div id="konten-detail">
-      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-24 flex items-center justify-center gap-2.5 text-[var(--muted)] text-sm">
+      <div class="wadah py-24 flex items-center justify-center gap-2.5 text-[var(--muted)] text-sm">
         <i data-lucide="loader-circle" class="w-4 h-4 animate-spin"></i> Memuat data…
       </div>
     </div>
@@ -31,117 +31,9 @@
   <div id="footer"></div>
 
   <script src="assets/js/data.js"></script>
+  <script src="assets/js/data-contoh.js"></script>
   <script src="assets/js/ui.js"></script>
-  <script>
-    function halamanPesan(ikon, judul, pesan, warnaIkon) {
-      return `
-        <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-24 md:py-32 text-center">
-          <i data-lucide="${ikon}" class="w-10 h-10 ${warnaIkon} mx-auto mb-5"></i>
-          <h1 class="judul-halaman">${judul}</h1>
-          <p class="text-[var(--muted)] mt-4 mb-8 max-w-[420px] mx-auto">${pesan}</p>
-          <a href="wisata.html" class="tombol">
-            <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke daftar wisata
-          </a>
-        </section>
-      `;
-    }
-
-    function barisInfo(ikon, label, nilai) {
-      return `
-        <div class="py-5 border-b border-[var(--line)] flex gap-4">
-          <i data-lucide="${ikon}" class="w-[18px] h-[18px] text-[var(--primary)] shrink-0 mt-1"></i>
-          <div>
-            <p class="text-[11px] font-semibold tracking-[0.08em] uppercase text-[var(--muted)]">${label}</p>
-            <p class="text-[15px] mt-1">${nilai}</p>
-          </div>
-        </div>
-      `;
-    }
-
-    function tampilanDetail(item) {
-      const tautanPeta = escapeHtml(urlAman(teksPolos(item.maps_link)));
-      return `
-        <section class="relative h-[45vh] max-h-[420px] min-h-[300px] flex items-end overflow-hidden">
-          <img src="${urlFoto(item.foto)}" alt="${item.nama}" class="absolute inset-0 w-full h-full object-cover" onerror="this.src='img/placeholder.webp'" />
-          <div class="absolute inset-0 bg-black/35"></div>
-          <div class="absolute inset-x-0 bottom-0 h-1/2" style="background:linear-gradient(to top, rgba(0,0,0,.30), transparent);"></div>
-          <div class="relative max-w-[var(--konten)] mx-auto w-full px-4 md:px-6 pb-10 md:pb-12">
-            <a href="wisata.html" class="inline-flex items-center gap-2 text-white/80 hover:text-white text-sm font-semibold mb-5">
-              <i data-lucide="arrow-left" class="w-4 h-4"></i> Daftar wisata
-            </a>
-            <h1 class="judul-hero text-white max-w-[720px]">${item.nama}</h1>
-          </div>
-        </section>
-
-        <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
-          <div class="grid lg:grid-cols-12 gap-10 lg:gap-16">
-            <div class="lg:col-span-7">
-              <span class="eyebrow">Tentang destinasi</span>
-              <h2 class="judul-seksi mt-4 mb-5">${item.nama}</h2>
-              <div class="prosa">
-                <p>${item.deskripsi}</p>
-              </div>
-
-              <h3 class="judul-kartu mt-12 mb-4">Cara menuju lokasi</h3>
-              <div class="prosa"><p>${item.cara_kesana}</p></div>
-
-              ${tautanPeta ? `
-                <a href="${tautanPeta}" target="_blank" rel="noopener noreferrer" class="tombol tombol-sekunder mt-7">
-                  <i data-lucide="map" class="w-4 h-4"></i> Buka di Google Maps
-                </a>` : ""}
-            </div>
-
-            <aside class="lg:col-span-5">
-              <div class="kartu p-6 md:p-7">
-                <p class="text-[11px] font-semibold tracking-[0.08em] uppercase text-[var(--muted)] pb-4 border-b border-[var(--line)]">
-                  Informasi kunjungan
-                </p>
-                ${barisInfo("clock", "Jam operasional", item.jam)}
-                ${barisInfo("ticket", "Tiket masuk", item.tiket)}
-                ${barisInfo("layout-grid", "Fasilitas", item.fasilitas)}
-                <div class="pt-5 flex gap-4">
-                  <i data-lucide="sun" class="w-[18px] h-[18px] text-[var(--primary)] shrink-0 mt-1"></i>
-                  <div>
-                    <p class="text-[11px] font-semibold tracking-[0.08em] uppercase text-[var(--muted)]">Waktu terbaik</p>
-                    <p class="text-[15px] mt-1">${item.waktu_terbaik}</p>
-                  </div>
-                </div>
-              </div>
-            </aside>
-          </div>
-        </section>
-      `;
-    }
-
-    async function muatDetailWisata() {
-      const container = document.getElementById("konten-detail");
-      const id = new URLSearchParams(window.location.search).get("id");
-
-      if (!id) {
-        container.innerHTML = halamanPesan("map-pin-off", "Destinasi tidak ditemukan",
-          "Tautan yang Anda buka tidak menyertakan destinasi apa pun.", "text-[var(--muted)]");
-        if (window.lucide) lucide.createIcons();
-        return;
-      }
-
-      try {
-        const data = await ambilData("wisata");
-        const item = data.find((row) => teksPolos(row.id) === id);
-        if (!item) {
-          container.innerHTML = halamanPesan("map-pin-off", "Destinasi tidak ditemukan",
-            "Tautan yang Anda buka tidak valid atau destinasi sudah tidak tersedia.", "text-[var(--muted)]");
-        } else {
-          container.innerHTML = tampilanDetail(item);
-          document.getElementById("judul-tab").textContent = teksPolos(item.nama) + " — Kelurahan Lahendong";
-        }
-      } catch (err) {
-        container.innerHTML = halamanPesan("triangle-alert", "Data belum bisa dimuat",
-          "Silakan coba lagi beberapa saat lagi.", "text-[var(--danger)]");
-      }
-      if (window.lucide) lucide.createIcons();
-    }
-
-    document.addEventListener("DOMContentLoaded", muatDetailWisata);
-  </script>
+  <script src="assets/js/komponen.js"></script>
+  <script src="assets/js/halaman/wisata-detail.js"></script>
 </body>
 </html>

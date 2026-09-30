@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pemerintahan — Kelurahan Lahendong</title>
   <meta name="description" content="Struktur aparat dan data 8 lingkungan Kelurahan Lahendong, Tomohon Selatan." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' rx='9' fill='%232D5A4A'/><path d='M5 31 L15 16.5 H25 L35 31 Z' fill='%23F7F6F1'/><path d='M17.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4 M22.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4' fill='none' stroke='%23C07A1E' stroke-width='2.4' stroke-linecap='round'/></svg>" />
+  <link rel="icon" href="img/emblem.svg" type="image/svg+xml" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -23,7 +23,7 @@
   <main id="konten-utama" class="flex-1">
 
     <section class="kop-halaman bg-[var(--surface)] border-b border-[var(--line)]">
-      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-12 md:py-16 grid md:grid-cols-12 gap-6">
+      <div class="wadah py-12 md:py-16 grid md:grid-cols-12 gap-6">
         <div class="md:col-span-7">
           <nav class="remah" aria-label="Lokasi halaman" data-remah></nav>
           <h1 class="judul-halaman mt-4">Pemerintahan</h1>
@@ -38,7 +38,7 @@
     </section>
 
     <!-- 01 · APARAT -->
-    <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+    <section class="wadah seksi">
       <div class="reveal mb-10 md:mb-12">
         <p class="no-seksi mb-3">01</p>
         <span class="eyebrow">Struktur Organisasi</span>
@@ -51,7 +51,7 @@
 
     <!-- 02 · LINGKUNGAN -->
     <section class="bg-[var(--surface)] border-y border-[var(--line)]">
-      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14 md:py-24">
+      <div class="wadah seksi">
         <div class="reveal mb-10 md:mb-12 grid md:grid-cols-12 gap-6">
           <div class="md:col-span-6">
             <p class="no-seksi mb-3">02</p>
@@ -87,76 +87,9 @@
   <div id="footer"></div>
 
   <script src="assets/js/data.js"></script>
+  <script src="assets/js/data-contoh.js"></script>
   <script src="assets/js/ui.js"></script>
-  <script>
-    function kartuAparat(item) {
-      const adaFoto = item.foto && String(item.foto).trim() !== "";
-      const visual = adaFoto
-        ? `<div class="bingkai-foto aspect-[4/3] border-b border-[var(--line)]">
-             <img src="${urlFoto(item.foto)}" alt="${item.nama}" loading="lazy" onerror="this.src='img/placeholder.webp'" />
-           </div>`
-        : `<div class="monogram aspect-[4/3]" aria-hidden="true">${inisial(item.nama)}</div>`;
-
-      return `
-        <div class="kartu reveal overflow-hidden">
-          ${visual}
-          <div class="p-5">
-            <p class="no-seksi">${String(item.urutan).padStart(2, "0")}</p>
-            <h3 class="font-judul text-[17px] leading-snug mt-2">${item.nama}</h3>
-            <p class="text-[13px] text-[var(--muted)] mt-1.5 leading-snug">${item.jabatan}</p>
-          </div>
-        </div>
-      `;
-    }
-
-    function barisLingkungan(item) {
-      return `
-        <tr>
-          <td>${item.nama}</td>
-          <td>${item.kepala}</td>
-          <td class="num">${formatAngka(item.jumlah_kk)}</td>
-          <td class="num">${formatAngka(item.jumlah_jiwa)}</td>
-          <td class="num">${formatAngka(item.laki)}</td>
-          <td class="num">${formatAngka(item.perempuan)}</td>
-        </tr>
-      `;
-    }
-
-    async function muatAparat() {
-      const grid = document.getElementById("grid-aparat");
-      tampilkanMemuat(grid);
-      try {
-        const data = await ambilData("aparat");
-        if (!data.length) {
-          tampilkanGagal(grid, "Belum ada data aparat kelurahan.");
-          return;
-        }
-        const terurut = data.sort((a, b) => (keAngka(a.urutan) ?? 999) - (keAngka(b.urutan) ?? 999));
-        grid.innerHTML = terurut.map(kartuAparat).join("");
-        aktifkanReveal();
-      } catch (err) {
-        tampilkanGagal(grid, "Data aparat belum bisa dimuat saat ini.");
-      }
-    }
-
-    async function muatLingkungan() {
-      const tbody = document.getElementById("tabel-lingkungan");
-      tbody.innerHTML = `<tr><td colspan="6" class="text-center py-10">Memuat data…</td></tr>`;
-      try {
-        const data = await ambilData("lingkungan");
-        tbody.innerHTML = data.length
-          ? data.map(barisLingkungan).join("")
-          : `<tr><td colspan="6" class="text-center py-10">Belum ada data lingkungan.</td></tr>`;
-      } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-10">Data lingkungan belum bisa dimuat saat ini.</td></tr>`;
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      muatAparat();
-      muatLingkungan();
-      aktifkanReveal();
-    });
-  </script>
+  <script src="assets/js/komponen.js"></script>
+  <script src="assets/js/halaman/pemerintahan.js"></script>
 </body>
 </html>

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Galeri — Kelurahan Lahendong</title>
   <meta name="description" content="Galeri foto destinasi wisata dan UMKM Kelurahan Lahendong." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' rx='9' fill='%232D5A4A'/><path d='M5 31 L15 16.5 H25 L35 31 Z' fill='%23F7F6F1'/><path d='M17.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4 M22.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4' fill='none' stroke='%23C07A1E' stroke-width='2.4' stroke-linecap='round'/></svg>" />
+  <link rel="icon" href="img/emblem.svg" type="image/svg+xml" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -23,7 +23,7 @@
   <main id="konten-utama" class="flex-1">
 
     <section class="kop-halaman bg-[var(--surface)] border-b border-[var(--line)]">
-      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-12 md:py-16 grid md:grid-cols-12 gap-6">
+      <div class="wadah py-12 md:py-16 grid md:grid-cols-12 gap-6">
         <div class="md:col-span-7">
           <nav class="remah" aria-label="Lokasi halaman" data-remah></nav>
           <h1 class="judul-halaman mt-4">Galeri</h1>
@@ -36,9 +36,9 @@
       </div>
     </section>
 
-    <section class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-12 md:py-20">
+    <section class="wadah py-12 md:py-20">
       <div class="reveal flex flex-wrap items-center gap-2.5 mb-10 pb-6 border-b border-[var(--line)]">
-        <span class="text-[11px] font-semibold tracking-[0.08em] uppercase text-[var(--muted)] mr-2">Saring</span>
+        <span class="label-kecil mr-2">Saring</span>
         <button data-filter="semua" aria-pressed="true" class="tombol-filter">Semua</button>
         <button data-filter="wisata" aria-pressed="false" class="tombol-filter">Wisata</button>
         <button data-filter="umkm" aria-pressed="false" class="tombol-filter">UMKM</button>
@@ -54,68 +54,9 @@
   <div id="footer"></div>
 
   <script src="assets/js/data.js"></script>
+  <script src="assets/js/data-contoh.js"></script>
   <script src="assets/js/ui.js"></script>
-  <script>
-    const LABEL_KATEGORI = { wisata: "Wisata", umkm: "UMKM" };
-
-    function kartuGaleri(item) {
-      return `
-        <figure data-kategori="${item.kategori}" class="kartu kartu-hover reveal overflow-hidden">
-          <div class="bingkai-foto aspect-[4/3]">
-            <img src="${urlFoto(item.foto)}" alt="${item.nama}" loading="lazy" onerror="this.src='img/placeholder.webp'" />
-          </div>
-          <figcaption class="p-5 flex items-start justify-between gap-4">
-            <p class="font-judul text-[17px] leading-snug">${item.nama}</p>
-            <span class="text-[11px] font-semibold tracking-[0.08em] uppercase text-[var(--muted)] whitespace-nowrap mt-1">
-              ${LABEL_KATEGORI[item.kategori]}
-            </span>
-          </figcaption>
-        </figure>
-      `;
-    }
-
-    function terapkanFilter(kategori) {
-      let terlihat = 0;
-      document.querySelectorAll("#grid-galeri [data-kategori]").forEach((el) => {
-        const cocok = kategori === "semua" || el.dataset.kategori === kategori;
-        el.classList.toggle("hidden", !cocok);
-        if (cocok) terlihat += 1;
-      });
-      document.querySelectorAll(".tombol-filter").forEach((btn) => {
-        btn.setAttribute("aria-pressed", String(btn.dataset.filter === kategori));
-      });
-      const hitung = document.getElementById("jumlah-foto");
-      if (hitung) hitung.textContent = terlihat + " foto";
-    }
-
-    async function muatGaleri() {
-      const grid = document.getElementById("grid-galeri");
-      tampilkanMemuat(grid);
-      try {
-        const [wisata, umkm] = await Promise.all([ambilData("wisata"), ambilData("umkm")]);
-        const item = [
-          ...wisata.map((row) => ({ nama: row.nama, foto: row.foto, kategori: "wisata" })),
-          ...umkm.map((row) => ({ nama: row.nama, foto: row.foto, kategori: "umkm" })),
-        ];
-        if (!item.length) {
-          tampilkanGagal(grid, "Belum ada foto untuk ditampilkan.");
-          return;
-        }
-        grid.innerHTML = item.map(kartuGaleri).join("");
-        terapkanFilter("semua");
-        aktifkanReveal();
-      } catch (err) {
-        tampilkanGagal(grid, "Galeri belum bisa dimuat saat ini.");
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      muatGaleri();
-      document.querySelectorAll(".tombol-filter").forEach((btn) => {
-        btn.addEventListener("click", () => terapkanFilter(btn.dataset.filter));
-      });
-      aktifkanReveal();
-    });
-  </script>
+  <script src="assets/js/komponen.js"></script>
+  <script src="assets/js/halaman/galeri.js"></script>
 </body>
 </html>

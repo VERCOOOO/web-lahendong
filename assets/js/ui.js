@@ -1,6 +1,6 @@
 /* ==========================================================================
-   Komponen bersama: header, footer, menu mobile, reveal-on-scroll.
-   Dipanggil di setiap halaman lewat renderHeader() / renderFooter().
+   Kerangka situs — header, footer, breadcrumb, animasi muncul, dan status
+   memuat/gagal/kosong. Berjalan otomatis di setiap halaman.
    ========================================================================== */
 
 const NAV_LINKS = [
@@ -16,6 +16,29 @@ const NAV_LINKS = [
   { href: "kontak.html", label: "Kontak" },
 ];
 
+const JAM_LAYANAN = "Senin – Jumat, 08.00 – 15.00 WITA";
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderHeader();
+  renderFooter();
+  isiRemah();
+  segarkanTampilan();
+});
+
+/** Dipanggil setelah konten baru disisipkan: gambar ikon Lucide & aktifkan animasi muncul. */
+function segarkanTampilan() {
+  if (window.lucide) lucide.createIcons();
+  aktifkanReveal();
+}
+
+function halamanAktif() {
+  return window.location.pathname.split("/").pop() || "index.html";
+}
+
+/* ---------------------------------------------------------------------- */
+/* Header                                                                  */
+/* ---------------------------------------------------------------------- */
+
 /* Emblem: gunung berkawah dengan uap panas bumi — ciri khas Lahendong. */
 function emblem(ukuran = 36, latar = "var(--primary)") {
   return `
@@ -30,56 +53,51 @@ function emblem(ukuran = 36, latar = "var(--primary)") {
   `;
 }
 
-function halamanAktif() {
-  const path = window.location.pathname.split("/").pop();
-  return path === "" || path === undefined ? "index.html" : path;
-}
-
 function renderHeader() {
-  const container = document.getElementById("header");
-  if (!container) return;
+  const wadah = document.getElementById("header");
+  if (!wadah) return;
   const aktif = halamanAktif();
+  const tanda = (link) => (link.href === aktif ? ' aria-current="page"' : "");
 
-  const tautanDesktop = NAV_LINKS.map((link) => {
-    const current = link.href === aktif ? ' aria-current="page"' : "";
-    return `<a href="${link.href}" class="nav-tautan"${current}>${link.label}</a>`;
-  }).join("");
+  const tautanDesktop = NAV_LINKS
+    .map((link) => `<a href="${link.href}" class="nav-tautan"${tanda(link)}>${link.label}</a>`)
+    .join("");
 
   const tautanMobile = NAV_LINKS.map((link) => {
     const isAktif = link.href === aktif;
-    const current = isAktif ? ' aria-current="page"' : "";
-    const kelas = isAktif ? "text-[var(--primary)]" : "text-[var(--ink)]";
     return `
-      <a href="${link.href}"${current} class="flex items-center justify-between gap-4 py-3.5 border-b border-[var(--line)] text-[15px] font-semibold ${kelas}">
+      <a href="${link.href}"${tanda(link)} class="flex items-center justify-between gap-4 py-3.5 border-b border-[var(--line)] text-[15px] font-semibold ${isAktif ? "text-[var(--primary)]" : "text-[var(--ink)]"}">
         ${link.label}
         ${isAktif ? '<span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>' : ""}
       </a>
     `;
   }).join("");
 
-  /* Tanpa ini, header yang sticky terkurung di dalam #header (setinggi header itu
+  /* Tanpa ini, header sticky terkurung di dalam #header (setinggi header itu
      sendiri) dan ikut tergulir hilang. Dengan display: contents, header menempel
      relatif terhadap <body>, sedangkan bilah resmi di atasnya tetap tergulir. */
-  container.style.display = "contents";
+  wadah.style.display = "contents";
 
-  container.innerHTML = `
+  wadah.innerHTML = `
     <a href="#konten-utama" class="sr-only focus:not-sr-only focus:absolute focus:z-[60] focus:m-3 focus:px-4 focus:py-2 focus:bg-[var(--primary)] focus:text-white focus:rounded-[4px] text-sm font-semibold">
       Lewati ke konten
     </a>
+
     <div class="bg-[var(--primary-d)] text-white/80 text-[12.5px]">
-      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 h-9 flex items-center justify-between gap-4">
+      <div class="wadah h-9 flex items-center justify-between gap-4">
         <p class="flex items-center gap-2 min-w-0">
           <i data-lucide="landmark" class="w-3.5 h-3.5 shrink-0 text-white/60"></i>
           <span class="truncate">Situs resmi Kelurahan Lahendong, Kota Tomohon</span>
         </p>
         <div class="hidden md:flex items-center gap-5 shrink-0">
-          <span class="flex items-center gap-1.5"><i data-lucide="clock" class="w-3.5 h-3.5 text-white/60"></i>Senin – Jumat, 08.00 – 15.00 WITA</span>
+          <span class="flex items-center gap-1.5"><i data-lucide="clock" class="w-3.5 h-3.5 text-white/60"></i>${JAM_LAYANAN}</span>
           <a href="kontak.html" class="flex items-center gap-1.5 hover:text-white"><i data-lucide="phone" class="w-3.5 h-3.5 text-white/60"></i>Hubungi kami</a>
         </div>
       </div>
     </div>
+
     <header class="sticky top-0 z-50 bg-[var(--surface)] border-b border-[var(--line)]">
-      <div class="max-w-[var(--konten)] mx-auto h-[72px] px-4 md:px-6 flex items-center justify-between gap-6">
+      <div class="wadah h-[72px] flex items-center justify-between gap-6">
         <a href="index.html" class="flex items-center gap-3 shrink-0" aria-label="Beranda Kelurahan Lahendong">
           ${emblem(36)}
           <span class="leading-none">
@@ -103,38 +121,48 @@ function renderHeader() {
     </header>
   `;
 
-  const tombolMenu = document.getElementById("tombol-menu");
-  const menuMobile = document.getElementById("menu-mobile");
-  if (tombolMenu && menuMobile) {
-    tombolMenu.addEventListener("click", () => {
-      const sedangTerbuka = !menuMobile.classList.contains("hidden");
-      menuMobile.classList.toggle("hidden");
-      tombolMenu.setAttribute("aria-expanded", String(!sedangTerbuka));
-      tombolMenu.setAttribute("aria-label", sedangTerbuka ? "Buka menu navigasi" : "Tutup menu navigasi");
-
-      /* Lucide mengganti <i> menjadi <svg>, jadi elemen lama harus ditukar
-         dengan <i> baru sebelum createIcons() dipanggil lagi. */
-      const ikonLama = tombolMenu.querySelector("i, svg");
-      if (ikonLama) {
-        const ikonBaru = document.createElement("i");
-        ikonBaru.setAttribute("data-lucide", sedangTerbuka ? "menu" : "x");
-        ikonBaru.className = "w-6 h-6";
-        ikonLama.replaceWith(ikonBaru);
-      }
-      if (window.lucide) lucide.createIcons();
-    });
-  }
-
-  if (window.lucide) lucide.createIcons();
+  pasangMenuMobile();
 }
 
-function renderFooter() {
-  const container = document.getElementById("footer");
-  if (!container) return;
+function pasangMenuMobile() {
+  const tombol = document.getElementById("tombol-menu");
+  const menu = document.getElementById("menu-mobile");
+  if (!tombol || !menu) return;
 
-  container.innerHTML = `
+  tombol.addEventListener("click", () => {
+    const akanTerbuka = menu.classList.contains("hidden");
+    menu.classList.toggle("hidden", !akanTerbuka);
+    tombol.setAttribute("aria-expanded", String(akanTerbuka));
+    tombol.setAttribute("aria-label", akanTerbuka ? "Tutup menu navigasi" : "Buka menu navigasi");
+
+    /* Lucide mengganti <i> menjadi <svg>, jadi elemen lama harus ditukar
+       dengan <i> baru sebelum createIcons() dipanggil lagi. */
+    const ikon = document.createElement("i");
+    ikon.setAttribute("data-lucide", akanTerbuka ? "x" : "menu");
+    ikon.className = "w-6 h-6";
+    tombol.querySelector("i, svg")?.replaceWith(ikon);
+    if (window.lucide) lucide.createIcons();
+  });
+}
+
+/* ---------------------------------------------------------------------- */
+/* Footer                                                                  */
+/* ---------------------------------------------------------------------- */
+
+function renderFooter() {
+  const wadah = document.getElementById("footer");
+  if (!wadah) return;
+
+  const tautanCepat = [
+    ["wisata.html", "Destinasi Wisata"],
+    ["layanan.html", "Layanan Surat"],
+    ["penduduk.html", "Data Penduduk"],
+    ["pemerintahan.html", "Aparat Kelurahan"],
+  ];
+
+  wadah.innerHTML = `
     <footer class="bg-[var(--primary)] text-white mt-auto">
-      <div class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-14">
+      <div class="wadah py-14">
         <div class="grid gap-10 md:grid-cols-12">
           <div class="md:col-span-5">
             <div class="flex items-center gap-3.5">
@@ -151,17 +179,14 @@ function renderFooter() {
           </div>
 
           <div class="md:col-span-3">
-            <h4 class="text-[11px] font-semibold tracking-[0.08em] uppercase text-white/60 mb-4">Tautan Cepat</h4>
+            <h4 class="label-kecil text-white/60 mb-4">Tautan Cepat</h4>
             <ul class="space-y-2.5 text-sm">
-              <li><a href="wisata.html" class="text-white/85 hover:text-white">Destinasi Wisata</a></li>
-              <li><a href="layanan.html" class="text-white/85 hover:text-white">Layanan Surat</a></li>
-              <li><a href="penduduk.html" class="text-white/85 hover:text-white">Data Penduduk</a></li>
-              <li><a href="pemerintahan.html" class="text-white/85 hover:text-white">Aparat Kelurahan</a></li>
+              ${tautanCepat.map(([href, label]) => `<li><a href="${href}" class="text-white/85 hover:text-white">${label}</a></li>`).join("")}
             </ul>
           </div>
 
           <div class="md:col-span-4">
-            <h4 class="text-[11px] font-semibold tracking-[0.08em] uppercase text-white/60 mb-4">Kantor Kelurahan</h4>
+            <h4 class="label-kecil text-white/60 mb-4">Kantor Kelurahan</h4>
             <ul class="space-y-3 text-sm text-white/85">
               <li class="flex items-start gap-3">
                 <i data-lucide="map-pin" class="w-4 h-4 mt-1 shrink-0 text-white/60"></i>
@@ -173,7 +198,7 @@ function renderFooter() {
               </li>
               <li class="flex items-center gap-3">
                 <i data-lucide="clock" class="w-4 h-4 shrink-0 text-white/60"></i>
-                <span>Senin – Jumat, 08.00 – 15.00 WITA</span>
+                <span>${JAM_LAYANAN}</span>
               </li>
             </ul>
           </div>
@@ -181,97 +206,17 @@ function renderFooter() {
       </div>
 
       <div class="border-t border-white/15">
-        <p class="max-w-[var(--konten)] mx-auto px-4 md:px-6 py-5 text-xs text-white/60">
+        <p class="wadah py-5 text-xs text-white/60">
           &copy; ${new Date().getFullYear()} Pemerintah Kelurahan Lahendong. Seluruh hak cipta dilindungi.
         </p>
       </div>
     </footer>
   `;
-
-  if (window.lucide) lucide.createIcons();
 }
 
 /* ---------------------------------------------------------------------- */
-/* Utilitas tampilan                                                       */
+/* Breadcrumb & animasi muncul                                             */
 /* ---------------------------------------------------------------------- */
-
-/** Inisial nama untuk monogram pengganti foto. */
-function inisial(nama) {
-  const kata = teksPolos(nama)
-    .split(",")[0] // gelar di belakang koma: "Nama, S.STP"
-    .trim()
-    .split(/\s+/)
-    .filter((k) =>
-      k &&
-      !/^[a-z]{1,4}\.$/i.test(k) && // gelar depan & inisial tengah: Drs. Ir. H. M.
-      !/^[a-z]{1,4}(\.[a-z]{1,4})+\.?$/i.test(k) // gelar akademik: S.T S.St M.Kes S.STP
-    );
-  if (!kata.length) return "—";
-  if (kata.length === 1) return kata[0].slice(0, 2).toUpperCase();
-  return (kata[0][0] + kata[kata.length - 1][0]).toUpperCase();
-}
-
-/** Format angka gaya Indonesia: 3241 -> "3.241", 7.85 -> "7,85". Bukan angka → apa adanya. */
-function formatAngka(nilai) {
-  const n = keAngka(nilai);
-  return n === null ? nilai : n.toLocaleString("id-ID", { maximumFractionDigits: 2 });
-}
-
-/** Nomor urut dua digit untuk penanda seksi/kartu. */
-function nomorUrut(i) {
-  return String(i + 1).padStart(2, "0");
-}
-
-function aktifkanReveal() {
-  const elemen = document.querySelectorAll(".reveal:not(.reveal-tampil)");
-  if (!elemen.length) return;
-
-  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (prefersReduced) {
-    elemen.forEach((el) => el.classList.add("reveal-tampil"));
-    return;
-  }
-
-  const observer = new IntersectionObserver(
-    (entries, obs) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("reveal-tampil");
-          obs.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
-  );
-
-  elemen.forEach((el) => observer.observe(el));
-}
-
-/* ---------------------------------------------------------------------- */
-/* Status memuat / gagal — dipakai bersama seluruh halaman                */
-/* ---------------------------------------------------------------------- */
-
-function tampilkanMemuat(container, pesan = "Memuat data…") {
-  if (!container) return;
-  container.innerHTML = `
-    <div class="col-span-full flex items-center justify-center gap-2.5 py-16 text-[var(--muted)] text-sm">
-      <i data-lucide="loader-circle" class="w-4 h-4 animate-spin"></i>
-      ${pesan}
-    </div>
-  `;
-  if (window.lucide) lucide.createIcons();
-}
-
-function tampilkanGagal(container, pesan = "Data belum bisa dimuat saat ini. Silakan coba lagi nanti.") {
-  if (!container) return;
-  container.innerHTML = `
-    <div class="col-span-full flex flex-col items-center justify-center gap-3 py-16 text-center">
-      <i data-lucide="triangle-alert" class="w-5 h-5 text-[var(--danger)]"></i>
-      <p class="text-[var(--muted)] text-sm max-w-[320px]">${pesan}</p>
-    </div>
-  `;
-  if (window.lucide) lucide.createIcons();
-}
 
 /** Mengisi setiap <nav data-remah> dengan jejak "Beranda / Halaman ini". */
 function isiRemah() {
@@ -286,8 +231,67 @@ function isiRemah() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  renderHeader();
-  renderFooter();
-  isiRemah();
-});
+function aktifkanReveal() {
+  const elemen = document.querySelectorAll(".reveal:not(.reveal-tampil)");
+  if (!elemen.length) return;
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    elemen.forEach((el) => el.classList.add("reveal-tampil"));
+    return;
+  }
+
+  const pengamat = new IntersectionObserver(
+    (entri, obs) => {
+      entri.forEach((e) => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add("reveal-tampil");
+        obs.unobserve(e.target);
+      });
+    },
+    { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+  );
+  elemen.forEach((el) => pengamat.observe(el));
+}
+
+/* ---------------------------------------------------------------------- */
+/* Status memuat / gagal / kosong                                          */
+/* ---------------------------------------------------------------------- */
+
+function tampilkanMemuat(wadah, pesan = "Memuat data…") {
+  isiStatus(wadah, `
+    <div class="flex items-center justify-center gap-2.5 py-16 text-[var(--muted)] text-sm font-normal">
+      <i data-lucide="loader-circle" class="w-4 h-4 animate-spin"></i>
+      ${pesan}
+    </div>
+  `);
+}
+
+function tampilkanGagal(wadah, pesan = "Data belum bisa dimuat saat ini. Silakan coba lagi nanti.") {
+  isiStatus(wadah, `
+    <div class="flex flex-col items-center justify-center gap-3 py-16 text-center font-normal">
+      <i data-lucide="triangle-alert" class="w-5 h-5 text-[var(--danger)]"></i>
+      <p class="text-[var(--muted)] text-sm max-w-[320px]">${pesan}</p>
+    </div>
+  `);
+}
+
+function tampilkanKosong(wadah, pesan = "Belum ada data untuk ditampilkan.") {
+  isiStatus(wadah, `
+    <div class="flex flex-col items-center justify-center gap-3 py-16 text-center font-normal">
+      <i data-lucide="inbox" class="w-5 h-5 text-[var(--muted)]"></i>
+      <p class="text-[var(--muted)] text-sm max-w-[320px]">${pesan}</p>
+    </div>
+  `);
+}
+
+/** Menyisipkan pesan status; di dalam <tbody> pesan dibungkus satu baris selebar tabel. */
+function isiStatus(wadah, html) {
+  if (!wadah) return;
+  if (wadah.tagName === "TBODY") {
+    const kolom = wadah.closest("table")?.querySelectorAll("thead th").length || 1;
+    wadah.innerHTML = `<tr><td colspan="${kolom}">${html}</td></tr>`;
+  } else {
+    wadah.innerHTML = `<div class="col-span-full">${html}</div>`;
+  }
+  if (window.lucide) lucide.createIcons();
+}

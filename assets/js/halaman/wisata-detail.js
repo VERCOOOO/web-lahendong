@@ -1,0 +1,102 @@
+/* Detail wisata (wisata-detail.html?id=W1): mencari destinasi berdasarkan ?id=. */
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const wadah = document.getElementById("konten-detail");
+  const id = new URLSearchParams(window.location.search).get("id");
+
+  if (!id) {
+    tampilkanPesan(wadah, "map-pin-off", "Destinasi tidak ditemukan",
+      "Tautan yang Anda buka tidak menyertakan destinasi apa pun.");
+    return;
+  }
+
+  let item;
+  try {
+    item = (await ambilData("wisata")).find((row) => teksPolos(row.id) === id);
+  } catch (err) {
+    tampilkanPesan(wadah, "triangle-alert", "Data belum bisa dimuat",
+      "Silakan coba lagi beberapa saat lagi.", "text-[var(--danger)]");
+    return;
+  }
+
+  if (!item) {
+    tampilkanPesan(wadah, "map-pin-off", "Destinasi tidak ditemukan",
+      "Tautan yang Anda buka tidak valid atau destinasi sudah tidak tersedia.");
+    return;
+  }
+
+  document.title = teksPolos(item.nama) + " — Kelurahan Lahendong";
+  wadah.innerHTML = tampilanDetail(item);
+  segarkanTampilan();
+});
+
+function tampilkanPesan(wadah, ikon, judul, pesan, warnaIkon = "text-[var(--muted)]") {
+  wadah.innerHTML = `
+    <section class="wadah py-24 md:py-32 text-center">
+      <i data-lucide="${ikon}" class="w-10 h-10 ${warnaIkon} mx-auto mb-5"></i>
+      <h1 class="judul-halaman">${judul}</h1>
+      <p class="text-[var(--muted)] mt-4 mb-8 max-w-[420px] mx-auto">${pesan}</p>
+      <a href="wisata.html" class="tombol">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke daftar wisata
+      </a>
+    </section>
+  `;
+  segarkanTampilan();
+}
+
+function barisInfo(ikon, label, nilai, { terakhir = false } = {}) {
+  return `
+    <div class="${terakhir ? "pt-5" : "py-5 border-b border-[var(--line)]"} flex gap-4">
+      <i data-lucide="${ikon}" class="w-[18px] h-[18px] text-[var(--primary)] shrink-0 mt-1"></i>
+      <div>
+        <p class="label-kecil">${label}</p>
+        <p class="text-[15px] mt-1">${nilai}</p>
+      </div>
+    </div>
+  `;
+}
+
+function tampilanDetail(item) {
+  const tautanPeta = escapeHtml(urlAman(teksPolos(item.maps_link)));
+  return `
+    <section class="relative h-[45vh] max-h-[420px] min-h-[300px] flex items-end overflow-hidden">
+      <img src="${urlFoto(item.foto)}" alt="${item.nama}" class="absolute inset-0 w-full h-full object-cover" onerror="this.src='img/placeholder.webp'" />
+      <div class="absolute inset-0 bg-black/35"></div>
+      <div class="absolute inset-x-0 bottom-0 h-1/2" style="background:linear-gradient(to top, rgba(0,0,0,.30), transparent);"></div>
+      <div class="relative wadah w-full pb-10 md:pb-12">
+        <a href="wisata.html" class="inline-flex items-center gap-2 text-white/80 hover:text-white text-sm font-semibold mb-5">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i> Daftar wisata
+        </a>
+        <h1 class="judul-hero text-white max-w-[720px]">${item.nama}</h1>
+      </div>
+    </section>
+
+    <section class="wadah seksi">
+      <div class="grid lg:grid-cols-12 gap-10 lg:gap-16">
+        <div class="lg:col-span-7">
+          <span class="eyebrow">Tentang destinasi</span>
+          <h2 class="judul-seksi mt-4 mb-5">${item.nama}</h2>
+          <div class="prosa"><p>${item.deskripsi}</p></div>
+
+          <h3 class="judul-kartu mt-12 mb-4">Cara menuju lokasi</h3>
+          <div class="prosa"><p>${item.cara_kesana}</p></div>
+
+          ${tautanPeta ? `
+            <a href="${tautanPeta}" target="_blank" rel="noopener noreferrer" class="tombol tombol-sekunder mt-7">
+              <i data-lucide="map" class="w-4 h-4"></i> Buka di Google Maps
+            </a>` : ""}
+        </div>
+
+        <aside class="lg:col-span-5">
+          <div class="kartu p-6 md:p-7">
+            <p class="label-kecil pb-4 border-b border-[var(--line)]">Informasi kunjungan</p>
+            ${barisInfo("clock", "Jam operasional", item.jam)}
+            ${barisInfo("ticket", "Tiket masuk", item.tiket)}
+            ${barisInfo("layout-grid", "Fasilitas", item.fasilitas)}
+            ${barisInfo("sun", "Waktu terbaik", item.waktu_terbaik, { terakhir: true })}
+          </div>
+        </aside>
+      </div>
+    </section>
+  `;
+}
