@@ -98,22 +98,23 @@ function renderAnggota(anggota) {
   return [...kelompokBidang(anggota).values()].map(({ nama, anggota: daftar }) => `
     <section class="reveal">
       <h3 class="judul-grup-surat"><span>${nama}</span><span class="jumlah">${daftar.length}</span></h3>
-      <div class="grid-adaptif grid-orang rata-kiri" data-maks="4" data-hp="2">${daftar.map(kartuMahasiswa).join("")}</div>
+      <div class="grid-adaptif rata-kiri" data-maks="3">${daftar.map(kartuMahasiswa).join("")}</div>
     </section>
   `).join("");
 }
 
+/* Kartu mendatar: foto/monogram di kiri, teks di kanan. Baris peran selalu ada (Anggota diredupkan)
+   agar nama, NIM, dan fakultas sejajar di semua kartu dalam satu baris. */
 function kartuMahasiswa(m) {
-  // "Anggota" tidak perlu label; peran lain (Koordinator, Sekretaris, …) ditandai.
-  const peran = m.peran && !/^anggota$/i.test(teksPolos(m.peran).trim()) ? m.peran : "";
+  const anggota = !m.peran || /^anggota$/i.test(teksPolos(m.peran).trim());
   return `
-    <article class="kartu flex flex-col overflow-hidden">
-      ${visualOrang(m, "w-full aspect-[4/5] text-[40px] border-b border-[var(--line)]", "kkt")}
-      <div class="p-4 md:p-5 flex-1">
-        ${peran ? `<p class="label-kecil text-[var(--accent-ink)]">${peran}</p>` : ""}
-        <h4 class="nama-orang${peran ? " mt-1" : ""}">${m.nama}</h4>
-        ${m.nim ? `<p class="nim mt-2">NIM ${m.nim}</p>` : ""}
-        ${m.fakultas ? `<p class="text-[13px] text-[var(--muted)] mt-1 leading-snug">${m.fakultas}</p>` : ""}
+    <article class="kartu kartu-mahasiswa">
+      ${visualOrang(m, "foto-mahasiswa", "kkt")}
+      <div class="min-w-0">
+        <p class="label-kecil ${anggota ? "" : "peran-utama"}">${m.peran || "Anggota"}</p>
+        <h4 class="nama-orang mt-1">${m.nama}</h4>
+        ${m.nim ? `<p class="nim mt-1.5">NIM ${m.nim}</p>` : ""}
+        ${m.fakultas ? `<p class="fakultas">${m.fakultas}</p>` : ""}
       </div>
     </article>
   `;

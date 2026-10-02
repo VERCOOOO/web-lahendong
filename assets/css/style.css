@@ -1205,18 +1205,42 @@ details[open] { border-color: var(--primary); }
   border-left: 2px solid var(--line);
 }
 
-/* Kartu orang (mahasiswa KKT): lebar dibatasi agar kelompok beranggota sedikit tidak menghasilkan
-   potret raksasa; kartu tetap di tengah seperti grid adaptif lain. */
-@media (min-width: 640px) {
-  .grid-adaptif.grid-orang > * { max-width: 260px; }
+/* Kartu mahasiswa KKT: mendatar dan ringkas, foto/monogram di kiri */
+.kartu-mahasiswa {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  height: 100%;
+  padding: 16px;
 }
 
-/* NIM mahasiswa KKT */
+.foto-mahasiswa {
+  flex: none;
+  width: 84px;
+  height: 104px; /* 4:5, cukup untuk foto wajah nanti */
+  border-radius: var(--radius);
+  font-size: 26px;
+}
+
+.kartu-mahasiswa .peran-utama { color: var(--accent-ink); }
+
 .nim {
   font-size: 13.5px;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
+}
+
+.kartu-mahasiswa .fakultas {
+  margin-top: 2px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+@media (min-width: 1024px) {
+  .kartu-mahasiswa { padding: 18px; }
+  .foto-mahasiswa { width: 92px; height: 115px; }
 }
 
 /* --- Kartu lingkungan --------------------------------------------------- */
