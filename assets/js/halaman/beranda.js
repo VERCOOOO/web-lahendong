@@ -54,7 +54,7 @@ function renderRingkasLayanan(data) {
   return tampil.map((item) => {
     const meta = [item.waktu, item.biaya].map((t) => barisDari(t)[0]).filter(Boolean).join(" · ");
     return `
-      <a href="layanan.html#surat-${encodeURIComponent(teksPolos(item.id))}">
+      <a href="layanan.html#${encodeURIComponent(teksPolos(item.id))}">
         <span class="min-w-0">
           <span class="nama">${item.nama_surat}</span>
           ${meta ? `<span class="meta">${meta}</span>` : ""}

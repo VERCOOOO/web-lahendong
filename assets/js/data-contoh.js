@@ -17,10 +17,10 @@ const DATA_DUMMY = {
     { kunci: "luas_wilayah", nilai: "7,85", keterangan: "CONTOH — ganti. Angka saja, satuan km². Beranda dan Profil." },
     { kunci: "ketinggian", nilai: "800–950", keterangan: "CONTOH — ganti. Satuan mdpl. Profil." },
     { kunci: "suhu", nilai: "22–26", keterangan: "CONTOH — ganti. Satuan °C. Profil." },
-    { kunci: "batas_utara", nilai: "Kelurahan Kakaskasen", keterangan: "CONTOH — ganti. Profil, tabel batas wilayah." },
-    { kunci: "batas_selatan", nilai: "Kelurahan Kumelembuai", keterangan: "CONTOH — ganti." },
-    { kunci: "batas_timur", nilai: "Kecamatan Tondano Selatan", keterangan: "CONTOH — ganti." },
-    { kunci: "batas_barat", nilai: "Kelurahan Walian", keterangan: "CONTOH — ganti." },
+    { kunci: "batas_utara", nilai: "Kelurahan Kampung Jawa", keterangan: "Profil, tabel batas wilayah." },
+    { kunci: "batas_selatan", nilai: "Kabupaten Minahasa", keterangan: "Profil, tabel batas wilayah." },
+    { kunci: "batas_timur", nilai: "Kecamatan Pangolombian", keterangan: "Profil, tabel batas wilayah." },
+    { kunci: "batas_barat", nilai: "Kelurahan Pinaras", keterangan: "Profil, tabel batas wilayah." },
     {
       kunci: "sejarah",
       nilai:
@@ -52,14 +52,14 @@ const DATA_DUMMY = {
   // Sumber: Kelurahan Lahendong, 2026. Nama kepala lingkungan belum tersedia.
   // Jumlah jiwa tiap baris = laki + perempuan; total 8 lingkungan = jumlah_penduduk di tab statistik.
   lingkungan: [
-    { id: "L1", nama: "Lingkungan 1", kepala: "", jumlah_kk: "124", jumlah_jiwa: "345", laki: "169", perempuan: "176", jumlah_lansia: "37", jumlah_rumah: "106" },
-    { id: "L2", nama: "Lingkungan 2", kepala: "", jumlah_kk: "116", jumlah_jiwa: "328", laki: "172", perempuan: "156", jumlah_lansia: "45", jumlah_rumah: "80" },
-    { id: "L3", nama: "Lingkungan 3", kepala: "", jumlah_kk: "80", jumlah_jiwa: "221", laki: "114", perempuan: "107", jumlah_lansia: "33", jumlah_rumah: "64" },
-    { id: "L4", nama: "Lingkungan 4", kepala: "", jumlah_kk: "67", jumlah_jiwa: "210", laki: "111", perempuan: "99", jumlah_lansia: "29", jumlah_rumah: "51" },
-    { id: "L5", nama: "Lingkungan 5", kepala: "", jumlah_kk: "113", jumlah_jiwa: "330", laki: "157", perempuan: "173", jumlah_lansia: "54", jumlah_rumah: "71" },
-    { id: "L6", nama: "Lingkungan 6", kepala: "", jumlah_kk: "96", jumlah_jiwa: "271", laki: "139", perempuan: "132", jumlah_lansia: "40", jumlah_rumah: "65" },
-    { id: "L7", nama: "Lingkungan 7", kepala: "", jumlah_kk: "69", jumlah_jiwa: "222", laki: "109", perempuan: "113", jumlah_lansia: "32", jumlah_rumah: "59" },
-    { id: "L8", nama: "Lingkungan 8", kepala: "", jumlah_kk: "97", jumlah_jiwa: "308", laki: "152", perempuan: "156", jumlah_lansia: "42", jumlah_rumah: "75" },
+    { nama: "Lingkungan 1", kepala: "", jumlah_kk: "124", jumlah_jiwa: "345", laki: "169", perempuan: "176", jumlah_lansia: "37", jumlah_rumah: "106" },
+    { nama: "Lingkungan 2", kepala: "", jumlah_kk: "116", jumlah_jiwa: "328", laki: "172", perempuan: "156", jumlah_lansia: "45", jumlah_rumah: "80" },
+    { nama: "Lingkungan 3", kepala: "", jumlah_kk: "80", jumlah_jiwa: "221", laki: "114", perempuan: "107", jumlah_lansia: "33", jumlah_rumah: "64" },
+    { nama: "Lingkungan 4", kepala: "", jumlah_kk: "67", jumlah_jiwa: "210", laki: "111", perempuan: "99", jumlah_lansia: "29", jumlah_rumah: "51" },
+    { nama: "Lingkungan 5", kepala: "", jumlah_kk: "113", jumlah_jiwa: "330", laki: "157", perempuan: "173", jumlah_lansia: "54", jumlah_rumah: "71" },
+    { nama: "Lingkungan 6", kepala: "", jumlah_kk: "96", jumlah_jiwa: "271", laki: "139", perempuan: "132", jumlah_lansia: "40", jumlah_rumah: "65" },
+    { nama: "Lingkungan 7", kepala: "", jumlah_kk: "69", jumlah_jiwa: "222", laki: "109", perempuan: "113", jumlah_lansia: "32", jumlah_rumah: "59" },
+    { nama: "Lingkungan 8", kepala: "", jumlah_kk: "97", jumlah_jiwa: "308", laki: "152", perempuan: "156", jumlah_lansia: "42", jumlah_rumah: "75" },
   ],
 
   // Struktur belum final. "atasan" = id aparat di atasnya pada bagan.
@@ -71,15 +71,16 @@ const DATA_DUMMY = {
 
   // Nomor darurat nasional. Tambahkan narahubung umum (puskesmas, polsek, dsb.) dengan kategori "umum".
   kontak: [
-    { id: "K1", nama: "Polisi", peran: "Kepolisian", nomor: "110", kategori: "darurat" },
-    { id: "K2", nama: "Pemadam Kebakaran", peran: "Kebakaran dan penyelamatan", nomor: "113", kategori: "darurat" },
-    { id: "K3", nama: "Ambulans", peran: "Gawat darurat medis", nomor: "119", kategori: "darurat" },
+    { nama: "Polisi", tampil: "Ya", peran: "Kepolisian", nomor: "110", kategori: "darurat" },
+    { nama: "Pemadam Kebakaran", tampil: "Ya", peran: "Kebakaran dan penyelamatan", nomor: "113", kategori: "darurat" },
+    { nama: "Ambulans", tampil: "Ya", peran: "Gawat darurat medis", nomor: "2005", kategori: "darurat" },
   ],
 
   wisata: [
     {
       id: "W1",
       nama: "Danau Linow",
+      tampil: "Ya",
       ringkas: "Danau vulkanik dengan warna air yang dapat berubah — hijau, biru, hingga kekuningan.",
       deskripsi:
         "Danau Linow Lahendong merupakan danau vulkanik yang berada di wilayah Lahendong, Kota Tomohon, Sulawesi Utara. Danau ini terbentuk dari aktivitas vulkanik dan memiliki kandungan belerang serta aktivitas panas bumi di kawasan sekitarnya. Lingkungan danau dikelilingi vegetasi hijau dan perbukitan, sehingga memiliki kondisi alam yang sejuk dan asri. Selain sebagai kawasan wisata, Danau Linow juga memiliki nilai ekologis dan geologis yang berkaitan dengan karakteristik kawasan vulkanik Lahendong.\n" +
@@ -99,6 +100,7 @@ const DATA_DUMMY = {
     {
       id: "W2",
       nama: "Hutan Pinus Lahendong",
+      tampil: "Ya",
       ringkas: "Hutan pinus sejuk yang berpadu dengan kolam sulfur beruap dan pemandian air panas alami.",
       deskripsi:
         "Hutan Pinus Lahendong adalah destinasi wisata alam unik di Tomohon yang memadukan keindahan hutan pinus hijau nan rimbun dengan fenomena geotermal berupa kolam sulfur beruap putih dan pemandian air panas alami yang kaya khasiat bagi kulit. Perpaduan uap panas bumi yang mengepul di antara deretan pepohonan pinus yang menjulang tinggi menciptakan suasana yang sejuk dan menenangkan, menjadikannya tempat ideal untuk menyegarkan pikiran, berburu spot foto, serta bersantai menikmati kedamaian alam Tomohon jauh dari hiruk-pikuk perkotaan.",
@@ -121,6 +123,7 @@ const DATA_DUMMY = {
     {
       id: "W3",
       nama: "Mah’Watu",
+      tampil: "Ya",
       ringkas: "Wisata alam asri dengan kafe terbuka, gazebo, dan aliran air belerang berwarna hijau toska.",
       deskripsi:
         "Mah’Watu merupakan salah satu destinasi wisata alam yang berada di Kota Tomohon, Sulawesi Utara. Tempat wisata ini menawarkan suasana yang asri dan sejuk dengan pemandangan alam yang indah, sehingga cocok dijadikan tempat untuk bersantai dan melepas penat. Keindahan lingkungan sekitar yang masih alami menjadi daya tarik tersendiri bagi pengunjung. Selain menikmati pemandangan, wisatawan juga dapat menghabiskan waktu bersama keluarga maupun teman sambil menikmati suasana yang tenang dan udara yang segar.",
@@ -134,22 +137,6 @@ const DATA_DUMMY = {
       pengelola: "",
       maps_link: "https://maps.google.com/?q=Mahwatu+Tomohon",
     },
-    {
-      id: "W4",
-      nama: "Toulangkow Hills",
-      ringkas: "Puncak berpanorama Gunung Lokon dan Danau Linow, favorit untuk berkemah dan berburu matahari terbenam.",
-      deskripsi:
-        "Puncak Toulangkow merupakan salah satu destinasi wisata alam yang berada di Kota Tomohon, Sulawesi Utara. Tempat ini menawarkan keindahan panorama alam yang dapat dinikmati dari ketinggian, dengan udara yang sejuk dan suasana yang tenang. Dari kawasan puncak, pengunjung dapat menikmati pemandangan alam sekitar yang indah, sehingga tempat ini cocok untuk bersantai, berfoto, maupun menghabiskan waktu bersama keluarga dan teman.",
-      jam: "Setiap hari, 08.30 – 18.00 WITA",
-      tiket: "Rp10.000 per pengunjung\nRp50.000 per tenda (camping)",
-      fasilitas: "Camping ground, spot foto",
-      waktu_terbaik:
-        "Pagi hari (08.30 – 10.00 WITA): pas untuk memotret panorama Gunung Lokon dan Danau Linow dengan cahaya pagi yang cerah.\n" +
-        "Sore hari (16.00 – 18.00 WITA): paling populer bagi pemburu matahari terbenam.",
-      cara_kesana: "",
-      pengelola: "",
-      maps_link: "https://maps.google.com/?q=Toulangkow+Hills+Tomohon",
-    },
   ],
 
   // Belum ada data UMKM resmi.
@@ -159,8 +146,8 @@ const DATA_DUMMY = {
   // Satu syarat / satu langkah per baris di dalam sel. Tambah atau hapus baris surat sesuka hati.
   layanan: [
     {
-      id: "S1",
       nama_surat: "Surat Keterangan Domisili",
+      tampil: "Ya",
       kategori: "Kependudukan",
       syarat: "Fotokopi KTP\nFotokopi Kartu Keluarga\nSurat pengantar RT/lingkungan",
       alur: "Bawa berkas ke kantor kelurahan\nPetugas memeriksa berkas\nSurat ditandatangani lurah\nSurat diambil pemohon",
@@ -169,8 +156,8 @@ const DATA_DUMMY = {
       catatan: "",
     },
     {
-      id: "S2",
       nama_surat: "Surat Keterangan Tidak Mampu (SKTM)",
+      tampil: "Ya",
       kategori: "Sosial",
       syarat: "Fotokopi KTP\nFotokopi Kartu Keluarga\nSurat pengantar RT/lingkungan\nKeterangan penghasilan",
       alur: "Bawa berkas ke kantor kelurahan\nPetugas memeriksa berkas dan, bila perlu, melakukan survei singkat\nSurat ditandatangani lurah",
@@ -179,8 +166,8 @@ const DATA_DUMMY = {
       catatan: "Sebutkan keperluan SKTM (sekolah, kesehatan, atau bantuan sosial) saat mengajukan.",
     },
     {
-      id: "S3",
       nama_surat: "Surat Pengantar Nikah",
+      tampil: "Ya",
       kategori: "Kependudukan",
       syarat: "Fotokopi KTP kedua calon mempelai\nFotokopi Kartu Keluarga\nSurat pengantar RT/lingkungan\nPas foto",
       alur: "Bawa berkas ke kantor kelurahan\nPetugas memeriksa data\nSurat diteruskan ke KUA atau Dinas Kependudukan",
@@ -189,8 +176,8 @@ const DATA_DUMMY = {
       catatan: "",
     },
     {
-      id: "S4",
       nama_surat: "Surat Keterangan Usaha",
+      tampil: "Ya",
       kategori: "Usaha",
       syarat: "Fotokopi KTP\nFotokopi Kartu Keluarga\nFoto lokasi usaha\nSurat pengantar RT/lingkungan",
       alur: "Bawa berkas ke kantor kelurahan\nPetugas memeriksa lokasi usaha\nSurat ditandatangani lurah",
@@ -199,8 +186,8 @@ const DATA_DUMMY = {
       catatan: "",
     },
     {
-      id: "S5",
       nama_surat: "Surat Keterangan Kelahiran",
+      tampil: "Ya",
       kategori: "Kependudukan",
       syarat: "Fotokopi KTP kedua orang tua\nFotokopi Kartu Keluarga\nSurat keterangan lahir dari bidan atau rumah sakit",
       alur: "Bawa berkas ke kantor kelurahan\nPetugas memeriksa berkas\nSurat ditandatangani lurah",

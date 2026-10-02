@@ -21,24 +21,27 @@ const ID_SPREADSHEET = "11f8D-qzWt1rdkin7uBMmrbrEkZmc4dih39ruUwTh1gQ";
 /* Kolom tiap tab, berurutan seperti di sheet. Baris judul di sheet harus memakai
    nama-nama ini; huruf besar/kecil dan spasi diabaikan ("Jumlah KK" → "jumlah_kk").
    Kolom pertama adalah kunci baris: baris yang kuncinya kosong diabaikan.
+   Kolom "tampil" (Ya/Tidak): "Tidak" menyembunyikan baris tanpa menghapusnya; kosong = Ya.
    Kolom "keterangan" hanya catatan untuk admin dan tidak dibaca situs.
+   Tab tanpa kolom "id" mendapat kode otomatis dari kolom pertamanya (lihat beriKode).
    Peta tab → halaman ada di tab "petunjuk" pada sheet dan di README.md. */
 const SKEMA = {
   // Informasi umum kelurahan: kantor, wilayah, sejarah, legenda.
   profil: ["kunci", "nilai", "keterangan"],
   // Angka kependudukan (sumber: Kelurahan Lahendong).
   statistik: ["kunci", "nilai", "keterangan"],
-  lingkungan: ["id", "nama", "kepala", "jumlah_kk", "jumlah_jiwa", "laki", "perempuan", "jumlah_lansia", "jumlah_rumah"],
-  // Sumber tunggal identitas aparat. "atasan" berisi id aparat di atasnya (untuk bagan).
+  lingkungan: ["nama", "kepala", "jumlah_kk", "jumlah_jiwa", "laki", "perempuan", "jumlah_lansia", "jumlah_rumah"],
+  // Sumber tunggal identitas aparat. "atasan" berisi id aparat di atasnya (untuk struktur).
   // Aparat yang nomornya diisi tampil di halaman Kontak.
   aparat: ["id", "nama", "jabatan", "urutan", "atasan", "nomor"],
   // Narahubung non-aparat. kategori: "darurat" atau "umum".
-  kontak: ["id", "nama", "peran", "nomor", "kategori"],
-  wisata: ["id", "nama", "ringkas", "deskripsi", "jam", "tiket", "fasilitas", "waktu_terbaik", "cara_kesana", "pengelola", "maps_link"],
-  umkm: ["id", "nama", "produk", "kontak", "lingkungan"],
+  kontak: ["nama", "tampil", "peran", "nomor", "kategori"],
+  // id wisata menjadi alamat halaman detail (wisata-detail.html?id=W1) dan penentu fotonya.
+  wisata: ["id", "nama", "tampil", "ringkas", "deskripsi", "jam", "tiket", "fasilitas", "waktu_terbaik", "cara_kesana", "pengelola", "maps_link"],
+  umkm: ["nama", "tampil", "produk", "kontak", "lingkungan"],
   // Satu baris per jenis surat. syarat & alur: satu butir per baris di dalam sel.
   // kategori (opsional) mengelompokkan surat; catatan (opsional) tampil sebagai pemberitahuan.
-  layanan: ["id", "nama_surat", "kategori", "syarat", "alur", "waktu", "biaya", "catatan"],
+  layanan: ["nama_surat", "tampil", "kategori", "syarat", "alur", "waktu", "biaya", "catatan"],
 };
 
 /** URL CSV satu tab, dicari berdasarkan nama tab. */
@@ -71,7 +74,7 @@ async function ambilData(namaTab) {
   if (!tembolokData[namaTab]) {
     tembolokData[namaTab] = (async () => {
       const mentah = PAKAI_DUMMY ? DATA_DUMMY[namaTab] || [] : await ambilDariSheet(namaTab);
-      return saringBarisKosong(namaTab, rapikanBaris(namaTab, mentah));
+      return beriKode(namaTab, saringBaris(namaTab, rapikanBaris(namaTab, mentah)));
     })();
   }
   try {
@@ -171,9 +174,37 @@ function rapikanBaris(namaTab, baris) {
   });
 }
 
-function saringBarisKosong(namaTab, baris) {
+/** Buang baris yang kuncinya kosong (baris kosong / sengaja dikosongkan) dan baris bertanda tampil = Tidak. */
+function saringBaris(namaTab, baris) {
   const kunciBaris = (SKEMA[namaTab] || ["id"])[0];
-  return baris.filter((row) => String(row[kunciBaris] || "").trim() !== "");
+  return baris.filter((row) =>
+    String(row[kunciBaris] || "").trim() !== "" && !/^\s*(tidak|no|sembunyi)/i.test(teksPolos(row.tampil)));
+}
+
+/**
+ * Tab tanpa kolom id (umkm, layanan, kontak, lingkungan) mendapat kode dari kolom pertamanya,
+ * mis. "Surat Keterangan Domisili" → "surat-keterangan-domisili". Kode ini dipakai sebagai
+ * alamat tautan (layanan.html#surat-keterangan-domisili) dan kunci FOTO di komponen.js.
+ */
+function beriKode(namaTab, baris) {
+  const kolom = SKEMA[namaTab] || [];
+  if (kolom.includes("id")) return baris;
+  const terpakai = new Map();
+  return baris.map((row) => {
+    const dasar = kodeDari(row[kolom[0]]) || namaTab;
+    const ke = (terpakai.get(dasar) || 0) + 1;
+    terpakai.set(dasar, ke);
+    return { ...row, id: ke === 1 ? dasar : dasar + "-" + ke };
+  });
+}
+
+/** "Kue Lapis Bu Ani (Lingk. 2)" → "kue-lapis-bu-ani-lingk-2". */
+function kodeDari(teks) {
+  return teksPolos(teks)
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 /* ---------------------------------------------------------------------- */

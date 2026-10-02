@@ -3,7 +3,8 @@
 
    Semua bagian mengikuti isi sheet: menambah/menghapus baris menambah/menghapus surat,
    kolom kategori yang diisi memunculkan kelompok & penyaring, sel yang kosong
-   menyembunyikan bagiannya. Tautan langsung ke satu surat: layanan.html#surat-S2. */
+   menyembunyikan bagiannya. Tautan langsung ke satu surat memakai kode dari namanya
+   (dibuat beriKode di data.js): layanan.html#surat-keterangan-domisili. */
 
 document.addEventListener("DOMContentLoaded", () => {
   isiDariData(document.getElementById("daftar-layanan"), "layanan", renderLayanan, {
@@ -72,7 +73,7 @@ function itemSurat(item) {
   const cari = teksPolos([item.nama_surat, item.kategori, ...syarat].join(" ")).toLowerCase();
 
   return `
-    <details class="surat kartu reveal" id="surat-${teksPolos(item.id)}" data-cari="${escapeHtml(cari)}">
+    <details class="surat kartu reveal" id="${teksPolos(item.id)}" data-cari="${escapeHtml(cari)}">
       <summary>
         <span class="min-w-0 flex-1">
           <span class="nama-surat">${item.nama_surat}</span>
@@ -176,7 +177,7 @@ function terapkanSaringan() {
     : "Tidak ada surat di kategori ini.";
 }
 
-/** layanan.html#surat-S2 membuka surat S2 dan menggulir ke sana. */
+/** layanan.html#surat-keterangan-domisili membuka surat itu dan menggulir ke sana. */
 function bukaDariAlamat() {
   const id = decodeURIComponent(location.hash.slice(1));
   const surat = id && document.getElementById(id);

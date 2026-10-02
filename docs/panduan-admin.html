@@ -198,7 +198,7 @@
       </div>
       <div class="aturan-inti">
         <div><b>Satu baris = satu data</b><p>Satu destinasi, satu aparat, satu lingkungan. Urutan baris di sheet = urutan tampil di situs.</p></div>
-        <div><b>Kolom pertama wajib diisi</b><p>Baris yang <code>id</code> (atau <code>kunci</code>) kosong tidak ditampilkan. Kosongkan id untuk menyembunyikan data tanpa menghapusnya.</p></div>
+        <div><b>Kolom pertama wajib diisi</b><p>Judulnya berwarna hijau tua di sheet (nama usaha, nama surat, …). Baris yang kolom pertamanya kosong tidak ditampilkan. Arahkan kursor ke judul kolom mana pun untuk melihat arti dan contohnya.</p></div>
         <div><b>Sel kosong = disembunyikan</b><p>Situs tidak pernah mengarang isi. Telepon kantor kosong? Barisnya tidak muncul sama sekali.</p></div>
         <div><b>Jangan ubah nama tab &amp; baris judul</b><p>Situs mencari tab berdasarkan namanya (<code>wisata</code>, <code>aparat</code>, …) dan kolom berdasarkan judulnya.</p></div>
         <div><b>Semua sel berformat Teks biasa</b><p>Biarkan begitu. Tanpa itu Google bisa membuang angka 0 di depan nomor telepon, atau membuat nilai hilang diam-diam.</p></div>
@@ -341,25 +341,26 @@
         <article class="resep">
           <h3>Menambah atau menghapus surat</h3>
           <ol>
-            <li>Tab <code>layanan</code> → baris baru, id <code>S6</code>, <code>nama_surat</code>.</li>
+            <li>Tab <code>layanan</code> → isi baris kosong pertama, mulai dari <code>nama_surat</code>.</li>
             <li><code>syarat</code> dan <code>alur</code>: satu butir per baris di dalam sel (Ctrl+Enter).</li>
             <li>Opsional: <code>kategori</code> (mis. Kependudukan, Sosial, Usaha) dan <code>catatan</code>.</li>
-            <li>Menghapus surat: hapus barisnya, atau kosongkan id-nya untuk menyembunyikan sementara.</li>
+            <li>Menghapus surat: klik kanan nomor baris → Hapus baris. Menyembunyikan sementara: <code>tampil</code> = Tidak.</li>
           </ol>
-          <p class="hasil">Muncul di halaman Layanan (dikelompokkan per kategori, bisa dicari) dan di daftar surat Beranda. Tautan langsung: <code>layanan.html#surat-S6</code>.</p>
+          <p class="hasil">Muncul di halaman Layanan (dikelompokkan per kategori, bisa dicari) dan di daftar surat Beranda. Tautan langsung memakai nama surat, mis. <code>layanan.html#surat-keterangan-domisili</code>.</p>
         </article>
         <article class="resep">
-          <h3>Menambah UMKM</h3>
+          <h3>Menambah atau menghapus UMKM</h3>
           <ol>
-            <li>Tab <code>umkm</code> → id <code>U1</code>, <code>nama</code>, <code>produk</code>, <code>kontak</code>, <code>lingkungan</code>.</li>
+            <li>Tab <code>umkm</code> → isi baris kosong pertama: <code>nama</code> usaha, <code>produk</code>, <code>kontak</code>, <code>lingkungan</code> (pilih dari daftar).</li>
+            <li>Menghapus: klik kanan nomor baris → Hapus baris. Menyembunyikan sementara: <code>tampil</code> = Tidak.</li>
           </ol>
           <p class="hasil">Tampil di halaman UMKM dan Galeri; susunan kartunya menyesuaikan jumlah usaha.</p>
         </article>
         <article class="resep">
           <h3>Menyembunyikan sementara</h3>
           <ol>
-            <li>Kosongkan kolom <code>id</code> baris itu (tab <code>profil</code>/<code>statistik</code>: kosongkan <code>kunci</code>).</li>
-            <li>Untuk menampilkan lagi, isi kembali id yang sama.</li>
+            <li>Tab <code>wisata</code>, <code>umkm</code>, <code>layanan</code>, <code>kontak</code>: pilih <code>Tidak</code> di kolom <code>tampil</code>.</li>
+            <li>Untuk menampilkan lagi, pilih <code>Ya</code>.</li>
           </ol>
           <p class="hasil">Datanya tetap tersimpan di sheet, hanya tidak dibaca situs.</p>
         </article>
@@ -367,7 +368,7 @@
           <h3>Mengganti atau menambah foto</h3>
           <ol>
             <li>Simpan foto (format <code>.webp</code>, lebar maks. 1600px) di folder <code>img/</code>.</li>
-            <li>Daftarkan di <code>assets/js/komponen.js</code>, bagian <code>FOTO</code>: <code>W5: "nama-file.webp"</code>.</li>
+            <li>Daftarkan di <code>assets/js/komponen.js</code>, bagian <code>FOTO</code>: <code>W5: "nama-file.webp"</code> untuk wisata, atau <code>"kue-lapis-bu-ani": "nama-file.webp"</code> untuk UMKM (nama usaha, huruf kecil, spasi jadi tanda hubung).</li>
             <li>Commit &amp; push.</li>
           </ol>
           <p class="hasil">Foto sengaja tidak diatur dari spreadsheet pada iterasi ini.</p>
@@ -398,7 +399,8 @@
           <ul>
             <li><code>statistik</code> &amp; <code>lingkungan</code> — Kelurahan Lahendong, 2026</li>
             <li><code>aparat</code> — Lurah, Sekretaris Kelurahan, Kasi Pemerintahan</li>
-            <li><code>wisata</code> — 4 destinasi</li>
+            <li><code>wisata</code> — 3 destinasi</li>
+            <li><code>profil</code> — batas wilayah</li>
             <li><code>kontak</code> — nomor darurat nasional 110, 113, 119</li>
           </ul>
         </div>
@@ -407,7 +409,6 @@
           <ul>
             <li><strong>Legenda &amp; sejarah</strong> — tulisan sementara, bukan tuturan warga</li>
             <li>Jam layanan, luas, ketinggian, suhu</li>
-            <li>Batas wilayah (utara, selatan, timur, barat)</li>
             <li>Syarat, alur, waktu &amp; biaya di tab <code>layanan</code></li>
             <li>Semua foto — masih ilustrasi pengganti</li>
           </ul>
@@ -571,32 +572,32 @@ tools/buat_template.py  membuat ulang template (python3 tools/buat_template.py)<
       catatan: "Kunci yang dikenal: tahun_data, sumber_data, jumlah_penduduk, laki, perempuan, jumlah_kk, jumlah_lingkungan." },
     { nama: "lingkungan", isi: "Satu baris per lingkungan.",
       kolom: [
-        ["id", "Pengenal unik", "L1"], ["nama", "Nama lingkungan", "Lingkungan 1"], ["kepala", "Nama kepala lingkungan", "(belum diisi)"],
+        ["nama", "Wajib. Nama lingkungan", "Lingkungan 1"], ["kepala", "Nama kepala lingkungan", "(belum diisi)"],
         ["jumlah_kk", "Kepala keluarga", "124"], ["jumlah_jiwa", "Jumlah penduduk", "345"], ["laki", "Laki-laki", "169"], ["perempuan", "Perempuan", "176"],
         ["jumlah_lansia", "Lansia", "37"], ["jumlah_rumah", "Rumah", "106"],
       ] },
     { nama: "aparat", isi: "Satu baris per aparat — sumber tunggal nama & jabatan.",
       kolom: [
-        ["id", "Pengenal unik", "A1"], ["nama", "Nama lengkap dengan gelar", "Reymon Stive Londok, S.T"], ["jabatan", "Jabatan", "Lurah"],
+        ["id", "Wajib. Kode singkat unik, dipakai kolom atasan", "A1"], ["nama", "Nama lengkap dengan gelar", "Reymon Stive Londok, S.T"], ["jabatan", "Jabatan", "Lurah"],
         ["urutan", "Urutan tampil; 1 = pimpinan di Beranda", "1"], ["atasan", "Id aparat di atasnya pada struktur; kosong = pimpinan", "A1"],
         ["nomor", "Diisi bila boleh tampil di halaman Kontak", "0812-3456-7890"],
       ] },
     { nama: "kontak", isi: "Nomor penting selain aparat.",
       kolom: [
-        ["id", "Pengenal unik", "K1"], ["nama", "Nama layanan", "Polisi"], ["peran", "Keterangan singkat", "Kepolisian"],
-        ["nomor", "Nomor telepon", "110"], ["kategori", "darurat atau umum", "darurat"],
+        ["nama", "Wajib. Nama layanan", "Polisi"], ["tampil", "Ya / Tidak (dropdown)", "Ya"], ["peran", "Keterangan singkat", "Kepolisian"],
+        ["nomor", "Nomor telepon", "110"], ["kategori", "darurat atau umum (dropdown)", "darurat"],
       ] },
     { nama: "wisata", isi: "Satu baris per destinasi. Id menjadi alamat halaman detail (wisata-detail.html?id=W1) — jangan diubah.",
       kolom: [
-        ["id", "Pengenal unik", "W1"], ["nama", "Nama destinasi", "Danau Linow"], ["ringkas", "Satu kalimat untuk kartu", "Danau vulkanik dengan warna air…"],
+        ["id", "Wajib. Kode singkat unik — jangan diubah", "W1"], ["nama", "Nama destinasi", "Danau Linow"], ["tampil", "Ya / Tidak (dropdown)", "Ya"], ["ringkas", "Satu kalimat untuk kartu", "Danau vulkanik dengan warna air…"],
         ["deskripsi", "Uraian lengkap ↵", "(paragraf)"], ["jam", "Jam operasional ↵", "Setiap hari, 10.00 – 20.00 WITA"], ["tiket", "Harga tiket ↵", "Rp40.000 per orang"],
         ["fasilitas", "Dipisah koma", "Kafe, area parkir, toilet"], ["waktu_terbaik", "Waktu berkunjung ↵", "Pagi hari atau sore…"],
         ["cara_kesana", "Rute, satu langkah per baris ↵", "(langkah)"], ["pengelola", "Pengelola ↵", "PT Karyadeka Alam Asri"], ["maps_link", "Tautan Google Maps (https://)", "https://maps.google.com/?q=…"],
       ] },
     { nama: "umkm", isi: "Satu baris per usaha. Saat ini masih kosong.",
-      kolom: [["id", "Pengenal unik", "U1"], ["nama", "Nama usaha", "Nama usaha"], ["produk", "Produk utama", "Kue khas Minahasa"], ["kontak", "Nomor telepon", "0812-…"], ["lingkungan", "Lokasi", "Lingkungan 2"]] },
+      kolom: [["nama", "Wajib. Nama usaha", "Kue Lapis Bu Ani"], ["tampil", "Ya / Tidak (dropdown)", "Ya"], ["produk", "Produk utama", "Kue khas Minahasa"], ["kontak", "Nomor telepon (bila pemilik setuju)", "0812-…"], ["lingkungan", "Lokasi (dropdown)", "Lingkungan 2"]] },
     { nama: "layanan", isi: "Satu baris per jenis surat. Tambah atau hapus baris sesuka hati; halaman Layanan menyesuaikan sendiri.",
-      kolom: [["id", "Pengenal unik; jadi tautan layanan.html#surat-S1", "S1"], ["nama_surat", "Nama surat", "Surat Keterangan Tidak Mampu (SKTM)"], ["kategori", "Kelompok (opsional)", "Sosial"],
+      kolom: [["nama_surat", "Wajib. Nama surat; juga jadi tautan langsungnya", "Surat Keterangan Tidak Mampu (SKTM)"], ["tampil", "Ya / Tidak (dropdown)", "Ya"], ["kategori", "Kelompok (dropdown, boleh ketik baru)", "Sosial"],
         ["syarat", "Satu berkas per baris ↵", "Fotokopi KTP ↵ Fotokopi KK"], ["alur", "Satu langkah per baris ↵", "Bawa berkas ke kantor ↵ …"], ["waktu", "Lama proses", "1 hari kerja"], ["biaya", "Biaya", "Gratis"],
         ["catatan", "Pemberitahuan tambahan (opsional) ↵", "Sebutkan keperluan SKTM…"]],
       catatan: "Surat tanpa kategori masuk kelompok \"Lainnya\". Kotak pencarian muncul otomatis bila surat berjumlah 5 atau lebih." },

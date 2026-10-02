@@ -41,7 +41,7 @@ function kelompokkanNarahubung(aparat, kontak) {
       umum.push(baris);
       return;
     }
-    console.warn(`[data] Tab "kontak" baris ${baris.id}: jabatan "${teksPolos(baris.peran)}" sudah ada di tab "aparat". ` +
+    console.warn(`[data] Tab "kontak" baris "${teksPolos(baris.nama)}": jabatan "${teksPolos(baris.peran)}" sudah ada di tab "aparat". ` +
       "Pindahkan nomornya ke kolom nomor di tab aparat, lalu hapus baris ini.");
     if (!pemilik.nomor) nomorLama.set(pemilik, baris.nomor);
   });

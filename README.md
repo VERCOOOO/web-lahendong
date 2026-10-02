@@ -31,7 +31,8 @@ Tabel yang sama ada di tab `petunjuk` pada spreadsheet.
 
 **Tidak diatur dari spreadsheet** (iterasi ini):
 
-- **Foto** — statis di folder `img/`, dipetakan ke id baris di [`assets/js/komponen.js`](assets/js/komponen.js)
+- **Foto** — statis di folder `img/`, dipetakan di [`assets/js/komponen.js`](assets/js/komponen.js) (wisata menurut id,
+  UMKM menurut nama usaha yang ditulis huruf kecil bertanda hubung, mis. `kue-lapis-bu-ani`)
   (bagian `FOTO`). Contoh: `W1: "wisata-danau-linow.webp"` = foto untuk baris W1 di tab `wisata`.
   Id tanpa foto memakai `img/placeholder.webp`; aparat tanpa foto memakai monogram inisial.
 - **Peta wilayah (gambar)** — simpan sebagai `img/peta-wilayah.png`. Halaman Profil menampilkannya
@@ -47,10 +48,17 @@ Satu baris = satu informasi. Kolom `kunci` adalah nama tetap yang dicari situs (
 
 ### Tab daftar (tab lainnya)
 
-Satu baris = satu data, kolom `id` sebagai pengenal unik.
+Satu baris = satu data. Kolom pertama (judulnya berwarna hijau tua di sheet) wajib diisi:
+nama usaha, nama surat, nama kontak, nama lingkungan. Hanya tab `wisata` dan `aparat` yang
+memakai kolom `id` (kode singkat seperti `W4` / `A4`), karena id dipakai di alamat halaman detail
+wisata dan di kolom `atasan`.
 
-- **Menambah**: isi baris baru dengan id baru (mis. `W5`).
-- **Menyembunyikan**: kosongkan `id`-nya — baris tidak tampil, datanya tetap tersimpan.
+- **Menambah**: isi baris kosong pertama di bawah data.
+- **Menghapus**: klik kanan nomor baris → **Hapus baris**.
+- **Menyembunyikan**: ubah kolom **`tampil`** menjadi `Tidak` (dropdown) — data tetap tersimpan.
+  Kosong dianggap `Ya`. Ada di tab `wisata`, `umkm`, `layanan`, dan `kontak`.
+- **Arti kolom**: arahkan kursor ke judul kolom di sheet; muncul penjelasan dan contoh.
+  Kolom pilihan (`tampil`, `kategori`, `lingkungan` di umkm) memakai dropdown.
 - **Mengurutkan**: urutan di situs = urutan baris di sheet (tab `aparat`: kolom `urutan`).
 - **Susunan kartu** menyesuaikan jumlah baris sendiri (maks. 4 per baris di desktop: 3 kartu → 3 kolom,
   5 → 3 + 2, 6 → 3 × 2, 8 → 4 × 2). Tidak perlu mengubah kode saat menambah atau menghapus wisata/UMKM.
@@ -65,7 +73,7 @@ Satu baris = satu data, kolom `id` sebagai pengenal unik.
   muncul tombol penyaring; surat tanpa kategori masuk kelompok "Lainnya".
 - **`catatan`** (opsional): pemberitahuan tambahan, mis. "Bawa dokumen asli saat pengambilan".
 - `waktu` dan `biaya` tampil di baris judul surat. Kotak pencarian muncul otomatis bila surat ≥ 5.
-- Tautan langsung ke satu surat: `layanan.html#surat-S2` (S2 = id surat).
+- Tautan langsung ke satu surat memakai namanya: `layanan.html#surat-keterangan-domisili`.
 
 ### Aparat, struktur, dan kontak
 
@@ -96,7 +104,7 @@ Satu baris = satu data, kolom `id` sebagai pengenal unik.
 Nilai yang belum ada data resminya ditandai **CONTOH** di kolom `keterangan` dan wajib diganti
 sebelum situs diumumkan:
 
-- Tab `profil`: jam layanan, luas, ketinggian, suhu, batas wilayah, sejarah, legenda.
+- Tab `profil`: jam layanan, luas, ketinggian, suhu, sejarah, legenda.
 - Tab `layanan`: syarat, alur, waktu, biaya, dan catatan setiap surat.
 - Masih kosong: telepon & email kantor, nama kepala lingkungan, nomor aparat, UMKM.
 
@@ -125,7 +133,7 @@ Situs menampilkan "… belum bisa dimuat". Buka konsol browser (F12 → Console)
 | Pesan | Artinya |
 |---|---|
 | `permintaan gagal` / `yang diterima halaman HTML` | Akses sheet bukan "Siapa saja yang memiliki link", atau tidak ada koneksi |
-| `tab "…" tidak ditemukan` | Nama tab diubah atau belum ada, atau kolom pertamanya (`id` / `kunci`) hilang |
+| `tab "…" tidak ditemukan` | Nama tab diubah atau belum ada, atau judul kolom pertamanya hilang |
 | `tidak punya kolom: …` | Nama kolom di baris judul berubah — samakan dengan template |
 | `atasan "…" tidak ditemukan` | Kolom atasan di tab `aparat` berisi id yang tidak ada |
 | `jabatan "…" sudah ada di tab "aparat"` | Baris ganda di tab `kontak` — pindahkan nomornya ke tab `aparat`, lalu hapus barisnya |

@@ -3,8 +3,11 @@
 
 Jalankan setelah mengubah SKEMA atau data contoh:  python3 tools/buat_template.py
 Butuh LibreOffice (perintah soffice). Semua sel berformat Teks biasa (@), dan tab "petunjuk"
-berisi peta tab → halaman serta aturan pengisian (ubah teksnya di PETA/ATURAN di bawah)."""
-import json, os, re, subprocess, tempfile
+berisi peta tab → halaman serta aturan pengisian (ubah teksnya di PETA/ATURAN/KOLOM di bawah).
+
+Agar mudah diisi: judul kolom dibekukan dan diberi catatan (arti + contoh), kolom pertama
+(wajib) berwarna hijau tua, kolom pilihan (tampil, kategori, lingkungan) memakai dropdown."""
+import json, os, re, subprocess, tempfile, zipfile
 from xml.sax.saxutils import escape
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -71,45 +74,142 @@ PETA = {
                 "kategori (opsional) mengelompokkan surat; catatan (opsional) tampil sebagai pemberitahuan"),
 }
 
+TAMPIL = ("Ya = tampil di situs. Tidak = disembunyikan, data tetap tersimpan. Kosong dianggap Ya.", "Ya")
+
+# (tab, kolom) → (arti, contoh). Tampil sebagai catatan di judul kolom dan di tab petunjuk.
+KOLOM = {
+    "profil": {
+        "kunci": ("WAJIB. Nama informasi yang dicari situs — jangan diubah.", "jam_layanan"),
+        "nilai": ("Isi informasinya. Beberapa paragraf: pisahkan dengan baris baru (Ctrl+Enter).", "Senin – Jumat, 08.00 – 15.00 WITA"),
+        "keterangan": ("Catatan untuk admin; tidak tampil di situs.", "CONTOH — ganti"),
+    },
+    "statistik": {
+        "kunci": ("WAJIB. Nama angka yang dicari situs — jangan diubah.", "jumlah_penduduk"),
+        "nilai": ("Angka tanpa titik pemisah ribuan.", "2235"),
+        "keterangan": ("Catatan untuk admin; tidak tampil di situs.", "Sumber: Kelurahan Lahendong, 2026"),
+    },
+    "lingkungan": {
+        "nama": ("WAJIB. Nama lingkungan. \"Lingkungan 3\" ditampilkan sebagai angka besar.", "Lingkungan 3"),
+        "kepala": ("Nama kepala lingkungan. Kosong = \"Belum dicantumkan\".", "Nama lengkap"),
+        "jumlah_kk": ("Jumlah kepala keluarga. Angka tanpa titik.", "124"),
+        "jumlah_jiwa": ("Jumlah penduduk = laki + perempuan.", "345"),
+        "laki": ("Penduduk laki-laki.", "169"),
+        "perempuan": ("Penduduk perempuan.", "176"),
+        "jumlah_lansia": ("Jumlah lansia.", "37"),
+        "jumlah_rumah": ("Jumlah rumah.", "106"),
+    },
+    "aparat": {
+        "id": ("WAJIB. Kode singkat bebas & unik untuk orang ini. Dipakai di kolom atasan — jangan diubah setelah dipakai.", "A4"),
+        "nama": ("Nama lengkap dengan gelar.", "Reymon Stive Londok, S.T"),
+        "jabatan": ("Jabatan.", "Kepala Seksi Pemerintahan"),
+        "urutan": ("Angka urut tampil. 1 = pimpinan (tampil di Beranda).", "3"),
+        "atasan": ("Kode (id) atasannya. Kosong = pimpinan. Atasan = Lurah → kolom tersendiri; atasan = Kasi → staf di kolom Kasi itu.", "A1"),
+        "nomor": ("Nomor telepon. Isi hanya bila boleh tampil di halaman Kontak.", "0812-3456-7890"),
+    },
+    "kontak": {
+        "nama": ("WAJIB. Nama layanan/kontak. Hapus baris untuk menghapus kontak.", "Puskesmas Lahendong"),
+        "tampil": TAMPIL,
+        "peran": ("Keterangan singkat.", "Layanan kesehatan"),
+        "nomor": ("Nomor telepon. Kosong = kontak tidak ditampilkan.", "0431-123456"),
+        "kategori": ("Pilih dari daftar: darurat (polisi, damkar, ambulans) atau umum.", "umum"),
+    },
+    "wisata": {
+        "id": ("WAJIB. Kode singkat unik. Menjadi alamat halaman detail (wisata-detail.html?id=W4) dan penentu foto — jangan diubah.", "W4"),
+        "nama": ("Nama destinasi.", "Danau Linow"),
+        "tampil": TAMPIL,
+        "ringkas": ("Satu kalimat untuk kartu.", "Danau vulkanik dengan warna air yang berubah."),
+        "deskripsi": ("Uraian lengkap. Satu paragraf per baris (Ctrl+Enter).", "(paragraf)"),
+        "jam": ("Jam buka. Baris pertama tampil di kartu.", "Setiap hari, 08.00 – 18.00 WITA"),
+        "tiket": ("Harga tiket. Baris pertama tampil di kartu.", "Rp10.000 per orang"),
+        "fasilitas": ("Dipisah koma.", "Parkir, toilet, warung"),
+        "waktu_terbaik": ("Saran waktu berkunjung, satu per baris.", "Pagi hari"),
+        "cara_kesana": ("Rute, satu langkah per baris.", "Dari pusat Kota Tomohon …"),
+        "pengelola": ("Pengelola, satu per baris.", "Pemerintah Kota Tomohon"),
+        "maps_link": ("Tautan Google Maps lengkap, diawali https://", "https://maps.google.com/?q=Danau+Linow"),
+    },
+    "umkm": {
+        "nama": ("WAJIB. Nama usaha. Untuk menghapus usaha: hapus barisnya.", "Kue Lapis Bu Ani"),
+        "tampil": TAMPIL,
+        "produk": ("Produk utama.", "Kue lapis legit, kue kering"),
+        "kontak": ("Nomor telepon/WA usaha — hanya bila pemilik setuju ditampilkan.", "0812-3456-7890"),
+        "lingkungan": ("Lokasi usaha, pilih dari daftar.", "Lingkungan 2"),
+    },
+    "layanan": {
+        "nama_surat": ("WAJIB. Nama surat. Untuk menghapus surat: hapus barisnya.", "Surat Keterangan Tidak Mampu (SKTM)"),
+        "tampil": TAMPIL,
+        "kategori": ("Kelompok surat: pilih dari daftar atau ketik kategori baru. Kosong = Lainnya.", "Sosial"),
+        "syarat": ("Berkas yang dibawa, satu per baris (Ctrl+Enter).", "Fotokopi KTP⏎Fotokopi Kartu Keluarga"),
+        "alur": ("Langkah pengurusan, satu per baris (Ctrl+Enter).", "Bawa berkas ke kantor kelurahan⏎Surat ditandatangani lurah"),
+        "waktu": ("Lama proses.", "1 hari kerja"),
+        "biaya": ("Biaya.", "Gratis"),
+        "catatan": ("Pemberitahuan tambahan (opsional).", "Bawa dokumen asli saat pengambilan."),
+    },
+}
+
+# Dropdown: (tab, kolom) → (pilihan, ketat). ketat=False hanya memperingatkan, nilai baru tetap boleh.
+PILIHAN = {
+    ("kontak", "tampil"): (["Ya", "Tidak"], True),
+    ("wisata", "tampil"): (["Ya", "Tidak"], True),
+    ("umkm", "tampil"): (["Ya", "Tidak"], True),
+    ("layanan", "tampil"): (["Ya", "Tidak"], True),
+    ("kontak", "kategori"): (["darurat", "umum"], True),
+    ("layanan", "kategori"): (sorted({r.get("kategori", "") for r in DATA.get("layanan", [])} - {""}) or ["Kependudukan"], False),
+    ("umkm", "lingkungan"): ([r["nama"] for r in DATA.get("lingkungan", [])], False),
+}
+
+CARA = [
+    "• Menambah data: isi baris kosong pertama di bawah data terakhir. Kolom pertama (judul hijau tua) wajib diisi.",
+    "• Menghapus data: klik kanan nomor baris di kiri → Hapus baris. Baris kosong yang tersisa di tengah tidak masalah.",
+    "• Menyembunyikan sementara: ubah kolom tampil menjadi Tidak (pilih dari daftar). Data tetap tersimpan.",
+    "• Arti setiap kolom: arahkan kursor ke judul kolom (ada segitiga kecil di pojok) — muncul penjelasan dan contoh.",
+    "• Urutan di situs = urutan baris di sheet (tab aparat: kolom urutan). Pindahkan baris untuk mengubah urutan.",
+]
+
 ATURAN = [
     "1. Jangan mengganti nama tab maupun baris judul (baris pertama) di setiap tab.",
-    "2. Satu baris = satu data. Menambah atau menghapus baris (surat, wisata, UMKM, aparat, lingkungan) langsung menambah atau mengurangi isi situs; susunan tampilan menyesuaikan sendiri.",
-    "3. Baris yang kolom pertamanya (id / kunci) kosong tidak ditampilkan — cara aman menyembunyikan data tanpa menghapusnya.",
+    "2. Satu baris = satu data. Menambah atau menghapus baris langsung menambah atau mengurangi isi situs; susunan tampilan menyesuaikan sendiri.",
+    "3. Baris yang kolom pertamanya kosong tidak ditampilkan.",
     "4. Sel yang kosong membuat bagian itu disembunyikan di situs. Situs tidak pernah mengisi data karangan.",
-    "5. Id harus unik dalam satu tab dan jangan diubah: id wisata menjadi alamat halaman detail (wisata-detail.html?id=W1) sekaligus penentu fotonya; id surat menjadi tautan langsung (layanan.html#surat-S2).",
+    "5. Hanya tab wisata dan aparat yang memakai kolom id (kode singkat, mis. W4 / A4); id harus unik dan jangan diubah. Tab lain dikenali dari kolom pertamanya.",
     "6. Satu orang cukup ditulis sekali, di tab aparat. Isi kolom nomor bila nomornya boleh tampil di halaman Kontak.",
     "7. Tulis angka tanpa pemisah ribuan: 2235, bukan 2.235. Desimal boleh memakai koma: 7,85.",
     "8. Semua sel diformat Teks biasa agar Google tidak mengubah isian (mis. membuang angka 0 di depan nomor telepon). Jangan ubah formatnya.",
-    "9. Beberapa paragraf atau butir dalam satu sel: pisahkan dengan baris baru (Ctrl+Enter atau Alt+Enter; di Mac Cmd+Enter). Di tab layanan, satu syarat atau satu langkah alur per baris.",
-    "10. Kolom maps_link: tautan Google Maps lengkap berawalan https://.",
-    "11. Perubahan langsung tampil saat halaman situs dimuat ulang.",
-    "12. Spreadsheet ini dapat dibaca publik — jangan simpan data pribadi (NIK, alamat rumah, nomor pribadi) di tab mana pun.",
+    "9. Beberapa paragraf atau butir dalam satu sel: pisahkan dengan baris baru (Ctrl+Enter atau Alt+Enter; di Mac Cmd+Enter).",
+    "10. Perubahan langsung tampil saat halaman situs dimuat ulang.",
+    "11. Spreadsheet ini dapat dibaca publik — jangan simpan data pribadi (NIK, alamat rumah, nomor pribadi) di tab mana pun.",
 ]
 
 TIDAK_DIATUR = [
-    "• Foto: statis di folder img/ situs, dipetakan ke id baris di assets/js/komponen.js (bagian FOTO).",
+    "• Foto: statis di folder img/ situs, dipetakan di assets/js/komponen.js (bagian FOTO).",
     "• Peta wilayah (gambar): file img/peta-wilayah.png — halaman Profil menampilkannya otomatis bila file ada.",
     "• Judul dan kalimat pengantar tiap halaman: di berkas HTML.",
 ]
 
 MASIH_CONTOH = [
     "Nilai yang belum ada data resminya ditandai \"CONTOH\" di kolom keterangan dan wajib diganti sebelum situs diumumkan:",
-    "• Tab profil: jam_layanan, luas_wilayah, ketinggian, suhu, batas_utara/selatan/timur/barat, sejarah, legenda.",
+    "• Tab profil: jam_layanan, luas_wilayah, ketinggian, suhu, sejarah, legenda.",
     "• Tab layanan: syarat, alur, waktu, biaya, dan catatan setiap surat perlu dicocokkan dengan ketentuan kantor kelurahan.",
     "• Masih kosong: telepon_kantor, email, nama kepala lingkungan, nomor aparat, UMKM.",
 ]
 
 
-def sel(nilai, gaya="isi"):
+def paragraf(nilai):
+    return "".join(f"<text:p>{escape(b)}</text:p>" for b in str(nilai).split("\n"))
+
+
+def sel(nilai, gaya="isi", validasi=None, catatan=None):
     nilai = "" if nilai is None else str(nilai)
-    if nilai == "":
-        return f'<table:table-cell table:style-name="{gaya}"/>'
-    paragraf = "".join(f"<text:p>{escape(b)}</text:p>" for b in nilai.split("\n"))
-    return f'<table:table-cell table:style-name="{gaya}" office:value-type="string">{paragraf}</table:table-cell>'
+    atribut = f' table:style-name="{gaya}"' + (f' table:content-validation-name="{validasi}"' if validasi else "")
+    isi = f"<office:annotation>{paragraf(catatan)}</office:annotation>" if catatan else ""
+    if nilai:
+        atribut += ' office:value-type="string"'
+        isi += paragraf(nilai)
+    return f"<table:table-cell{atribut}>{isi}</table:table-cell>" if isi else f"<table:table-cell{atribut}/>"
 
 
-def baris(nilai, gaya="isi"):
-    return "<table:table-row>" + "".join(sel(v, gaya) for v in nilai) + "</table:table-row>"
+def baris(nilai, gaya="isi", validasi=None):
+    validasi = validasi or [None] * len(nilai)
+    return "<table:table-row>" + "".join(sel(v, gaya, val) for v, val in zip(nilai, validasi)) + "</table:table-row>"
 
 
 def lebar(nilai_kolom):
@@ -126,35 +226,63 @@ def tabel(nama, kolom, isi_baris, lebar_kolom):
     return f'<table:table table:name="{nama}">{cols}{"".join(isi_baris)}</table:table>'
 
 
-gaya_kolom = []
-lembar = []
+def validasi_xml(nama, tab, kolom_ke, pilihan, ketat):
+    daftar = ";".join(f"&quot;{escape(p)}&quot;" for p in pilihan)
+    alamat = f"{tab}.{chr(65 + kolom_ke)}2"
+    jenis = "stop" if ketat else "warning"
+    pesan = "Pilih salah satu dari daftar." if ketat else "Nilai ini belum ada di daftar. Tetap dipakai bila memang kategori baru."
+    return (f'<table:content-validation table:name="{nama}" table:condition="of:cell-content-is-in-list({daftar})" '
+            f'table:allow-empty-cell="true" table:base-cell-address="{alamat}" table:display-list="unsorted">'
+            f'<table:error-message table:message-type="{jenis}" table:display="true"><text:p>{pesan}</text:p></table:error-message>'
+            f'</table:content-validation>')
+
+
+gaya_kolom, lembar, validasi = [], [], []
 
 # Tab petunjuk
 p = [baris(["PETUNJUK MENGELOLA DATA — Website Kelurahan Lahendong"], "judul"),
      baris(["Setiap tab di spreadsheet ini mengisi bagian tertentu di situs. Ubah isi sel (tersimpan otomatis), lalu muat ulang halaman situs untuk melihat hasilnya."]),
      baris([""]),
-     baris(["TAB", "TAMPIL DI HALAMAN", "ISI"], "kepala")]
+     baris(["CARA MENAMBAH, MENGHAPUS & MENYEMBUNYIKAN DATA"], "kepala")] + [baris([c]) for c in CARA]
+p += [baris([""]), baris(["TAB", "TAMPIL DI HALAMAN", "ISI"], "kepala")]
 p += [baris([tab, *PETA[tab]]) for tab in SKEMA]
 p += [baris([""]), baris(["ATURAN PENGISIAN"], "kepala")] + [baris([a]) for a in ATURAN]
+p += [baris([""]), baris(["ARTI SETIAP KOLOM"], "kepala"), baris(["TAB · KOLOM", "ARTI", "CONTOH"], "kepala")]
+for tab, kolom in SKEMA.items():
+    for k in kolom:
+        arti, contoh = KOLOM[tab][k]
+        p.append(baris([f"{tab} · {k}", arti, contoh.replace("⏎", " ↵ ")], "wajib-petunjuk" if k == kolom[0] else "isi"))
 p += [baris([""]), baris(["TIDAK DIATUR DARI SPREADSHEET"], "kepala")] + [baris([a]) for a in TIDAK_DIATUR]
 p += [baris([""]), baris(["DATA YANG MASIH CONTOH"], "kepala")] + [baris([a]) for a in MASIH_CONTOH]
-lembar.append(tabel("petunjuk", ["a", "b", "c"], p, [5.6, 12.4, 16.0]))
+lembar.append(tabel("petunjuk", ["a", "b", "c"], p, [5.6, 14.0, 12.0]))
 
 for tab, kolom in SKEMA.items():
     data = DATA.get(tab, [])
-    isi = [baris(kolom, "kepala")] + [baris([row.get(k, "") for k in kolom]) for row in data]
-    # Baris kosong siap isi, juga berformat Teks biasa, agar baris tambahan admin tidak diubah Google.
-    isi.append(f'<table:table-row table:number-rows-repeated="100"><table:table-cell table:style-name="isi" '
-               f'table:number-columns-repeated="{len(kolom)}"/></table:table-row>')
+    nama_val = []
+    for i, k in enumerate(kolom):
+        if (tab, k) in PILIHAN:
+            nama = f"v_{tab}_{k}"
+            validasi.append(validasi_xml(nama, tab, i, *PILIHAN[(tab, k)]))
+            nama_val.append(nama)
+        else:
+            nama_val.append(None)
+    judul = "<table:table-row>" + "".join(
+        sel(k, "wajib" if i == 0 else "kepala", catatan=f"{KOLOM[tab][k][0]}\nContoh: {KOLOM[tab][k][1].replace('⏎', ' ↵ ')}")
+        for i, k in enumerate(kolom)) + "</table:table-row>"
+    isi = [judul] + [baris([row.get(k, "") for k in kolom], validasi=nama_val) for row in data]
+    # Baris kosong siap isi: berformat Teks biasa dan ber-dropdown, agar baris tambahan admin tidak diubah Google.
+    kosong = "".join(sel("", "isi", v) for v in nama_val)
+    isi.append(f'<table:table-row table:number-rows-repeated="100">{kosong}</table:table-row>')
     lembar.append(tabel(tab, kolom, isi, [lebar([k] + [r.get(k, "") for r in data]) for k in kolom]))
 
-FODS = f'''<?xml version="1.0" encoding="UTF-8"?>
+FODS = f"""<?xml version="1.0" encoding="UTF-8"?>
 <office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
  xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0"
  xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
  xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0"
  xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
  xmlns:number="urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0"
+ xmlns:of="urn:oasis:names:tc:opendocument:xmlns:of:1.2"
  office:version="1.3" office:mimetype="application/vnd.oasis.opendocument.spreadsheet">
 <office:automatic-styles>
  <number:text-style style:name="teks"><number:text-content/></number:text-style>
@@ -165,16 +293,45 @@ FODS = f'''<?xml version="1.0" encoding="UTF-8"?>
   <style:table-cell-properties fo:background-color="#D3DDD8" fo:wrap-option="wrap" style:vertical-align="top"/>
   <style:text-properties fo:font-weight="bold"/>
  </style:style>
+ <style:style style:name="wajib" style:family="table-cell" style:data-style-name="teks">
+  <style:table-cell-properties fo:background-color="#0B6B63" fo:wrap-option="wrap" style:vertical-align="top"/>
+  <style:text-properties fo:font-weight="bold" fo:color="#FFFFFF"/>
+ </style:style>
+ <style:style style:name="wajib-petunjuk" style:family="table-cell" style:data-style-name="teks">
+  <style:table-cell-properties fo:wrap-option="wrap" style:vertical-align="top"/>
+  <style:text-properties fo:font-weight="bold"/>
+ </style:style>
  <style:style style:name="judul" style:family="table-cell" style:data-style-name="teks">
   <style:text-properties fo:font-weight="bold" fo:font-size="13pt"/>
  </style:style>
  {"".join(gaya_kolom)}
 </office:automatic-styles>
-<office:body><office:spreadsheet>{"".join(lembar)}</office:spreadsheet></office:body>
-</office:document>'''
+<office:body><office:spreadsheet>
+ <table:content-validations>{"".join(validasi)}</table:content-validations>
+ {"".join(lembar)}
+</office:spreadsheet></office:body>
+</office:document>"""
 
 fods = os.path.join(KERJA, "template-data-lahendong.fods")
 open(fods, "w").write(FODS)
-subprocess.run(["soffice", "--headless", "--convert-to", "xlsx", "--outdir", f"{REPO}/data", fods],
+subprocess.run(["soffice", "--headless", "--convert-to", "xlsx", "--outdir", KERJA, fods],
                check=True, capture_output=True)
+
+
+def bekukan_judul(xlsx_masuk, xlsx_keluar):
+    """Bekukan baris judul (baris 1) di setiap tab data, agar judul kolom tetap terlihat saat menggulir.
+    Disuntikkan langsung ke XML xlsx karena pengaturan ini tidak terbawa konversi LibreOffice."""
+    pane = ('<pane xSplit="0" ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/>'
+            '<selection pane="bottomLeft" activeCell="A2" sqref="A2"/>')
+    with zipfile.ZipFile(xlsx_masuk) as zin, zipfile.ZipFile(xlsx_keluar, "w", zipfile.ZIP_DEFLATED) as zout:
+        for info in zin.infolist():
+            data = zin.read(info.filename)
+            if re.match(r"xl/worksheets/sheet([2-9]|\d\d+)\.xml$", info.filename):  # sheet1 = petunjuk
+                xml = data.decode("utf-8")
+                xml = re.sub(r'(<sheetView [^>]*>)<selection [^>]*/>', lambda m: m.group(1) + pane, xml, count=1)
+                data = xml.encode("utf-8")
+            zout.writestr(info, data)
+
+
+bekukan_judul(os.path.join(KERJA, "template-data-lahendong.xlsx"), f"{REPO}/data/template-data-lahendong.xlsx")
 print("ok:", {tab: len(DATA.get(tab, [])) for tab in SKEMA})

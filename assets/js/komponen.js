@@ -9,9 +9,11 @@
 /* ---------------------------------------------------------------------- */
 
 /* Pada iterasi ini foto TIDAK diatur dari spreadsheet. Letakkan file di img/,
-   lalu daftarkan di sini berdasarkan id baris di sheet (mis. W1 = baris W1 di
-   tab wisata). Id yang tidak terdaftar memakai gambar pengganti; aparat tanpa
-   foto memakai monogram inisial. */
+   lalu daftarkan di sini:
+   - wisata & aparat: menurut kolom id (W1 = baris W1 di tab wisata);
+   - umkm: menurut kode dari nama usaha — huruf kecil, selain huruf/angka jadi "-"
+     ("Kue Lapis Bu Ani" → "kue-lapis-bu-ani"), lihat kodeDari() di data.js.
+   Yang tidak terdaftar memakai gambar pengganti; aparat tanpa foto memakai monogram. */
 const FOTO = {
   wisata: {
     W1: "wisata-danau-linow.webp",
@@ -19,7 +21,7 @@ const FOTO = {
     W3: "wisata-mahwatu.webp",
     W4: "wisata-toulangkow.webp",
   },
-  umkm: {},
+  umkm: {}, // "kue-lapis-bu-ani": "umkm-kue-lapis.webp"
   aparat: {},
 };
 
