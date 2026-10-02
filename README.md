@@ -34,7 +34,7 @@ ilustrasi bawaan (`img/`), peta wilayah (`img/peta-wilayah.png` — tampil otoma
 halaman **KKT Unsrat Angkatan 149** (`kkt.html`, ditautkan dari baris bawah footer, tidak ada di menu):
 datanya ditulis di `DATA_KKT` pada awal [`assets/js/halaman/kkt.js`](assets/js/halaman/kkt.js) —
 nama, NIM, fakultas, peran (opsional), foto (nama berkas di `img/` atau tautan Drive, opsional),
-serta periode, DPL, dan paragraf "tentang".
+serta dosen lapangan (pembimbing & pengawas), periode, dan paragraf "tentang".
 
 ## Mengelola spreadsheet
 

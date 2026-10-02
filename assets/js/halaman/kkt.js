@@ -1,4 +1,4 @@
-/* KKT (kkt.html): mahasiswa KKT Unsrat Angkatan 149, dikelompokkan per bidang.
+/* KKT (kkt.html): dosen lapangan & mahasiswa KKT Unsrat Angkatan 149, dikelompokkan per bidang.
    Halaman ini tidak ada di menu atas; tautannya ada di baris bawah footer (ui.js).
 
    Berbeda dengan halaman lain, data KKT TIDAK diambil dari spreadsheet — cukup ubah DATA_KKT di bawah,
@@ -6,7 +6,13 @@
 
 const DATA_KKT = {
   periode: "", // mis. "Juli – Agustus 2026"; kosong = tidak ditampilkan
-  dpl: "", // nama dosen pembimbing lapangan; kosong = tidak ditampilkan
+
+  // Tampil di panel tersendiri di atas daftar mahasiswa. foto opsional, sama seperti anggota.
+  dosen: [
+    { peran: "Dosen Pembimbing Lapangan", nama: "Dr. Ir. Charles R. Ngangi, MS", foto: "" },
+    { peran: "Dosen Pengawas Lapangan", nama: "Decky J. Paseki, SH., M.H", foto: "" },
+  ],
+
   // Satu paragraf per elemen; kosong = paragraf "tentang" tidak ditampilkan.
   tentang: [],
 
@@ -40,15 +46,16 @@ const DATA_KKT = {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  const info = [DATA_KKT.periode && `Periode ${DATA_KKT.periode}`, DATA_KKT.dpl && `Dosen pembimbing lapangan: ${DATA_KKT.dpl}`]
-    .filter(Boolean).map(escapeHtml).join(" · ");
-  isiAtauHapus("info-kkt", info);
+  isiAtauHapus("info-kkt", DATA_KKT.periode ? escapeHtml("Periode " + DATA_KKT.periode) : "");
   isiAtauHapus("tentang-kkt", DATA_KKT.tentang.map((p, i) => `<p${i === 0 ? ' class="lead"' : ""}>${escapeHtml(p)}</p>`).join(""));
 
   // Nilai dari kode di-escape seperti data spreadsheet, agar tanda < atau & dalam nama tetap aman.
-  const anggota = DATA_KKT.anggota.map((m) =>
+  const rapikan = (daftar) => daftar.map((m) =>
     Object.fromEntries(["bidang", "peran", "nama", "nim", "fakultas", "foto"].map((k) => [k, escapeHtml(String(m[k] ?? "").trim())])))
     .filter((m) => m.nama);
+  const anggota = rapikan(DATA_KKT.anggota);
+  const dosen = rapikan(DATA_KKT.dosen);
+  isiAtauHapus("dosen-kkt", dosen.map(kartuDosen).join(""));
 
   isiAtauHapus("angka-kkt", anggota.length
     ? [
@@ -98,9 +105,24 @@ function renderAnggota(anggota) {
   return [...kelompokBidang(anggota).values()].map(({ nama, anggota: daftar }) => `
     <section class="reveal">
       <h3 class="judul-grup-surat"><span>${nama}</span><span class="jumlah">${daftar.length}</span></h3>
-      <div class="grid-adaptif rata-kiri" data-maks="3">${daftar.map(kartuMahasiswa).join("")}</div>
+      <!-- Kolom tetap (bukan grid adaptif) agar semua kelompok sejajar satu sama lain. -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">${daftar.map(kartuMahasiswa).join("")}</div>
     </section>
   `).join("");
+}
+
+/** Dosen lapangan: potret, jabatan, nama besar, dan asal universitas — di panel gelap. */
+function kartuDosen(d) {
+  return `
+    <article class="dosen">
+      ${visualOrang(d, "foto-dosen", "kkt")}
+      <div class="min-w-0">
+        <p class="label-kecil">${d.peran}</p>
+        <h3 class="nama-dosen">${d.nama}</h3>
+        <p class="asal-dosen">Universitas Sam Ratulangi</p>
+      </div>
+    </article>
+  `;
 }
 
 /* Kartu mendatar: foto/monogram di kiri, teks di kanan. Baris peran selalu ada (Anggota diredupkan)
