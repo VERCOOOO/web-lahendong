@@ -436,9 +436,11 @@ python3 -m http.server 8000
       <span class="eyebrow">Menerbitkan</span>
       <h2>Dari komputer ke GitHub Pages</h2>
       <p>GitHub Pages menerbitkan cabang <code>main</code> apa adanya. Setiap <code>git push</code> ke <code>main</code> langsung menjadi versi situs yang baru dalam 1–2 menit.</p>
-<pre><code>git add -A
+<pre><code>python3 tools/versi_aset.py   <span class="c"># beri penanda versi baru pada CSS/JS yang berubah</span>
+git add -A
 git commit -m <span class="s">"feat: tambah tab agenda"</span>
 git push</code></pre>
+      <p>GitHub Pages menyuruh browser menyimpan berkas selama 10 menit. Tanpa penanda versi (<code>data.js?v=0cfb573f</code>), browser pengunjung bisa memakai HTML baru dengan JavaScript lama sesaat setelah pembaruan, dan bagian yang bergantung pada perubahan itu gagal dimuat. <code>versi_aset.py</code> mengambil penanda dari isi berkas, jadi hanya berubah bila berkasnya berubah.</p>
       <p>Urutan yang aman saat perubahan menyentuh sheet dan kode sekaligus:</p>
       <ul>
         <li><strong>Menambah kolom atau tab</strong>: push kode dulu atau sheet dulu sama-sama aman. Kolom yang belum ada terbaca kosong, tab yang belum ada menampilkan pesan gagal di bagian itu saja.</li>

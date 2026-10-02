@@ -152,7 +152,7 @@ Situs menampilkan "… belum bisa dimuat". Buka konsol browser (F12 → Console)
 │   └── halaman/         logika per halaman (index.html → beranda.js)
 ├── img/                 gambar statis
 ├── data/                template spreadsheet
-├── tools/               buat_template.py — membuat ulang template dari SKEMA & data contoh
+├── tools/               buat_template.py (template xlsx), versi_aset.py (penanda versi CSS/JS)
 └── docs/                Panduan Admin & Panduan Teknis
 ```
 
@@ -184,6 +184,10 @@ kolom Tailwind (`lg:grid-cols-4`) pada wadah itu.
 
 Nilai dari `ambilData()` sudah di-escape, jadi aman disisipkan ke HTML. Untuk konteks non-HTML
 (judul tab, label grafik), pakai `teksPolos()`.
+
+**Sebelum commit perubahan CSS/JS**, jalankan `python3 tools/versi_aset.py`. Skrip ini menambah
+penanda versi (`data.js?v=0cfb573f`) di semua HTML, sehingga browser pengunjung langsung mengambil
+berkas baru alih-alih memakai salinan lama selama 10 menit (cache GitHub Pages).
 
 Untuk pratinjau lokal, jalankan server sederhana di folder repo, mis. `python3 -m http.server`,
 lalu buka `http://localhost:8000`.
