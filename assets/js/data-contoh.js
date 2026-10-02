@@ -37,36 +37,29 @@ const DATA_DUMMY = {
         "Secara ilmiah, perubahan warna air danau dipengaruhi kandungan mineral dan aktivitas vulkanik di dasar danau. Namun kisah rakyat ini tetap diwariskan sebagai bagian dari kekayaan budaya setempat.",
       keterangan: "CONTOH — ganti dengan cerita yang dituturkan warga. Halaman Legenda. Satu baris dalam sel = satu paragraf.",
     },
-  ],
-
-  statistik: [
-    { kunci: "tahun_data", nilai: "2026", keterangan: "Tahun data kependudukan. Halaman Penduduk." },
+    { kunci: "tahun_data", nilai: "2026", keterangan: "Tahun data kependudukan (tab lingkungan). Halaman Penduduk." },
     { kunci: "sumber_data", nilai: "Kelurahan Lahendong", keterangan: "Sumber data kependudukan. Halaman Penduduk." },
-    { kunci: "jumlah_penduduk", nilai: "2235", keterangan: "Sumber: Kelurahan Lahendong, 2026. Beranda dan Penduduk." },
-    { kunci: "laki", nilai: "1123", keterangan: "Penduduk laki-laki. Halaman Penduduk." },
-    { kunci: "perempuan", nilai: "1112", keterangan: "Penduduk perempuan. Halaman Penduduk." },
-    { kunci: "jumlah_kk", nilai: "762", keterangan: "Kepala keluarga. Beranda dan Penduduk." },
-    { kunci: "jumlah_lingkungan", nilai: "8", keterangan: "Beranda dan Profil." },
+    { kunci: "foto_hero", nilai: "", keterangan: "Opsional. Tautan Google Drive foto lanskap untuk gambar besar di Beranda. Kosong = ilustrasi bawaan." },
   ],
 
   // Sumber: Kelurahan Lahendong, 2026. Nama kepala lingkungan belum tersedia.
-  // Jumlah jiwa tiap baris = laki + perempuan; total 8 lingkungan = jumlah_penduduk di tab statistik.
+  // Jumlah jiwa (laki + perempuan) dan semua total dihitung situs dari tab ini.
   lingkungan: [
-    { nama: "Lingkungan 1", kepala: "", jumlah_kk: "124", jumlah_jiwa: "345", laki: "169", perempuan: "176", jumlah_lansia: "37", jumlah_rumah: "106" },
-    { nama: "Lingkungan 2", kepala: "", jumlah_kk: "116", jumlah_jiwa: "328", laki: "172", perempuan: "156", jumlah_lansia: "45", jumlah_rumah: "80" },
-    { nama: "Lingkungan 3", kepala: "", jumlah_kk: "80", jumlah_jiwa: "221", laki: "114", perempuan: "107", jumlah_lansia: "33", jumlah_rumah: "64" },
-    { nama: "Lingkungan 4", kepala: "", jumlah_kk: "67", jumlah_jiwa: "210", laki: "111", perempuan: "99", jumlah_lansia: "29", jumlah_rumah: "51" },
-    { nama: "Lingkungan 5", kepala: "", jumlah_kk: "113", jumlah_jiwa: "330", laki: "157", perempuan: "173", jumlah_lansia: "54", jumlah_rumah: "71" },
-    { nama: "Lingkungan 6", kepala: "", jumlah_kk: "96", jumlah_jiwa: "271", laki: "139", perempuan: "132", jumlah_lansia: "40", jumlah_rumah: "65" },
-    { nama: "Lingkungan 7", kepala: "", jumlah_kk: "69", jumlah_jiwa: "222", laki: "109", perempuan: "113", jumlah_lansia: "32", jumlah_rumah: "59" },
-    { nama: "Lingkungan 8", kepala: "", jumlah_kk: "97", jumlah_jiwa: "308", laki: "152", perempuan: "156", jumlah_lansia: "42", jumlah_rumah: "75" },
+    { nama: "Lingkungan 1", kepala: "", jumlah_kk: "124", laki: "169", perempuan: "176", jumlah_lansia: "37", jumlah_rumah: "106" },
+    { nama: "Lingkungan 2", kepala: "", jumlah_kk: "116", laki: "172", perempuan: "156", jumlah_lansia: "45", jumlah_rumah: "80" },
+    { nama: "Lingkungan 3", kepala: "", jumlah_kk: "80", laki: "114", perempuan: "107", jumlah_lansia: "33", jumlah_rumah: "64" },
+    { nama: "Lingkungan 4", kepala: "", jumlah_kk: "67", laki: "111", perempuan: "99", jumlah_lansia: "29", jumlah_rumah: "51" },
+    { nama: "Lingkungan 5", kepala: "", jumlah_kk: "113", laki: "157", perempuan: "173", jumlah_lansia: "54", jumlah_rumah: "71" },
+    { nama: "Lingkungan 6", kepala: "", jumlah_kk: "96", laki: "139", perempuan: "132", jumlah_lansia: "40", jumlah_rumah: "65" },
+    { nama: "Lingkungan 7", kepala: "", jumlah_kk: "69", laki: "109", perempuan: "113", jumlah_lansia: "32", jumlah_rumah: "59" },
+    { nama: "Lingkungan 8", kepala: "", jumlah_kk: "97", laki: "152", perempuan: "156", jumlah_lansia: "42", jumlah_rumah: "75" },
   ],
 
-  // Struktur belum final. "atasan" = id aparat di atasnya pada bagan.
+  // Struktur belum final. "atasan" = jabatan atasannya; kosong = pimpinan. Urutan = urutan baris.
   aparat: [
-    { id: "A1", nama: "Reymon Stive Londok, S.T", jabatan: "Lurah", urutan: "1", atasan: "", nomor: "" },
-    { id: "A2", nama: "Cicilia M. Karamoy, S.ST, M.Kes", jabatan: "Sekretaris Kelurahan", urutan: "2", atasan: "A1", nomor: "" },
-    { id: "A3", nama: "Marthen J. Mende, ST", jabatan: "Kepala Seksi Pemerintahan", urutan: "3", atasan: "A1", nomor: "" },
+    { jabatan: "Lurah", nama: "Reymon Stive Londok, S.T", atasan: "", nomor: "", foto: "" },
+    { jabatan: "Sekretaris Kelurahan", nama: "Cicilia M. Karamoy, S.ST, M.Kes", atasan: "Lurah", nomor: "", foto: "" },
+    { jabatan: "Kepala Seksi Pemerintahan", nama: "Marthen J. Mende, ST", atasan: "Lurah", nomor: "", foto: "" },
   ],
 
   // Nomor darurat nasional. Tambahkan narahubung umum (puskesmas, polsek, dsb.) dengan kategori "umum".
@@ -78,9 +71,9 @@ const DATA_DUMMY = {
 
   wisata: [
     {
-      id: "W1",
       nama: "Danau Linow",
       tampil: "Ya",
+      foto: "",
       ringkas: "Danau vulkanik dengan warna air yang dapat berubah — hijau, biru, hingga kekuningan.",
       deskripsi:
         "Danau Linow Lahendong merupakan danau vulkanik yang berada di wilayah Lahendong, Kota Tomohon, Sulawesi Utara. Danau ini terbentuk dari aktivitas vulkanik dan memiliki kandungan belerang serta aktivitas panas bumi di kawasan sekitarnya. Lingkungan danau dikelilingi vegetasi hijau dan perbukitan, sehingga memiliki kondisi alam yang sejuk dan asri. Selain sebagai kawasan wisata, Danau Linow juga memiliki nilai ekologis dan geologis yang berkaitan dengan karakteristik kawasan vulkanik Lahendong.\n" +
@@ -98,9 +91,9 @@ const DATA_DUMMY = {
       maps_link: "https://maps.google.com/?q=Danau+Linow+Tomohon",
     },
     {
-      id: "W2",
       nama: "Hutan Pinus Lahendong",
       tampil: "Ya",
+      foto: "",
       ringkas: "Hutan pinus sejuk yang berpadu dengan kolam sulfur beruap dan pemandian air panas alami.",
       deskripsi:
         "Hutan Pinus Lahendong adalah destinasi wisata alam unik di Tomohon yang memadukan keindahan hutan pinus hijau nan rimbun dengan fenomena geotermal berupa kolam sulfur beruap putih dan pemandian air panas alami yang kaya khasiat bagi kulit. Perpaduan uap panas bumi yang mengepul di antara deretan pepohonan pinus yang menjulang tinggi menciptakan suasana yang sejuk dan menenangkan, menjadikannya tempat ideal untuk menyegarkan pikiran, berburu spot foto, serta bersantai menikmati kedamaian alam Tomohon jauh dari hiruk-pikuk perkotaan.",
@@ -121,9 +114,9 @@ const DATA_DUMMY = {
       maps_link: "https://maps.google.com/?q=Hutan+Pinus+Lahendong",
     },
     {
-      id: "W3",
       nama: "Mah’Watu",
       tampil: "Ya",
+      foto: "",
       ringkas: "Wisata alam asri dengan kafe terbuka, gazebo, dan aliran air belerang berwarna hijau toska.",
       deskripsi:
         "Mah’Watu merupakan salah satu destinasi wisata alam yang berada di Kota Tomohon, Sulawesi Utara. Tempat wisata ini menawarkan suasana yang asri dan sejuk dengan pemandangan alam yang indah, sehingga cocok dijadikan tempat untuk bersantai dan melepas penat. Keindahan lingkungan sekitar yang masih alami menjadi daya tarik tersendiri bagi pengunjung. Selain menikmati pemandangan, wisatawan juga dapat menghabiskan waktu bersama keluarga maupun teman sambil menikmati suasana yang tenang dan udara yang segar.",
@@ -141,6 +134,9 @@ const DATA_DUMMY = {
 
   // Belum ada data UMKM resmi.
   umkm: [],
+
+  // Foto tambahan untuk Galeri (kegiatan, alam, budaya). Belum ada.
+  galeri: [],
 
   // CONTOH — syarat, alur, waktu, dan biaya perlu dicocokkan dengan ketentuan kantor kelurahan.
   // Satu syarat / satu langkah per baris di dalam sel. Tambah atau hapus baris surat sesuka hati.

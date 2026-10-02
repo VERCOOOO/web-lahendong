@@ -46,7 +46,7 @@ function kelompokkanNarahubung(aparat, kontak) {
     if (!pemilik.nomor) nomorLama.set(pemilik, baris.nomor);
   });
 
-  const dariAparat = urutkanAparat(aparat)
+  const dariAparat = aparat
     .map((a) => ({ id: a.id, nama: a.nama, peran: a.jabatan, nomor: a.nomor || nomorLama.get(a) || "" }));
 
   const adaNomor = (orang) => orang.nomor;

@@ -16,25 +16,33 @@ document.addEventListener("DOMContentLoaded", () => {
 /* Struktur                                                                */
 /* ---------------------------------------------------------------------- */
 
+/** Jabatan dibandingkan longgar: huruf besar/kecil, spasi, dan tanda baca diabaikan. */
+function samaJabatan(a, b) {
+  return kodeDari(a) !== "" && kodeDari(a) === kodeDari(b);
+}
+
 /**
- * Menyusun pohon dari kolom "atasan" (berisi id aparat di atasnya).
- * Aparat tanpa atasan — atau atasannya tidak ditemukan — menjadi puncak bagan.
+ * Menyusun pohon dari kolom "atasan" (berisi jabatan atasan). Urutan = urutan baris di sheet.
+ * Aparat tanpa atasan — atau atasannya tidak ditemukan — menjadi puncak (pimpinan).
  */
 function susunPohon(aparat) {
-  const urut = urutkanAparat(aparat);
-  const perId = new Map(urut.map((a) => [teksPolos(a.id), { ...a, bawahan: [] }]));
+  const simpul = aparat.map((a) => ({ ...a, bawahan: [] }));
   const puncak = [];
-
-  perId.forEach((simpul) => {
-    const atasan = perId.get(teksPolos(simpul.atasan).trim());
-    if (atasan && atasan !== simpul) {
-      atasan.bawahan.push(simpul);
+  simpul.forEach((s) => {
+    const atasan = s.atasan && simpul.find((calon) => calon !== s && samaJabatan(calon.jabatan, s.atasan));
+    if (atasan && !adalahBawahan(atasan, s)) {
+      atasan.bawahan.push(s);
     } else {
-      if (simpul.atasan) console.warn(`[data] Tab "aparat" baris ${simpul.id}: atasan "${teksPolos(simpul.atasan)}" tidak ditemukan.`);
-      puncak.push(simpul);
+      if (s.atasan) console.warn(`[data] Tab "aparat" baris ${s._baris}: atasan "${teksPolos(s.atasan)}" tidak ditemukan atau melingkar.`);
+      puncak.push(s);
     }
   });
   return puncak;
+}
+
+/** true bila `calon` sudah berada di bawah `s` — mencegah susunan melingkar (A atasan B, B atasan A). */
+function adalahBawahan(calon, s) {
+  return s.bawahan.some((b) => b === calon || adalahBawahan(calon, b));
 }
 
 /** Satu puncak (biasanya Lurah): panel pimpinan, lalu bawahan langsungnya sebagai cabang. */
@@ -97,14 +105,14 @@ function barisOrang(orang) {
 
 /* Batang kecil di tiap kartu = jumlah jiwa dibanding lingkungan terbesar. */
 function renderLingkungan(data) {
-  const terbesar = Math.max(0, ...data.map((l) => keAngka(l.jumlah_jiwa) || 0));
+  const terbesar = Math.max(0, ...data.map((l) => jiwaLingkungan(l) || 0));
   return data.map((l) => kartuLingkungan(l, terbesar)).join("");
 }
 
 function kartuLingkungan(item, terbesar) {
   // "Lingkungan 3" ditulis sebagai angka besar; nama lain ditampilkan utuh.
   const nomor = teksPolos(item.nama).match(/^lingkungan\s+(\S+)$/i);
-  const jiwa = keAngka(item.jumlah_jiwa);
+  const jiwa = jiwaLingkungan(item);
   const kk = keAngka(item.jumlah_kk);
   const angka = [jiwa !== null && formatAngka(jiwa) + " jiwa", kk !== null && formatAngka(kk) + " KK"].filter(Boolean);
 

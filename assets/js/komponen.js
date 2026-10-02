@@ -5,37 +5,55 @@
    ========================================================================== */
 
 /* ---------------------------------------------------------------------- */
-/* Foto statis                                                             */
+/* Foto                                                                     */
 /* ---------------------------------------------------------------------- */
 
-/* Pada iterasi ini foto TIDAK diatur dari spreadsheet. Letakkan file di img/,
-   lalu daftarkan di sini:
-   - wisata & aparat: menurut kolom id (W1 = baris W1 di tab wisata);
-   - umkm: menurut kode dari nama usaha — huruf kecil, selain huruf/angka jadi "-"
-     ("Kue Lapis Bu Ani" → "kue-lapis-bu-ani"), lihat kodeDari() di data.js.
-   Yang tidak terdaftar memakai gambar pengganti; aparat tanpa foto memakai monogram. */
+/* Urutan sumber foto untuk satu baris:
+   1. kolom "foto" di sheet (tautan Google Drive, tautan gambar, atau nama berkas di img/);
+   2. foto cadangan di folder img/ yang didaftarkan di FOTO, menurut kode baris
+      (kode = kolom pertama, huruf kecil, selain huruf/angka jadi "-": "Danau Linow" → "danau-linow");
+   3. gambar pengganti. Aparat tanpa foto memakai monogram inisial.
+   Bila sebuah sumber gagal dimuat (mis. foto Drive belum dibagikan), sumber berikutnya dicoba. */
 const FOTO = {
   wisata: {
-    W1: "wisata-danau-linow.webp",
-    W2: "wisata-hutan-pinus.webp",
-    W3: "wisata-mahwatu.webp",
-    W4: "wisata-toulangkow.webp",
+    "danau-linow": "wisata-danau-linow.webp",
+    "hutan-pinus-lahendong": "wisata-hutan-pinus.webp",
+    "mah-watu": "wisata-mahwatu.webp",
+    "toulangkow-hills": "wisata-toulangkow.webp",
   },
   umkm: {}, // "kue-lapis-bu-ani": "umkm-kue-lapis.webp"
-  aparat: {},
+  aparat: {}, // menurut nama orang: "reymon-stive-londok-s-t": "aparat-lurah.webp"
+  galeri: {},
 };
 
 const FOTO_PENGGANTI = "img/placeholder.webp";
 
-/** Path foto untuk satu baris, atau null bila belum terdaftar. */
-function fotoUntuk(tab, id) {
-  const berkas = FOTO[tab]?.[teksPolos(id)];
-  return berkas ? "img/" + berkas : null;
+/** Daftar alamat foto yang dicoba berurutan untuk satu baris. */
+function sumberFoto(tab, item, lebar = 1200) {
+  const kode = tab === "aparat" ? kodeDari(item.nama) : teksPolos(item.id);
+  const cadangan = FOTO[tab]?.[kode];
+  return [urlFoto(item.foto, lebar), cadangan ? "img/" + cadangan : ""].filter(Boolean);
 }
 
-/** <img> berfoto statis; kembali ke gambar pengganti bila file tidak ada. */
-function gambar(tab, item, kelas = "") {
-  return `<img src="${fotoUntuk(tab, item.id) || FOTO_PENGGANTI}" alt="${item.nama}" class="${kelas}" loading="lazy" onerror="this.onerror=null;this.src='${FOTO_PENGGANTI}'" />`;
+/** Dipanggil onerror <img>: coba sumber berikutnya, lalu gambar pengganti. */
+function fotoBerikutnya(img) {
+  const sisa = (img.dataset.cadangan || "").split(" ").filter(Boolean);
+  const berikut = sisa.shift();
+  img.dataset.cadangan = sisa.join(" ");
+  if (berikut) {
+    img.src = berikut;
+  } else if (img.dataset.tanpaPengganti !== undefined) {
+    img.remove(); // monogram di belakangnya yang tampil
+  } else {
+    img.onerror = null;
+    img.src = FOTO_PENGGANTI;
+  }
+}
+
+/** <img> untuk satu baris; bila semua sumber gagal, memakai gambar pengganti. */
+function gambar(tab, item, kelas = "", lebar = 1200) {
+  const [utama = FOTO_PENGGANTI, ...cadangan] = sumberFoto(tab, item, lebar);
+  return `<img src="${escapeHtml(utama)}" data-cadangan="${escapeHtml(cadangan.join(" "))}" alt="${item.nama || item.judul || ""}" class="${kelas}" loading="lazy" onerror="fotoBerikutnya(this)" />`;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -52,16 +70,18 @@ function gambar(tab, item, kelas = "") {
  * @param {string|null} [opsi.kosong]  pesan bila render kosong; null = hapus wadah
  * @param {string|null} [opsi.gagal]   pesan bila gagal dimuat; null = hapus wadah
  * @param {(data) => void} [opsi.setelah]  dijalankan setelah HTML terpasang (mis. menggambar grafik)
+ * @param {string[]} [opsi.opsional]  tab yang boleh gagal/tidak ada; isinya dianggap kosong
  * @returns {Promise<any|null>} data yang diambil, atau null bila gagal
  */
 async function isiDariData(wadah, tab, render, opsi = {}) {
   if (!wadah) return null;
-  const { kosong = "Belum ada data untuk ditampilkan.", gagal = "Data belum bisa dimuat saat ini.", setelah } = opsi;
+  const { kosong = "Belum ada data untuk ditampilkan.", gagal = "Data belum bisa dimuat saat ini.", setelah, opsional = [] } = opsi;
+  const ambil = (nama) => (opsional.includes(nama) ? ambilData(nama).catch(() => []) : ambilData(nama));
 
   tampilkanMemuat(wadah);
   let data;
   try {
-    data = Array.isArray(tab) ? await Promise.all(tab.map(ambilData)) : await ambilData(tab);
+    data = Array.isArray(tab) ? await Promise.all(tab.map(ambil)) : await ambil(tab);
   } catch (err) {
     gagal === null ? wadah.remove() : tampilkanGagal(wadah, gagal);
     return null;
@@ -116,7 +136,33 @@ function aturKolomDi(wadah) {
 /* Membaca nilai                                                           */
 /* ---------------------------------------------------------------------- */
 
-/** Nilai dari tab kunci-nilai (profil, statistik), atau "" bila tidak ada. */
+/** Jumlah jiwa satu lingkungan = laki + perempuan; null bila keduanya kosong. */
+function jiwaLingkungan(l) {
+  const laki = keAngka(l.laki);
+  const perempuan = keAngka(l.perempuan);
+  return laki === null && perempuan === null ? null : (laki || 0) + (perempuan || 0);
+}
+
+/**
+ * Semua angka kependudukan dihitung dari tab lingkungan — tidak ada total yang ditulis
+ * ulang di tempat lain, jadi angka di Beranda, Profil, dan Penduduk selalu cocok.
+ */
+function ringkasPenduduk(lingkungan) {
+  const jumlah = (kolom) => lingkungan.reduce((total, l) => total + (keAngka(l[kolom]) || 0), 0);
+  const laki = jumlah("laki");
+  const perempuan = jumlah("perempuan");
+  return {
+    jiwa: laki + perempuan,
+    laki,
+    perempuan,
+    kk: jumlah("jumlah_kk"),
+    lansia: jumlah("jumlah_lansia"),
+    rumah: jumlah("jumlah_rumah"),
+    lingkungan: lingkungan.length,
+  };
+}
+
+/** Nilai dari tab kunci-nilai (profil), atau "" bila tidak ada. */
 function nilaiKunci(data, kunci) {
   return data.find((row) => row.kunci === kunci)?.nilai ?? "";
 }
@@ -188,7 +234,7 @@ function kartuWisata(item, { denganTautan = false } = {}) {
   ].filter(([, teks]) => teks);
   return `
     <a href="wisata-detail.html?id=${encodeURIComponent(teksPolos(item.id))}" class="kartu reveal flex flex-col overflow-hidden">
-      <div class="bingkai-foto aspect-[3/2]">${gambar("wisata", item)}</div>
+      <div class="bingkai-foto aspect-[3/2]">${gambar("wisata", item, "", 800)}</div>
       <div class="p-5 md:p-6 flex flex-col flex-1">
         <h3 class="judul-kartu">${item.nama}</h3>
         <p class="text-[15px] text-[var(--muted)] mt-2 leading-[1.6]">${item.ringkas}</p>
@@ -210,28 +256,24 @@ function kartuWisata(item, { denganTautan = false } = {}) {
 /* Aparat                                                                  */
 /* ---------------------------------------------------------------------- */
 
-/** Aparat diurutkan menurut kolom urutan; yang urutannya kosong diletakkan terakhir. */
-function urutkanAparat(data) {
-  return data.slice().sort((a, b) => (keAngka(a.urutan) ?? 999) - (keAngka(b.urutan) ?? 999));
-}
-
 /** Nama untuk ditampilkan; sel nama yang kosong tidak dibiarkan tampil kosong. */
 function namaOrang(nama) {
   return nama || `<span class="text-[var(--muted)] font-normal">Nama belum tersedia</span>`;
 }
 
 /**
- * Foto statis orang bila terdaftar di FOTO.aparat, selain itu monogram inisial.
- * @param {object} orang  baris berkolom id & nama
- * @param {string} kelas  kelas ukuran/bentuk, mis. "aspect-[4/3]" atau "w-14 h-14 rounded-full"
+ * Foto orang (kolom foto atau FOTO.aparat); monogram inisial bila tidak ada atau gagal dimuat.
+ * @param {object} orang  baris tab aparat
+ * @param {string} kelas  kelas ukuran/bentuk, mis. "avatar" atau "potret"
  */
 function visualOrang(orang, kelas) {
-  const foto = orang.id && fotoUntuk("aparat", orang.id);
-  if (foto) {
-    return `<img src="${foto}" alt="${orang.nama}" class="${kelas} object-cover" loading="lazy" />`;
-  }
   const isi = orang.nama ? inisial(orang.nama) : '<i data-lucide="user-round" class="w-1/3 h-1/3"></i>';
-  return `<span class="monogram ${kelas}" aria-hidden="true">${isi}</span>`;
+  const [utama, ...cadangan] = sumberFoto("aparat", orang, 800);
+  // Monogram selalu dirender di belakang foto, jadi bila foto gagal dimuat monogramlah yang tampil.
+  const foto = utama
+    ? `<img src="${escapeHtml(utama)}" data-cadangan="${escapeHtml(cadangan.join(" "))}" data-tanpa-pengganti alt="${orang.nama}" class="absolute inset-0 w-full h-full object-cover" loading="lazy" onerror="fotoBerikutnya(this)" />`
+    : "";
+  return `<span class="monogram relative overflow-hidden ${kelas}">${foto}<span aria-hidden="true">${isi}</span></span>`;
 }
 
 /** Inisial nama untuk monogram, melewati gelar: "Reymon Stive Londok, S.T" → "RL". */

@@ -356,6 +356,22 @@ img { max-width: 100%; }
   .hero-lead { font-size: 20px; }
 }
 
+/* Hero berfoto (kunci foto_hero di tab profil): lapisan gelap dari kiri agar judul terbaca */
+.hero-foto::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(100deg, rgba(10, 34, 30, 0.86) 0%, rgba(10, 34, 30, 0.55) 45%, rgba(10, 34, 30, 0.1) 80%);
+}
+.hero-foto .hero-gambar { object-position: center; }
+.hero-foto .hero-isi { z-index: 2; }
+.hero-foto .judul-hero { color: #fff; }
+.hero-foto .eyebrow { color: var(--toska); }
+.hero-foto .hero-lead { color: var(--on-deep); }
+.hero-foto .tombol-sekunder { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.7); }
+.hero-foto .tombol-sekunder:hover { background: #fff; color: var(--primary-d); }
+
 /* Halaman legenda: ilustrasi malam, judul putih, hero lebih pendek */
 .hero-legenda {
   min-height: 420px;
@@ -1225,6 +1241,79 @@ details[open] { border-color: var(--primary); }
 @media (min-width: 768px) {
   .tile-lingkungan { padding: 22px; }
   .nomor-lingkungan { font-size: 68px; }
+}
+
+/* --- Cek Data (halaman alat admin) ------------------------------------ */
+
+.tab-cek { overflow: hidden; }
+.tab-cek.bermasalah { border-color: var(--danger); }
+
+.tab-cek header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 16px;
+  padding: 16px 20px;
+}
+
+.tab-cek .nama-tab {
+  font-family: var(--font-judul);
+  font-weight: 700;
+  font-stretch: 80%;
+  font-size: 22px;
+}
+
+.status-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  background: var(--toska-muda);
+  color: var(--primary-d);
+}
+
+.bermasalah .status-tab { background: #F6E2DE; color: var(--danger); }
+
+.daftar-temuan { border-top: 1px solid var(--line); }
+
+.temuan {
+  display: grid;
+  gap: 6px 16px;
+  padding: 14px 20px;
+  border-left: 4px solid var(--line);
+}
+
+.temuan + .temuan { border-top: 1px solid var(--line); }
+.temuan-salah { border-left-color: var(--danger); }
+.temuan-periksa { border-left-color: var(--accent); }
+.temuan-info { border-left-color: var(--toska); }
+
+.temuan .tanda {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.temuan-salah .tanda { color: var(--danger); }
+.temuan-periksa .tanda { color: var(--accent-ink); }
+.temuan-info .tanda { color: var(--primary); }
+
+.temuan .lokasi { font-size: 13px; font-weight: 600; color: var(--muted); }
+.temuan .pesan { font-size: 15px; color: var(--ink); }
+.temuan .saran { margin-top: 2px; font-size: 14px; color: var(--muted); }
+
+@media (min-width: 768px) {
+  .temuan { grid-template-columns: 170px minmax(0, 1fr); }
+  .temuan .tanda { padding-top: 2px; }
 }
 
 /* --- Gerak -------------------------------------------------------------- */

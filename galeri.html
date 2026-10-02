@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="assets/css/style.css?v=9351e038" />
+  <link rel="stylesheet" href="assets/css/style.css?v=5779e891" />
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
@@ -26,16 +26,14 @@
       <div class="wadah kop-isi">
         <nav class="remah" aria-label="Lokasi halaman" data-remah></nav>
         <h1 class="judul-halaman">Galeri</h1>
-        <p class="kop-ringkas">Kumpulan foto destinasi wisata dan usaha mikro warga Kelurahan Lahendong.</p>
+        <p class="kop-ringkas">Potret kegiatan, alam, destinasi wisata, dan usaha warga Kelurahan Lahendong.</p>
       </div>
     </section>
 
     <section class="wadah py-12 md:py-20">
       <div class="reveal flex flex-wrap items-center gap-2.5 mb-10 pb-6 border-b border-[var(--line)]">
-        <span class="label-kecil mr-2">Saring</span>
-        <button data-filter="semua" aria-pressed="true" class="tombol-filter">Semua</button>
-        <button data-filter="wisata" aria-pressed="false" class="tombol-filter">Wisata</button>
-        <button data-filter="umkm" aria-pressed="false" class="tombol-filter">UMKM</button>
+        <!-- Tombol penyaring dibuat oleh JS dari kategori yang ada (tab galeri, Wisata, UMKM) -->
+        <div id="filter-galeri" class="flex flex-wrap items-center gap-2.5" aria-label="Saring menurut kategori"></div>
         <span id="jumlah-foto" class="text-sm text-[var(--muted)] ml-auto"></span>
       </div>
 
@@ -47,10 +45,10 @@
 
   <div id="footer"></div>
 
-  <script src="assets/js/data.js?v=0cfb573f"></script>
-  <script src="assets/js/data-contoh.js?v=5fcbef22"></script>
+  <script src="assets/js/data.js?v=2247cfe5"></script>
+  <script src="assets/js/data-contoh.js?v=4a17369b"></script>
   <script src="assets/js/ui.js?v=489e77d8"></script>
-  <script src="assets/js/komponen.js?v=5bd15b18"></script>
-  <script src="assets/js/halaman/galeri.js?v=a75ea8f9"></script>
+  <script src="assets/js/komponen.js?v=63a3502b"></script>
+  <script src="assets/js/halaman/galeri.js?v=2612fcd2"></script>
 </body>
 </html>

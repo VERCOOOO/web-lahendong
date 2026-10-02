@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function kartuUmkm(item) {
   return `
     <article class="kartu kartu-hover reveal overflow-hidden">
-      <div class="bingkai-foto aspect-[3/2]">${gambar("umkm", item)}</div>
+      <div class="bingkai-foto aspect-[3/2]">${gambar("umkm", item, "", 800)}</div>
       <div class="p-5">
         <h3 class="judul-kartu">${item.nama}</h3>
         <p class="text-sm text-[var(--muted)] mt-2 leading-[1.6]">${item.produk}</p>

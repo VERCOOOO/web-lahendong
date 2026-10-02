@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cek Data — Kelurahan Lahendong</title>
+  <meta name="description" content="Pemeriksaan isi spreadsheet situs Kelurahan Lahendong, untuk admin." />
+  <!-- Halaman alat admin: tidak ada di menu dan tidak perlu muncul di mesin pencari. -->
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="img/emblem.svg" type="image/svg+xml" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/style.css?v=5779e891" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body class="bg-[var(--bg)] text-[var(--ink)] min-h-screen flex flex-col">
+
+  <div id="header"></div>
+
+  <main id="konten-utama" class="flex-1">
+
+    <section class="kop-halaman">
+      <div class="wadah kop-isi">
+        <nav class="remah" aria-label="Lokasi halaman" data-remah></nav>
+        <h1 class="judul-halaman">Cek Data</h1>
+        <p class="kop-ringkas">Untuk admin: buka halaman ini setelah mengubah spreadsheet. Setiap tab diperiksa dan setiap isian yang keliru ditunjukkan beserta cara memperbaikinya.</p>
+      </div>
+    </section>
+
+    <section class="wadah seksi">
+      <div class="reveal flex flex-wrap items-end justify-between gap-6 mb-8">
+        <div>
+          <span class="eyebrow">Hasil pemeriksaan</span>
+          <h2 id="judul-hasil" class="judul-seksi mt-4">Memeriksa spreadsheet…</h2>
+          <p id="waktu-cek" class="text-[var(--muted)] mt-3 text-[15px]"></p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <a id="tautan-sheet" class="tombol tombol-sekunder" target="_blank" rel="noopener noreferrer">
+            <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Buka spreadsheet
+          </a>
+          <button id="periksa-ulang" type="button" class="tombol">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i> Periksa ulang
+          </button>
+        </div>
+      </div>
+
+      <div id="ringkasan-cek" class="deret-statistik kartu p-6 md:p-8 mb-10"><!-- diisi oleh JS --></div>
+      <div id="hasil-cek" class="grid gap-6"><!-- diisi oleh JS --></div>
+    </section>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="assets/js/data.js?v=2247cfe5"></script>
+  <script src="assets/js/data-contoh.js?v=4a17369b"></script>
+  <script src="assets/js/ui.js?v=489e77d8"></script>
+  <script src="assets/js/komponen.js?v=63a3502b"></script>
+  <script src="assets/js/halaman/cek-data.js?v=f115d8f7"></script>
+</body>
+</html>

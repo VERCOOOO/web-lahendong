@@ -1,24 +1,27 @@
 /* Beranda (index.html): fakta ringkas, pimpinan, layanan surat, destinasi wisata.
-   Sumber: tab statistik & profil (fakta), aparat (pimpinan), layanan, wisata. */
+   Sumber: tab lingkungan & profil (fakta), aparat (pimpinan), layanan, wisata. */
 
 const MAKS_LAYANAN_BERANDA = 6;
 
+/* tab "lingkungan" = angka hasil ringkasPenduduk(); tab "profil" = nilai kunci di tab profil. */
 const FAKTA_BERANDA = [
-  { tab: "statistik", kunci: "jumlah_penduduk", label: "Jumlah penduduk", satuan: "jiwa" },
-  { tab: "statistik", kunci: "jumlah_kk", label: "Kepala keluarga", satuan: "KK" },
-  { tab: "statistik", kunci: "jumlah_lingkungan", label: "Lingkungan" },
+  { tab: "lingkungan", kunci: "jiwa", label: "Jumlah penduduk", satuan: "jiwa" },
+  { tab: "lingkungan", kunci: "kk", label: "Kepala keluarga", satuan: "KK" },
+  { tab: "lingkungan", kunci: "lingkungan", label: "Lingkungan" },
   { tab: "profil", kunci: "luas_wilayah", label: "Luas wilayah", satuan: "km²" },
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
-  isiDariData(document.getElementById("deret-statistik"), ["statistik", "profil"], ([statistik, profil]) => {
-    const sumber = { statistik, profil };
+  isiDariData(document.getElementById("deret-statistik"), ["lingkungan", "profil"], ([lingkungan, profil]) => {
+    const ringkas = ringkasPenduduk(lingkungan);
     return FAKTA_BERANDA
-      .map((f) => ({ ...f, nilai: nilaiKunci(sumber[f.tab], f.kunci) }))
+      .map((f) => ({ ...f, nilai: f.tab === "profil" ? nilaiKunci(profil, f.kunci) : (ringkas[f.kunci] > 0 ? String(ringkas[f.kunci]) : "") }))
       .filter((f) => f.nilai)
       .map((f) => selStatistik({ ...f, nilai: formatAngka(f.nilai) }))
       .join("");
   });
+
+  pasangFotoHero();
 
   // Pelengkap: bila gagal atau kosong, bloknya cukup tidak ditampilkan.
   isiDariData(document.getElementById("pimpinan"), "aparat", renderPimpinan, { kosong: null, gagal: null });
@@ -33,8 +36,32 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 });
 
+/**
+ * Kunci foto_hero di tab profil mengganti ilustrasi hero dengan foto. Foto asli butuh lapisan
+ * gelap agar judul tetap terbaca, jadi hero diberi kelas .hero-foto setelah fotonya termuat.
+ * Bila foto gagal dimuat, ilustrasi bawaan tetap dipakai.
+ */
+async function pasangFotoHero() {
+  let profil = [];
+  try {
+    profil = await ambilData("profil");
+  } catch (err) {
+    return;
+  }
+  const url = urlFoto(nilaiKunci(profil, "foto_hero"), 1920);
+  if (!url) return;
+  const uji = new Image();
+  uji.onload = () => {
+    const hero = document.getElementById("hero");
+    hero.querySelector(".hero-gambar").src = url;
+    hero.classList.add("hero-foto");
+  };
+  uji.src = url;
+}
+
 function renderPimpinan(aparat) {
-  const [lurah] = urutkanAparat(aparat);
+  // Pimpinan = aparat pertama yang kolom atasannya kosong.
+  const lurah = aparat.find((a) => !a.atasan) || aparat[0];
   if (!lurah) return "";
   return `
     <a href="pemerintahan.html" class="kartu kartu-hover flex items-center gap-4 p-4 group">

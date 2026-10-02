@@ -168,7 +168,7 @@
         <li><b>ui.js menggambar kerangka</b><span>Header, footer, breadcrumb, dan info kantor (<code>data-profil</code>) diisi saat <code>DOMContentLoaded</code>.</span></li>
         <li><b>wisata.js memanggil isiDariData()</b><span>Wadah langsung menampilkan "Memuat data…", lalu <code>ambilData("wisata")</code> dipanggil.</span></li>
         <li class="gelap"><b>ambilData() mengunduh CSV</b><span>Alamatnya <code>docs.google.com/spreadsheets/d/{ID}/gviz/tq?tqx=out:csv&amp;sheet=wisata</code>. Google mencari tab berdasarkan nama. Batas waktu 15 detik.</span></li>
-        <li class="gelap"><b>PapaParse membaca CSV</b><span>Baris pertama menjadi nama kolom: <code>"Jumlah KK"</code> → <code>jumlah_kk</code>. Setiap baris menjadi satu objek: <code>{ id: "W1", nama: "Danau Linow", … }</code>.</span></li>
+        <li class="gelap"><b>PapaParse membaca CSV</b><span>Baris pertama menjadi nama kolom: <code>"Jumlah KK"</code> → <code>jumlah_kk</code>. Setiap baris menjadi satu objek: <code>{ nama: "Danau Linow", foto: "…", … }</code>, ditambah <code>_baris</code> = nomor barisnya di sheet.</span></li>
         <li class="gelap"><b>Data dirapikan</b><span>Kolom diperiksa terhadap <code>SKEMA</code>, kolom yang hilang diisi kosong, setiap nilai di-<em>escape</em> agar aman untuk HTML, baris yang kolom pertamanya kosong atau bertanda <code>tampil</code> = Tidak dibuang (<code>saringBaris</code>), dan tab tanpa kolom <code>id</code> diberi kode dari kolom pertamanya (<code>beriKode</code>). Hasilnya disimpan di memori, jadi tab yang sama tidak diunduh dua kali.</span></li>
         <li><b>Fungsi render membuat HTML</b><span><code>data.map(kartuWisata).join("")</code> menghasilkan satu string HTML yang dipasang ke wadah.</span></li>
         <li><b>Sentuhan akhir</b><span><code>aturKolom()</code> menyusun kolom sesuai jumlah kartu, Lucide mengganti <code>&lt;i data-lucide&gt;</code> menjadi ikon, dan animasi muncul diaktifkan.</span></li>
@@ -191,6 +191,7 @@
             <tr><td><code>assets/js/data-contoh.js</code></td><td><code>DATA_DUMMY</code>: data awal. Dipakai saat mode contoh, dan menjadi sumber template <code>.xlsx</code>.</td><td>Bersama perubahan <code>SKEMA</code></td></tr>
             <tr><td><code>assets/js/ui.js</code></td><td>Kerangka yang sama di semua halaman: menu (<code>NAV_LINKS</code>), header, footer, breadcrumb, info kantor, animasi muncul, pesan memuat/gagal/kosong.</td><td>Menambah halaman ke menu, mengubah header/footer</td></tr>
             <tr><td><code>assets/js/komponen.js</code></td><td>Registri <code>FOTO</code>, <code>isiDariData()</code>, <code>aturKolom()</code>, format angka, teks bertanda baris baru, kartu wisata, monogram aparat.</td><td>Menambah foto, mengubah potongan bersama</td></tr>
+            <tr><td><code>cek-data.html</code></td><td>Alat admin (tidak ada di menu): memeriksa seluruh sheet dan melaporkan isian yang keliru beserta cara memperbaikinya. Logikanya di <code>halaman/cek-data.js</code>.</td><td>Menambah aturan pemeriksaan</td></tr>
             <tr><td><code>assets/js/halaman/*.js</code></td><td>Logika satu halaman: tab mana yang diambil dan bagaimana dirender. <code>index.html</code> memakai <code>beranda.js</code>; halaman lain bernama sama.</td><td>Mengubah isi satu halaman</td></tr>
             <tr><td><code>img/</code></td><td>Gambar statis: ilustrasi hero, foto wisata, <code>placeholder.webp</code>, <code>emblem.svg</code>, dan (nanti) <code>peta-wilayah.png</code>.</td><td>Mengganti foto</td></tr>
             <tr><td><code>tools/buat_template.py</code></td><td>Membuat ulang template <code>.xlsx</code> dari <code>SKEMA</code> dan <code>DATA_DUMMY</code>, termasuk tab <em>petunjuk</em>. Butuh LibreOffice.</td><td>Setelah <code>SKEMA</code>/data contoh berubah</td></tr>
@@ -210,11 +211,11 @@
       <article class="fungsi">
         <header><code>SKEMA</code><span class="label">data.js</span></header>
         <div class="badan">
-          <p>Daftar kolom setiap tab, berurutan seperti di sheet. Kolom pertama adalah <strong>kunci baris</strong>: baris yang kuncinya kosong diabaikan, begitu juga baris yang kolom <code>tampil</code>-nya "Tidak" (cara admin menyembunyikan baris). Hanya <code>wisata</code> dan <code>aparat</code> yang punya kolom <code>id</code>; tab lain mendapat <code>id</code> otomatis dari <code>kodeDari()</code>: "Surat Keterangan Domisili" → <code>surat-keterangan-domisili</code> (nama kembar diberi akhiran <code>-2</code>). Nama kolom yang hilang di sheet hanya memunculkan peringatan dan terbaca kosong. Namun bila kolom pertama hilang, tab dianggap salah dan data ditolak.</p>
+          <p>Daftar kolom setiap tab, berurutan seperti di sheet. Kolom pertama adalah <strong>kunci baris</strong>: baris yang kuncinya kosong diabaikan, begitu juga baris yang kolom <code>tampil</code>-nya "Tidak" (cara admin menyembunyikan baris). Tidak ada kolom <code>id</code> di tab mana pun: setiap baris mendapat <code>id</code> otomatis dari kolom pertamanya lewat <code>kodeDari()</code> — "Danau Linow" → <code>danau-linow</code> (nama kembar diberi akhiran <code>-2</code>). Tidak ada pula angka yang ditulis dua kali: tab <code>statistik</code> dan kolom <code>jumlah_jiwa</code> sengaja tidak ada; semua total dihitung <code>ringkasPenduduk()</code> dari tab <code>lingkungan</code>. Nama kolom yang hilang di sheet hanya memunculkan peringatan dan terbaca kosong. Namun bila kolom pertama hilang, tab dianggap salah dan data ditolak.</p>
 <pre><code><span class="k">const</span> SKEMA = {
   profil:  [<span class="s">"kunci"</span>, <span class="s">"nilai"</span>, <span class="s">"keterangan"</span>],        <span class="c">// tab kunci-nilai</span>
-  wisata:  [<span class="s">"id"</span>, <span class="s">"nama"</span>, <span class="s">"ringkas"</span>, <span class="s">"deskripsi"</span>, <span class="s">"jam"</span>, <span class="s">"tiket"</span>, …],
-  aparat:  [<span class="s">"id"</span>, <span class="s">"nama"</span>, <span class="s">"jabatan"</span>, <span class="s">"urutan"</span>, <span class="s">"atasan"</span>, <span class="s">"nomor"</span>],
+  wisata:  [<span class="s">"nama"</span>, <span class="s">"tampil"</span>, <span class="s">"foto"</span>, <span class="s">"ringkas"</span>, <span class="s">"deskripsi"</span>, …],
+  aparat:  [<span class="s">"jabatan"</span>, <span class="s">"nama"</span>, <span class="s">"atasan"</span>, <span class="s">"nomor"</span>, <span class="s">"foto"</span>],   <span class="c">// atasan = jabatan</span>
   …
 };</code></pre>
         </div>
@@ -225,7 +226,7 @@
         <div class="badan">
           <p>Satu-satunya pintu masuk data. Mengembalikan array objek yang sudah rapi dan aman. Setiap tab hanya diunduh sekali per kunjungan halaman (disimpan di <code>tembolokData</code>); bila gagal, simpanan dihapus agar pemanggilan berikutnya mencoba lagi.</p>
 <pre><code><span class="k">const</span> wisata = <span class="k">await</span> ambilData(<span class="s">"wisata"</span>);
-<span class="c">// [{ id: "W1", nama: "Danau Linow", ringkas: "…", jam: "…", … }, …]</span></code></pre>
+<span class="c">// [{ id: "danau-linow", nama: "Danau Linow", foto: "…", ringkas: "…", _baris: 2, … }, …]</span></code></pre>
         </div>
       </article>
 
@@ -254,13 +255,14 @@
       </article>
 
       <article class="fungsi">
-        <header><code>FOTO</code> &amp; <code>gambar(tab, item)</code><span class="label">komponen.js</span></header>
+        <header><code>urlFoto()</code>, <code>FOTO</code> &amp; <code>gambar(tab, item)</code><span class="label">data.js · komponen.js</span></header>
         <div class="badan">
-          <p>Foto belum diatur dari sheet. Registri <code>FOTO</code> memetakan <code>id</code> baris ke nama berkas di <code>img/</code>. <code>gambar()</code> membuat <code>&lt;img&gt;</code> yang otomatis beralih ke <code>placeholder.webp</code> bila id belum terdaftar atau berkasnya tidak ada. Untuk aparat tanpa foto, <code>visualOrang()</code> membuat monogram inisial (gelar dilewati: "Reymon Stive Londok, S.T" → RL).</p>
+          <p>Kolom <code>foto</code> (wisata, umkm, aparat, galeri) dan kunci <code>foto_hero</code> diatur dari sheet. <code>urlFoto()</code> menerima tautan berbagi Google Drive (<code>…/file/d/ID/view</code>, <code>open?id=ID</code>) dan mengubahnya menjadi <code>drive.google.com/thumbnail?id=ID&amp;sz=w800</code> — gambar seukuran yang dibutuhkan, bukan berkas aslinya. Tautan https lain dipakai apa adanya; nama berkas biasa dianggap berada di <code>img/</code>. Tautan folder ditolak.</p>
+          <p><code>sumberFoto()</code> menyusun urutan sumber: kolom foto → foto cadangan di registri <code>FOTO</code> (menurut kode baris) → <code>placeholder.webp</code>. Bila satu sumber gagal dimuat (mis. foto Drive belum dibagikan), <code>fotoBerikutnya()</code> di <code>onerror</code> mencoba sumber berikutnya. Aparat memakai <code>visualOrang()</code>: monogram inisial selalu dirender di belakang foto, jadi bila foto gagal yang tampil monogram.</p>
 <pre><code><span class="k">const</span> FOTO = {
-  wisata: { W1: <span class="s">"wisata-danau-linow.webp"</span>, W2: <span class="s">"wisata-hutan-pinus.webp"</span>, … },
-  umkm:   { },   <span class="c">// "kue-lapis-bu-ani": "umkm-kue-lapis.webp" (kode dari nama usaha)</span>
-  aparat: { },   <span class="c">// A1: "aparat-lurah.webp"</span>
+  wisata: { <span class="s">"danau-linow"</span>: <span class="s">"wisata-danau-linow.webp"</span>, … },   <span class="c">// kode dari nama</span>
+  umkm:   { },
+  aparat: { },   <span class="c">// menurut kode nama orang</span>
 };</code></pre>
         </div>
       </article>
@@ -328,7 +330,7 @@
 
       <h3>Struktur aparat (<code>halaman/pemerintahan.js</code>)</h3>
       <ul>
-        <li><code>susunPohon()</code> mengubah baris tab <code>aparat</code> menjadi pohon memakai kolom <code>atasan</code>. Baris tanpa atasan (atau atasannya tidak ditemukan) menjadi puncak.</li>
+        <li><code>susunPohon()</code> mengubah baris tab <code>aparat</code> menjadi pohon: kolom <code>atasan</code> berisi <strong>jabatan</strong> atasan, dicocokkan longgar oleh <code>samaJabatan()</code> (huruf besar/kecil & tanda baca diabaikan). Baris tanpa atasan — atau atasannya tidak ditemukan — menjadi puncak; <code>adalahBawahan()</code> mencegah susunan melingkar. Urutan = urutan baris.</li>
         <li><code>renderStruktur()</code> menggambar puncak sebagai panel pimpinan, bawahan langsungnya sebagai kolom (<code>.cabang</code> di dalam <code>.grid-adaptif</code>), dan bawahan mereka sebagai daftar staf bertingkat (<code>daftarStaf()</code>, rekursif).</li>
         <li>Garis penghubung murni CSS. Di HP & tablet, setiap <code>.cabang</code> menggambar ruas garis jalur di kirinya (<code>::after</code>) dan ranting ke kartunya (<code>::before</code>). Di desktop, kelas <code>.tersambung</code> (dipasang bila bawahan langsung ≤ 4, jadi muat satu baris) menggambar garis turun, rel mendatar, dan garis ke tiap kolom. Lebih dari 4 kolom → kartu membungkus ke baris berikut tanpa garis.</li>
         <li>Kartu lingkungan menulis "Lingkungan 3" sebagai angka besar dan menggambar batang <code>.porsi</code> = jumlah jiwa dibanding lingkungan terbesar.</li>
@@ -367,7 +369,7 @@
       <p>Contoh: tab <code>agenda</code> berisi kegiatan kelurahan, tampil di Beranda.</p>
       <ol class="langkah">
         <li><code>data.js</code>:
-<pre><code>agenda: [<span class="s">"id"</span>, <span class="s">"judul"</span>, <span class="s">"tanggal"</span>, <span class="s">"tempat"</span>],</code></pre></li>
+<pre><code>agenda: [<span class="s">"judul"</span>, <span class="s">"tampil"</span>, <span class="s">"tanggal"</span>, <span class="s">"tempat"</span>],   <span class="c">// kolom pertama = kunci baris</span></code></pre></li>
         <li><code>data-contoh.js</code>: tambahkan <code>agenda: [ { id: "G1", judul: "…", … } ]</code> ke <code>DATA_DUMMY</code>.</li>
         <li><code>index.html</code>: tambahkan seksi dengan wadah kosong:
 <pre><code>&lt;div id=<span class="s">"grid-agenda"</span> class=<span class="s">"grid-adaptif"</span> data-maks=<span class="s">"3"</span>&gt;&lt;/div&gt;</code></pre></li>
@@ -393,11 +395,11 @@
 
       <h3>Mengganti atau menambah foto</h3>
       <ol class="langkah">
-        <li>Simpan berkas <code>.webp</code> (lebar maks. 1600px, rasio 3:2 untuk kartu) di <code>img/</code>.</li>
-        <li>Daftarkan di <code>FOTO</code> (<code>komponen.js</code>) sesuai <code>id</code> barisnya. Mengganti berkas yang sudah terdaftar cukup dengan menimpa berkas bernama sama.</li>
+        <li>Cara utama tanpa kode: tempel tautan Google Drive di kolom <code>foto</code> pada sheet.</li>
+        <li>Foto cadangan (tetap tampil bila foto Drive gagal): simpan <code>.webp</code> di <code>img/</code> dan daftarkan di <code>FOTO</code> (<code>komponen.js</code>) menurut kode barisnya, mis. <code>"danau-linow"</code>.</li>
       </ol>
 
-      <div class="catatan bahaya">Jangan mengganti nama kolom pertama (<code>id</code>/<code>kunci</code>) atau nama tab tanpa mengubah <code>SKEMA</code> di saat yang sama. Google mengirim tab pertama bila nama tab tidak ditemukan; situs menolaknya dan bagian itu menampilkan pesan gagal.</div>
+      <div class="catatan bahaya">Jangan mengganti nama kolom pertama (<code>nama</code>, <code>jabatan</code>, <code>kunci</code>, …) atau nama tab tanpa mengubah <code>SKEMA</code> di saat yang sama. Google mengirim tab pertama bila nama tab tidak ditemukan; situs menolaknya dan bagian itu menampilkan pesan gagal.</div>
     </section>
 
     <!-- 8 -->
@@ -405,6 +407,7 @@
       <span class="eyebrow">Mencari kesalahan</span>
       <h2>Saat ada yang tidak tampil</h2>
       <ol class="langkah">
+        <li><strong>Buka <code>cek-data.html</code></strong>. Halaman ini membaca semua tab lewat <code>muatTab()</code> (data mentah, belum disaring, lengkap dengan nomor baris), menjalankan aturan di <code>ATURAN_TAB</code> (<code>halaman/cek-data.js</code>), dan mencoba membuka setiap foto. Menambah pemeriksaan baru = menambah aturan di sana.</li>
         <li><strong>Buka konsol</strong>: F12 → Console. Pesan situs berawalan <code>[data]</code> dan menyebut tab serta penyebabnya.</li>
         <li><strong>Coba mode contoh</strong>: ubah <code>PAKAI_DUMMY</code> menjadi <code>true</code>. Bila masalah hilang, penyebabnya di sheet (akses, nama tab, nama kolom). Bila tetap ada, penyebabnya di kode.</li>
         <li><strong>Jalankan di komputer sendiri</strong>: halaman harus dibuka lewat server lokal, bukan dobel-klik berkas; alamat <code>file://</code> membatasi sebagian fitur browser.

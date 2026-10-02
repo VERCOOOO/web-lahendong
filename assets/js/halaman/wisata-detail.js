@@ -84,7 +84,7 @@ function tampilanDetail(item) {
         </div>
         <div class="lg:col-span-6">
           <div class="bingkai-foto aspect-[3/2] rounded-[var(--radius)] border-t-4 border-[var(--accent)]">
-            ${gambar("wisata", item)}
+            ${gambar("wisata", item, "", 1600)}
           </div>
         </div>
       </div>

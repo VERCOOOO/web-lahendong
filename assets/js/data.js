@@ -20,29 +20,42 @@ const ID_SPREADSHEET = "11f8D-qzWt1rdkin7uBMmrbrEkZmc4dih39ruUwTh1gQ";
 
 /* Kolom tiap tab, berurutan seperti di sheet. Baris judul di sheet harus memakai
    nama-nama ini; huruf besar/kecil dan spasi diabaikan ("Jumlah KK" → "jumlah_kk").
-   Kolom pertama adalah kunci baris: baris yang kuncinya kosong diabaikan.
-   Kolom "tampil" (Ya/Tidak): "Tidak" menyembunyikan baris tanpa menghapusnya; kosong = Ya.
-   Kolom "keterangan" hanya catatan untuk admin dan tidak dibaca situs.
-   Tab tanpa kolom "id" mendapat kode otomatis dari kolom pertamanya (lihat beriKode).
-   Peta tab → halaman ada di tab "petunjuk" pada sheet dan di README.md. */
+
+   Prinsip agar admin sulit salah:
+   - Kolom pertama = kunci baris (nama, jabatan, …). Tidak ada kolom id yang harus dikarang:
+     setiap baris mendapat kode otomatis dari kolom pertamanya (lihat beriKode).
+   - Tidak ada angka yang ditulis dua kali. Total penduduk, KK, dan jiwa per lingkungan
+     dihitung dari tab lingkungan (lihat ringkasPenduduk di komponen.js).
+   - Kolom "tampil" (Ya/Tidak): "Tidak" menyembunyikan baris tanpa menghapusnya; kosong = Ya.
+   - Kolom "foto": tautan berbagi Google Drive, tautan gambar https, atau nama berkas di img/.
+   - Kolom "keterangan" (tab profil) hanya catatan untuk admin dan tidak dibaca situs.
+   Peta tab → halaman ada di tab "petunjuk" pada sheet dan di README.md.
+   Halaman cek-data.html memeriksa semua aturan ini dan melaporkan kesalahan isian. */
 const SKEMA = {
-  // Informasi umum kelurahan: kantor, wilayah, sejarah, legenda.
+  // Informasi umum: kantor, wilayah, sejarah, legenda, tahun & sumber data penduduk, foto hero.
   profil: ["kunci", "nilai", "keterangan"],
-  // Angka kependudukan (sumber: Kelurahan Lahendong).
-  statistik: ["kunci", "nilai", "keterangan"],
-  lingkungan: ["nama", "kepala", "jumlah_kk", "jumlah_jiwa", "laki", "perempuan", "jumlah_lansia", "jumlah_rumah"],
-  // Sumber tunggal identitas aparat. "atasan" berisi id aparat di atasnya (untuk struktur).
-  // Aparat yang nomornya diisi tampil di halaman Kontak.
-  aparat: ["id", "nama", "jabatan", "urutan", "atasan", "nomor"],
+  // Satu baris per lingkungan. Jiwa = laki + perempuan; semua total dihitung dari tab ini.
+  lingkungan: ["nama", "kepala", "jumlah_kk", "laki", "perempuan", "jumlah_lansia", "jumlah_rumah"],
+  // Sumber tunggal identitas aparat. "atasan" berisi jabatan atasannya; kosong = pimpinan.
+  // Urutan tampil = urutan baris. Aparat yang nomornya diisi tampil di halaman Kontak.
+  aparat: ["jabatan", "nama", "atasan", "nomor", "foto"],
   // Narahubung non-aparat. kategori: "darurat" atau "umum".
   kontak: ["nama", "tampil", "peran", "nomor", "kategori"],
-  // id wisata menjadi alamat halaman detail (wisata-detail.html?id=W1) dan penentu fotonya.
-  wisata: ["id", "nama", "tampil", "ringkas", "deskripsi", "jam", "tiket", "fasilitas", "waktu_terbaik", "cara_kesana", "pengelola", "maps_link"],
-  umkm: ["nama", "tampil", "produk", "kontak", "lingkungan"],
+  wisata: ["nama", "tampil", "foto", "ringkas", "deskripsi", "jam", "tiket", "fasilitas", "waktu_terbaik", "cara_kesana", "pengelola", "maps_link"],
+  umkm: ["nama", "tampil", "foto", "produk", "kontak", "lingkungan"],
   // Satu baris per jenis surat. syarat & alur: satu butir per baris di dalam sel.
   // kategori (opsional) mengelompokkan surat; catatan (opsional) tampil sebagai pemberitahuan.
   layanan: ["nama_surat", "tampil", "kategori", "syarat", "alur", "waktu", "biaya", "catatan"],
+  // Foto tambahan untuk halaman Galeri (selain foto wisata & UMKM).
+  galeri: ["judul", "tampil", "foto", "kategori"],
 };
+
+/* Kunci yang dikenal di tab profil — dipakai halaman Cek Data untuk menangkap salah ketik. */
+const KUNCI_PROFIL = [
+  "alamat_kantor", "telepon_kantor", "email", "jam_layanan",
+  "luas_wilayah", "ketinggian", "suhu", "batas_utara", "batas_selatan", "batas_timur", "batas_barat",
+  "sejarah", "legenda", "tahun_data", "sumber_data", "foto_hero",
+];
 
 /** URL CSV satu tab, dicari berdasarkan nama tab. */
 function urlTab(namaTab) {
@@ -72,10 +85,7 @@ const tembolokData = {};
  */
 async function ambilData(namaTab) {
   if (!tembolokData[namaTab]) {
-    tembolokData[namaTab] = (async () => {
-      const mentah = PAKAI_DUMMY ? DATA_DUMMY[namaTab] || [] : await ambilDariSheet(namaTab);
-      return beriKode(namaTab, saringBaris(namaTab, rapikanBaris(namaTab, mentah)));
-    })();
+    tembolokData[namaTab] = muatTab(namaTab).then(({ baris }) => beriKode(namaTab, saringBaris(namaTab, baris)));
   }
   try {
     return (await tembolokData[namaTab]).slice();
@@ -84,6 +94,20 @@ async function ambilData(namaTab) {
     console.error('[data] Gagal mengambil tab "' + namaTab + '": ' + err.message);
     throw err;
   }
+}
+
+/**
+ * Isi tab apa adanya (sudah dirapikan, belum disaring) beserta daftar kolom di sheet.
+ * Setiap baris membawa _baris = nomor barisnya di spreadsheet, untuk laporan Cek Data.
+ * @returns {Promise<{kolom: string[], baris: Array<Object>}>}
+ */
+async function muatTab(namaTab) {
+  if (PAKAI_DUMMY) {
+    const mentah = DATA_DUMMY[namaTab] || [];
+    return { kolom: SKEMA[namaTab] || [], baris: rapikanBaris(namaTab, mentah) };
+  }
+  const { kolom, mentah } = await ambilDariSheet(namaTab);
+  return { kolom, baris: rapikanBaris(namaTab, mentah) };
 }
 
 /* ---------------------------------------------------------------------- */
@@ -98,16 +122,20 @@ async function ambilDariSheet(namaTab) {
   }
   if (typeof Papa === "undefined") throw new Error("PapaParse belum dimuat");
 
-  const hasil = Papa.parse(await unduhCSV(url), {
+  // Baris kosong tidak dilewati di sini agar nomor baris tetap sama dengan di spreadsheet;
+  // baris kosong dibuang belakangan oleh saringBaris.
+  const hasil = Papa.parse((await unduhCSV(url)).replace(/\r?\n$/, ""), {
     header: true,
-    skipEmptyLines: "greedy", // Google mengekspor baris kosong sebagai ",,,,"
+    skipEmptyLines: false,
     transformHeader: normalisasiKunci,
   });
-  periksaKolom(namaTab, hasil.meta.fields || []);
-  if (hasil.errors.length) {
-    console.warn('[data] Tab "' + namaTab + '": ' + hasil.errors.length + " baris CSV tidak rapi.", hasil.errors.slice(0, 3));
+  const kolom = hasil.meta.fields || [];
+  periksaKolom(namaTab, kolom);
+  const galat = hasil.errors.filter((e) => e.code !== "TooFewFields");
+  if (galat.length) {
+    console.warn('[data] Tab "' + namaTab + '": ' + galat.length + " baris CSV tidak rapi.", galat.slice(0, 3));
   }
-  return hasil.data;
+  return { kolom, mentah: hasil.data };
 }
 
 async function unduhCSV(url) {
@@ -158,7 +186,7 @@ function normalisasiKunci(teks) {
 
 function rapikanBaris(namaTab, baris) {
   const kolom = SKEMA[namaTab] || [];
-  return (baris || []).map((row) => {
+  return (baris || []).map((row, i) => {
     const bersih = {};
     Object.keys(row || {}).forEach((k) => {
       const kunci = normalisasiKunci(k);
@@ -168,8 +196,9 @@ function rapikanBaris(namaTab, baris) {
     kolom.forEach((k) => {
       if (!(k in bersih)) bersih[k] = "";
     });
-    // Tab kunci-nilai (profil, statistik): "Luas Wilayah" dibaca "luas_wilayah".
+    // Tab kunci-nilai (profil): "Luas Wilayah" dibaca "luas_wilayah".
     if (kolom[0] === "kunci") bersih.kunci = normalisasiKunci(bersih.kunci);
+    bersih._baris = i + 2; // baris 1 = judul kolom
     return bersih;
   });
 }
@@ -182,13 +211,14 @@ function saringBaris(namaTab, baris) {
 }
 
 /**
- * Tab tanpa kolom id (umkm, layanan, kontak, lingkungan) mendapat kode dari kolom pertamanya,
- * mis. "Surat Keterangan Domisili" → "surat-keterangan-domisili". Kode ini dipakai sebagai
- * alamat tautan (layanan.html#surat-keterangan-domisili) dan kunci FOTO di komponen.js.
+ * Setiap baris mendapat kode dari kolom pertamanya, mis. "Surat Keterangan Domisili" →
+ * "surat-keterangan-domisili". Kode dipakai sebagai alamat tautan (wisata-detail.html?id=danau-linow,
+ * layanan.html#surat-keterangan-domisili) dan kunci FOTO cadangan di komponen.js.
+ * Nama kembar mendapat akhiran -2, -3, … (halaman Cek Data memperingatkannya).
  */
 function beriKode(namaTab, baris) {
   const kolom = SKEMA[namaTab] || [];
-  if (kolom.includes("id")) return baris;
+  if (kolom[0] === "kunci") return baris;
   const terpakai = new Map();
   return baris.map((row) => {
     const dasar = kodeDari(row[kolom[0]]) || namaTab;
@@ -210,6 +240,32 @@ function kodeDari(teks) {
 /* ---------------------------------------------------------------------- */
 /* Utilitas nilai                                                          */
 /* ---------------------------------------------------------------------- */
+
+/**
+ * Isi kolom foto → alamat gambar, atau "" bila tidak bisa dipakai. Diterima:
+ * - tautan berbagi Google Drive (…/file/d/ID/view, open?id=ID, uc?id=ID) → gambar Drive
+ *   berukuran `lebar` piksel (file harus dibagikan "Siapa saja yang memiliki link");
+ * - tautan gambar https lain, dipakai apa adanya;
+ * - nama berkas di folder img/ situs, mis. "umkm-kue-lapis.webp".
+ */
+function urlFoto(nilai, lebar = 1200) {
+  const teks = teksPolos(nilai).trim();
+  if (!teks) return "";
+  const idDrive = idGoogleDrive(teks);
+  if (idDrive) return "https://drive.google.com/thumbnail?id=" + encodeURIComponent(idDrive) + "&sz=w" + lebar;
+  // Tautan Drive tanpa ID berkas (mis. tautan folder) bukan gambar.
+  if (/(drive|docs)\.google\.com/i.test(teks)) return "";
+  if (/^https:\/\//i.test(teks)) return teks;
+  if (/^[\w.-]+\.(webp|jpe?g|png|gif|avif|svg)$/i.test(teks)) return "img/" + teks;
+  return "";
+}
+
+/** ID berkas dari tautan Google Drive, atau "" bila bukan tautan Drive. */
+function idGoogleDrive(teks) {
+  if (!/(drive|docs)\.google\.com|googleusercontent\.com/i.test(teks)) return "";
+  const cocok = teks.match(/\/d\/([\w-]{20,})/) || teks.match(/[?&]id=([\w-]{20,})/);
+  return cocok ? cocok[1] : "";
+}
 
 /** Hanya tautan http(s) yang diterima; nilai lain (mis. "javascript:") dikosongkan. */
 function urlAman(nilai) {

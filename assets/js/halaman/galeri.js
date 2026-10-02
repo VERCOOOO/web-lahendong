@@ -1,33 +1,51 @@
-/* Galeri (galeri.html): foto wisata + UMKM dengan penyaring kategori.
-   Sumber: tab wisata & umkm; fotonya statis dari FOTO di komponen.js. */
-
-const LABEL_KATEGORI = { wisata: "Wisata", umkm: "UMKM" };
+/* Galeri (galeri.html): foto dengan penyaring kategori.
+   Sumber: tab galeri (foto bebas, kolom kategori), ditambah foto wisata & UMKM yang punya foto.
+   Penyaring dibuat dari kategori yang benar-benar ada, jadi kategori baru di sheet langsung muncul. */
 
 document.addEventListener("DOMContentLoaded", () => {
-  isiDariData(document.getElementById("grid-galeri"), ["wisata", "umkm"], ([wisata, umkm]) => [
-    ...wisata.map((row) => ({ id: row.id, nama: row.nama, kategori: "wisata" })),
-    ...umkm.map((row) => ({ id: row.id, nama: row.nama, kategori: "umkm" })),
-  ].map(kartuGaleri).join(""), {
+  isiDariData(document.getElementById("grid-galeri"), ["galeri", "wisata", "umkm"], ([galeri, wisata, umkm]) => {
+    const item = [
+      // Baris tanpa foto tidak dimasukkan: galeri berisi gambar pengganti tidak ada gunanya.
+      ...galeri.filter((row) => sumberFoto("galeri", row).length)
+        .map((row) => ({ tab: "galeri", data: row, judul: row.judul, kategori: teksPolos(row.kategori) || "Lainnya" })),
+      ...wisata.filter((row) => sumberFoto("wisata", row).length)
+        .map((row) => ({ tab: "wisata", data: row, judul: row.nama, kategori: "Wisata" })),
+      ...umkm.filter((row) => sumberFoto("umkm", row).length)
+        .map((row) => ({ tab: "umkm", data: row, judul: row.nama, kategori: "UMKM" })),
+    ];
+    return item.map(kartuGaleri).join("");
+  }, {
     kosong: "Belum ada foto untuk ditampilkan.",
     gagal: "Galeri belum bisa dimuat saat ini.",
-    setelah: () => terapkanFilter("semua"),
-  });
-
-  document.querySelectorAll(".tombol-filter").forEach((tombol) => {
-    tombol.addEventListener("click", () => terapkanFilter(tombol.dataset.filter));
+    setelah: pasangPenyaring,
+    opsional: ["galeri"], // tab galeri belum ada pun, foto wisata & UMKM tetap tampil
   });
 });
 
 function kartuGaleri(item) {
   return `
-    <figure data-kategori="${item.kategori}" class="kartu kartu-hover reveal overflow-hidden">
-      <div class="bingkai-foto aspect-[3/2]">${gambar(item.kategori, item)}</div>
+    <figure data-kategori="${escapeHtml(item.kategori)}" class="kartu kartu-hover reveal overflow-hidden">
+      <div class="bingkai-foto aspect-[3/2]">${gambar(item.tab, item.data, "", 800)}</div>
       <figcaption class="p-5 flex items-start justify-between gap-4">
-        <p class="font-judul text-[20px] leading-tight">${item.nama}</p>
-        <span class="label-kecil whitespace-nowrap mt-1">${LABEL_KATEGORI[item.kategori]}</span>
+        <p class="font-judul text-[20px] leading-tight">${item.judul}</p>
+        <span class="label-kecil whitespace-nowrap mt-1">${escapeHtml(item.kategori)}</span>
       </figcaption>
     </figure>
   `;
+}
+
+function pasangPenyaring() {
+  const kategori = [...new Set([...document.querySelectorAll("#grid-galeri [data-kategori]")].map((el) => el.dataset.kategori))];
+  const wadah = document.getElementById("filter-galeri");
+  if (kategori.length > 1) {
+    wadah.innerHTML = ["semua", ...kategori].map((k) => `
+      <button type="button" data-filter="${escapeHtml(k)}" aria-pressed="${k === "semua"}" class="tombol-filter">${k === "semua" ? "Semua" : escapeHtml(k)}</button>`).join("");
+    wadah.addEventListener("click", (e) => {
+      const tombol = e.target.closest("[data-filter]");
+      if (tombol) terapkanFilter(tombol.dataset.filter);
+    });
+  }
+  terapkanFilter("semua");
 }
 
 function terapkanFilter(kategori) {
@@ -37,7 +55,7 @@ function terapkanFilter(kategori) {
     el.classList.toggle("hidden", !cocok);
     if (cocok) terlihat += 1;
   });
-  document.querySelectorAll(".tombol-filter").forEach((tombol) => {
+  document.querySelectorAll("#filter-galeri .tombol-filter").forEach((tombol) => {
     tombol.setAttribute("aria-pressed", String(tombol.dataset.filter === kategori));
   });
   document.getElementById("jumlah-foto").textContent = terlihat + " foto";

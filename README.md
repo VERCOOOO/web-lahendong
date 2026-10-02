@@ -18,84 +18,88 @@ Kode hanya menentukan **tampilan**.
 
 | Tab sheet | Tampil di halaman | Isi |
 |---|---|---|
-| `profil` | Profil, Legenda, Kontak, Layanan, header & footer semua halaman | Alamat, telepon, email & jam layanan kantor; luas, ketinggian, suhu; batas wilayah; sejarah; legenda |
-| `statistik` | Beranda (angka ringkas), Penduduk | Jumlah penduduk, laki-laki, perempuan, KK, lingkungan; tahun & sumber data |
-| `lingkungan` | Penduduk (tabel & grafik), Pemerintahan (kartu lingkungan) | Satu baris per lingkungan |
+| `profil` | Profil, Legenda, Kontak, Layanan, Penduduk, Beranda, header & footer | Alamat, telepon, email & jam layanan; luas, ketinggian, suhu; batas wilayah; sejarah; legenda; tahun & sumber data; foto hero |
+| `lingkungan` | Penduduk, Beranda (angka ringkas), Pemerintahan (kartu lingkungan) | Satu baris per lingkungan — **semua total dihitung dari sini** |
 | `aparat` | Pemerintahan (struktur), Beranda (pimpinan), Kontak | Satu baris per aparat |
 | `kontak` | Kontak | Nomor darurat & layanan umum selain aparat |
 | `wisata` | Wisata, detail wisata, Beranda, Galeri | Satu baris per destinasi |
 | `umkm` | UMKM, Galeri | Satu baris per usaha |
 | `layanan` | Layanan, Beranda (daftar surat) | Satu baris per jenis surat |
+| `galeri` | Galeri | Foto tambahan (kegiatan, alam, budaya) |
 
-Tabel yang sama ada di tab `petunjuk` pada spreadsheet.
+Tabel yang sama, beserta arti setiap kolom, ada di tab `petunjuk` pada spreadsheet.
 
-**Tidak diatur dari spreadsheet** (iterasi ini):
-
-- **Foto** — statis di folder `img/`, dipetakan di [`assets/js/komponen.js`](assets/js/komponen.js) (wisata menurut id,
-  UMKM menurut nama usaha yang ditulis huruf kecil bertanda hubung, mis. `kue-lapis-bu-ani`)
-  (bagian `FOTO`). Contoh: `W1: "wisata-danau-linow.webp"` = foto untuk baris W1 di tab `wisata`.
-  Id tanpa foto memakai `img/placeholder.webp`; aparat tanpa foto memakai monogram inisial.
-- **Peta wilayah (gambar)** — simpan sebagai `img/peta-wilayah.png`. Halaman Profil menampilkannya
-  otomatis di atas peta Google; selama file belum ada, bagian itu disembunyikan.
-- **Judul dan kalimat pengantar** tiap halaman — di berkas HTML.
+**Tidak diatur dari spreadsheet:** judul dan kalimat pengantar tiap halaman (berkas HTML),
+ilustrasi bawaan (`img/`), dan peta wilayah (`img/peta-wilayah.png` — tampil otomatis bila ada).
 
 ## Mengelola spreadsheet
 
-### Tab kunci-nilai (`profil`, `statistik`)
+Spreadsheet dirancang agar sulit salah isi:
 
-Satu baris = satu informasi. Kolom `kunci` adalah nama tetap yang dicari situs (jangan diubah),
-`nilai` isinya, `keterangan` catatan untuk admin (tidak tampil di situs).
+- **Tidak ada kode/id yang perlu dikarang.** Setiap baris dikenali dari kolom pertamanya
+  (nama, jabatan, judul) — kolom yang judulnya berwarna hijau tua. Situs membuat kodenya sendiri:
+  "Danau Linow" → `wisata-detail.html?id=danau-linow`.
+- **Tidak ada angka yang ditulis dua kali.** Jumlah penduduk, KK, laki-laki/perempuan, jumlah jiwa per
+  lingkungan, dan jumlah lingkungan dihitung dari tab `lingkungan`.
+- **Dropdown** untuk isian pilihan: `tampil`, `kategori`, `lingkungan` (UMKM, diambil dari tab
+  lingkungan), dan `atasan` (aparat, diambil dari kolom jabatan).
+- **Catatan di judul kolom**: arahkan kursor ke judul kolom untuk melihat arti dan contohnya.
+- **Halaman [Cek Data](https://vercoooo.github.io/web-lahendong/cek-data.html)** memeriksa seluruh sheet
+  dan menunjukkan setiap isian yang keliru: kolom salah ketik, atasan tidak ditemukan, angka tidak valid,
+  foto Drive yang belum dibagikan, nama kembar, sampai deret angka yang mirip NIK. Buka setelah mengedit.
 
-### Tab daftar (tab lainnya)
-
-Satu baris = satu data. Kolom pertama (judulnya berwarna hijau tua di sheet) wajib diisi:
-nama usaha, nama surat, nama kontak, nama lingkungan. Hanya tab `wisata` dan `aparat` yang
-memakai kolom `id` (kode singkat seperti `W4` / `A4`), karena id dipakai di alamat halaman detail
-wisata dan di kolom `atasan`.
+### Pekerjaan sehari-hari
 
 - **Menambah**: isi baris kosong pertama di bawah data.
 - **Menghapus**: klik kanan nomor baris → **Hapus baris**.
-- **Menyembunyikan**: ubah kolom **`tampil`** menjadi `Tidak` (dropdown) — data tetap tersimpan.
-  Kosong dianggap `Ya`. Ada di tab `wisata`, `umkm`, `layanan`, dan `kontak`.
-- **Arti kolom**: arahkan kursor ke judul kolom di sheet; muncul penjelasan dan contoh.
-  Kolom pilihan (`tampil`, `kategori`, `lingkungan` di umkm) memakai dropdown.
-- **Mengurutkan**: urutan di situs = urutan baris di sheet (tab `aparat`: kolom `urutan`).
-- **Susunan kartu** menyesuaikan jumlah baris sendiri (maks. 4 per baris di desktop: 3 kartu → 3 kolom,
-  5 → 3 + 2, 6 → 3 × 2, 8 → 4 × 2). Tidak perlu mengubah kode saat menambah atau menghapus wisata/UMKM.
+- **Menyembunyikan sementara**: kolom **`tampil`** = `Tidak` (tab wisata, umkm, layanan, kontak, galeri).
+- **Mengurutkan**: urutan di situs = urutan baris di sheet. Pindahkan barisnya.
+- **Susunan kartu** menyesuaikan jumlah baris sendiri (maks. 4 per baris di desktop).
+
+### Foto dari Google Drive
+
+Kolom `foto` (wisata, umkm, aparat, galeri) dan kunci `foto_hero` di tab `profil` menerima:
+
+1. **Tautan berbagi Google Drive satu foto** — cara utama. Foto harus dibagikan
+   "Siapa saja yang memiliki link" (atur sekali di foldernya). Situs mengambil versi berukuran pas.
+2. Tautan gambar `https://` lain.
+3. Nama berkas di folder `img/` situs, mis. `umkm-kue-lapis.webp`.
+
+Bila foto gagal dimuat, situs memakai foto cadangan (`FOTO` di
+[`komponen.js`](assets/js/komponen.js)), lalu gambar pengganti; aparat tanpa foto memakai monogram.
+`foto_hero` mengganti ilustrasi Beranda dengan foto dan otomatis memberi lapisan gelap agar judul terbaca.
+
+### Tab `profil`
+
+Satu baris = satu informasi. Kolom `kunci` adalah nama tetap yang dicari situs, `nilai` isinya,
+`keterangan` catatan untuk admin. Daftar kunci ada di tab `petunjuk`; kunci yang salah ketik
+ditandai halaman Cek Data beserta saran ejaan yang benar.
 
 ### Layanan surat
 
-- Satu baris = satu jenis surat (SKTM, domisili, dsb.). Menambah/menghapus baris langsung
-  menambah/mengurangi surat di halaman Layanan dan daftar surat di Beranda (6 teratas).
-- **`syarat`** dan **`alur`**: satu butir per baris di dalam sel (Ctrl+Enter). Syarat tampil sebagai
-  daftar periksa, alur sebagai langkah bernomor.
-- **`kategori`** (opsional): mis. `Kependudukan`, `Sosial`, `Usaha`. Bila diisi, surat dikelompokkan dan
-  muncul tombol penyaring; surat tanpa kategori masuk kelompok "Lainnya".
-- **`catatan`** (opsional): pemberitahuan tambahan, mis. "Bawa dokumen asli saat pengambilan".
-- `waktu` dan `biaya` tampil di baris judul surat. Kotak pencarian muncul otomatis bila surat ≥ 5.
-- Tautan langsung ke satu surat memakai namanya: `layanan.html#surat-keterangan-domisili`.
+- Satu baris = satu jenis surat. **`syarat`** dan **`alur`**: satu butir per baris di dalam sel
+  (Ctrl+Enter) — tampil sebagai daftar periksa dan langkah bernomor.
+- **`kategori`** (opsional) mengelompokkan surat dan memunculkan tombol penyaring; **`catatan`**
+  (opsional) tampil sebagai pemberitahuan. Kotak pencarian muncul otomatis bila surat ≥ 5.
+- Tautan langsung ke satu surat: `layanan.html#surat-keterangan-domisili`.
 
 ### Aparat, struktur, dan kontak
 
-- Satu orang cukup ditulis **sekali**, di tab `aparat`.
-- Kolom **`atasan`** berisi id aparat di atasnya; struktur di halaman Pemerintahan tersusun dari kolom
-  ini. Kosong = pimpinan (Lurah). Bawahan langsung Lurah tampil sebagai kolom (Sekretaris, para Kasi),
-  dan staf yang `atasan`-nya salah satu dari mereka tampil di bawah kolom tersebut.
-  Contoh: Sekretaris `atasan = A1` (Lurah), staf administrasi `atasan = A2` (Sekretaris).
+- Satu orang cukup ditulis **sekali**, di tab `aparat`. Kolom pertama `jabatan`.
+- Kolom **`atasan`** berisi **jabatan** atasannya (pilih dari dropdown). Kosong = pimpinan (Lurah).
+  Bawahan langsung Lurah tampil sebagai kolom; staf yang atasannya Sekretaris/Kasi tampil di dalam kolom itu.
+  Pergantian pejabat cukup mengubah kolom `nama`; bila nama jabatan diganti, ubah juga isian `atasan`
+  bawahannya (Cek Data menandainya).
 - Isi kolom **`nomor`** bila nomor aparat itu boleh tampil di halaman Kontak.
-- Tab `kontak` untuk nomor **selain aparat**. Kolom `kategori`: `darurat` (polisi, pemadam
-  kebakaran, ambulans) atau `umum` (puskesmas, polsek, dsb.). Kontak tanpa nomor tidak ditampilkan.
+- Tab `kontak` untuk nomor **selain aparat**. `kategori`: `darurat` atau `umum`.
 
 ### Aturan pengisian
 
 - **Sel kosong = bagian itu disembunyikan** di situs. Situs tidak pernah mengisi data karangan.
 - **Beberapa paragraf/butir dalam satu sel**: pisahkan dengan baris baru (Ctrl+Enter atau
-  Alt+Enter; Mac: Cmd+Enter). Contoh: rute wisata tampil sebagai daftar langkah.
+  Alt+Enter; Mac: Cmd+Enter).
 - **Angka** tanpa pemisah ribuan (`2235`); desimal boleh koma (`7,85`).
-- **Semua sel berformat Teks biasa** — jangan diubah. Tanpa itu Google bisa mengubah isian diam-diam
-  (angka 0 di depan nomor telepon hilang, atau nilai di tab `profil` terbaca kosong).
-- **`id` wisata** jangan diubah: id menjadi alamat halaman detail (`wisata-detail.html?id=W1`)
-  sekaligus penentu fotonya.
+- **Semua sel berformat Teks biasa** — jangan diubah. Tanpa itu Google bisa mengubah isian diam-diam.
 - **`maps_link`**: tautan Google Maps lengkap berawalan `https://`.
 - **Sheet dapat dibaca publik** — jangan simpan NIK, alamat rumah, atau nomor pribadi di tab mana pun.
 
@@ -106,7 +110,7 @@ sebelum situs diumumkan:
 
 - Tab `profil`: jam layanan, luas, ketinggian, suhu, sejarah, legenda.
 - Tab `layanan`: syarat, alur, waktu, biaya, dan catatan setiap surat.
-- Masih kosong: telepon & email kantor, nama kepala lingkungan, nomor aparat, UMKM.
+- Masih kosong: telepon & email kantor, nama kepala lingkungan, nomor aparat, UMKM, galeri.
 
 ### Menyambungkan sheet ke situs
 
@@ -127,7 +131,8 @@ Untuk kembali memakai data contoh (tanpa sheet), ubah `PAKAI_DUMMY` menjadi `tru
 
 ### Jika data tidak muncul
 
-Situs menampilkan "… belum bisa dimuat". Buka konsol browser (F12 → Console); pesan berawalan
+Buka halaman **Cek Data** (`cek-data.html`) lebih dulu — hampir semua penyebab ditunjukkan di sana
+dalam bahasa biasa. Untuk detail teknis, buka konsol browser (F12 → Console); pesan berawalan
 `[data]` menyebut penyebabnya:
 
 | Pesan | Artinya |
@@ -135,7 +140,7 @@ Situs menampilkan "… belum bisa dimuat". Buka konsol browser (F12 → Console)
 | `permintaan gagal` / `yang diterima halaman HTML` | Akses sheet bukan "Siapa saja yang memiliki link", atau tidak ada koneksi |
 | `tab "…" tidak ditemukan` | Nama tab diubah atau belum ada, atau judul kolom pertamanya hilang |
 | `tidak punya kolom: …` | Nama kolom di baris judul berubah — samakan dengan template |
-| `atasan "…" tidak ditemukan` | Kolom atasan di tab `aparat` berisi id yang tidak ada |
+| `atasan "…" tidak ditemukan atau melingkar` | Kolom atasan di tab `aparat` berisi jabatan yang tidak ada |
 | `jabatan "…" sudah ada di tab "aparat"` | Baris ganda di tab `kontak` — pindahkan nomornya ke tab `aparat`, lalu hapus barisnya |
 | `server membalas HTTP 404` | ID spreadsheet salah ketik, atau sheet sudah dihapus |
 
@@ -149,7 +154,7 @@ Situs menampilkan "… belum bisa dimuat". Buka konsol browser (F12 → Console)
 │   ├── data-contoh.js   data awal: isi template spreadsheet & data saat PAKAI_DUMMY = true
 │   ├── ui.js            kerangka: header, footer, breadcrumb, info kantor, animasi, status memuat
 │   ├── komponen.js      FOTO statis, isiDariData(), aturKolom(), potongan HTML bersama
-│   └── halaman/         logika per halaman (index.html → beranda.js)
+│   └── halaman/         logika per halaman (index.html → beranda.js; cek-data.js = pemeriksa sheet)
 ├── img/                 gambar statis
 ├── data/                template spreadsheet
 ├── tools/               buat_template.py (template xlsx), versi_aset.py (penanda versi CSS/JS)
