@@ -1,0 +1,120 @@
+/* KKT (kkt.html): mahasiswa KKT Unsrat Angkatan 149, dikelompokkan per bidang.
+   Halaman ini tidak ada di menu atas; tautannya ada di baris bawah footer (ui.js).
+
+   Berbeda dengan halaman lain, data KKT TIDAK diambil dari spreadsheet — cukup ubah DATA_KKT di bawah,
+   lalu jalankan python3 tools/versi_aset.py, commit, dan push. */
+
+const DATA_KKT = {
+  periode: "", // mis. "Juli – Agustus 2026"; kosong = tidak ditampilkan
+  dpl: "", // nama dosen pembimbing lapangan; kosong = tidak ditampilkan
+  // Satu paragraf per elemen; kosong = paragraf "tentang" tidak ditampilkan.
+  tentang: [],
+
+  /* Satu objek per mahasiswa. Urutan di sini = urutan tampil.
+     - bidang: kelompok kartu di halaman; ditulis sama persis untuk satu bidang.
+     - peran: jabatan dalam bidang. "Anggota" tidak ditampilkan sebagai label.
+     - fakultas: tampil di kartu; dihitung untuk angka "Fakultas asal".
+     - foto (opsional): nama berkas di folder img/ (mis. "kkt-fidelia.webp") atau tautan Google Drive.
+       Kosong = monogram inisial. */
+  anggota: [
+    { bidang: "Pengurus Inti", peran: "Koordinator Posko", nama: "Fidelia Tishri Kololy", nim: "231011030018", fakultas: "Fakultas Matematika dan Ilmu Pengetahuan Alam", foto: "" },
+    { bidang: "Pengurus Inti", peran: "Sekretaris", nama: "Geofena Theresa Viona Nender", nim: "230511060015", fakultas: "Fakultas Perikanan dan Ilmu Kelautan", foto: "" },
+    { bidang: "Pengurus Inti", peran: "Bendahara", nama: "Tiara Tisya Paraso", nim: "230411040070", fakultas: "Fakultas Peternakan", foto: "" },
+
+    { bidang: "Bidang Program", peran: "Koordinator", nama: "Theodorus Dirly Keintjem", nim: "230911020066", fakultas: "Fakultas Ilmu Budaya", foto: "" },
+    { bidang: "Bidang Program", peran: "Anggota", nama: "Elistiani Meisye Manansang", nim: "230911020148", fakultas: "Fakultas Ilmu Budaya", foto: "" },
+    { bidang: "Bidang Program", peran: "Anggota", nama: "Vergino F. Maindoka", nim: "230211060074", fakultas: "Fakultas Teknik", foto: "" },
+
+    { bidang: "Bidang Pelaporan", peran: "Koordinator", nama: "Militia Meisya Revalinny Senduk", nim: "230111040116", fakultas: "Fakultas Kedokteran", foto: "" },
+    { bidang: "Bidang Pelaporan", peran: "Anggota", nama: "Pipit Desriyani", nim: "230911010009", fakultas: "Fakultas Ilmu Budaya", foto: "" },
+    { bidang: "Bidang Pelaporan", peran: "Anggota", nama: "Firzyawan Listanto Mokoginta", nim: "230911020035", fakultas: "Fakultas Ilmu Budaya", foto: "" },
+
+    { bidang: "Bidang Publikasi dan Dokumentasi", peran: "Koordinator", nama: "Emmanuel Arthur Wirakusumah", nim: "230211050022", fakultas: "Fakultas Teknik", foto: "" },
+    { bidang: "Bidang Publikasi dan Dokumentasi", peran: "Anggota", nama: "Frianita M. T. Lumy", nim: "230311090016", fakultas: "Fakultas Pertanian", foto: "" },
+    { bidang: "Bidang Publikasi dan Dokumentasi", peran: "Anggota", nama: "Natalia Paduli", nim: "230311090002", fakultas: "Fakultas Pertanian", foto: "" },
+
+    { bidang: "Bidang Hubungan Masyarakat", peran: "Koordinator", nama: "Ferlika Novalisa Pasalo", nim: "230111040059", fakultas: "Fakultas Kedokteran", foto: "" },
+    { bidang: "Bidang Hubungan Masyarakat", peran: "Anggota", nama: "Elsa Theresia Br. Sitorus", nim: "230711010017", fakultas: "Fakultas Hukum", foto: "" },
+    { bidang: "Bidang Hubungan Masyarakat", peran: "Anggota", nama: "Kanaya Montolalu", nim: "230111040027", fakultas: "Fakultas Kedokteran", foto: "" },
+  ],
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  const info = [DATA_KKT.periode && `Periode ${DATA_KKT.periode}`, DATA_KKT.dpl && `Dosen pembimbing lapangan: ${DATA_KKT.dpl}`]
+    .filter(Boolean).map(escapeHtml).join(" · ");
+  isiAtauHapus("info-kkt", info);
+  isiAtauHapus("tentang-kkt", DATA_KKT.tentang.map((p, i) => `<p${i === 0 ? ' class="lead"' : ""}>${escapeHtml(p)}</p>`).join(""));
+
+  // Nilai dari kode di-escape seperti data spreadsheet, agar tanda < atau & dalam nama tetap aman.
+  const anggota = DATA_KKT.anggota.map((m) =>
+    Object.fromEntries(["bidang", "peran", "nama", "nim", "fakultas", "foto"].map((k) => [k, escapeHtml(String(m[k] ?? "").trim())])))
+    .filter((m) => m.nama);
+
+  isiAtauHapus("angka-kkt", anggota.length
+    ? [
+      selStatistik({ nilai: String(anggota.length), label: "Mahasiswa" }),
+      selStatistik({ nilai: String(new Set(anggota.map((m) => kodeDari(m.fakultas)).filter(Boolean)).size), label: "Fakultas asal" }),
+    ].join("")
+    : "");
+
+  if (!document.getElementById("tentang-kkt") && !document.getElementById("angka-kkt")) {
+    document.getElementById("seksi-tentang-kkt")?.remove();
+  }
+
+  const daftar = document.getElementById("daftar-kkt");
+  if (anggota.length) {
+    daftar.innerHTML = renderAnggota(anggota);
+    aturKolomDi(daftar);
+  } else {
+    tampilkanKosong(daftar, "Daftar mahasiswa KKT sedang disiapkan.");
+  }
+  segarkanTampilan();
+});
+
+/** Isi elemen dengan HTML; elemen dihapus bila isinya kosong. */
+function isiAtauHapus(id, html) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (html) {
+    el.innerHTML = html;
+    aturKolomDi(el);
+  } else {
+    el.remove();
+  }
+}
+
+/** Anggota per bidang, urut sesuai kemunculan pertama. Ejaan bidang dibandingkan longgar. */
+function kelompokBidang(anggota) {
+  const kelompok = new Map();
+  anggota.forEach((m) => {
+    const kode = kodeDari(m.bidang) || "anggota";
+    if (!kelompok.has(kode)) kelompok.set(kode, { nama: m.bidang || "Anggota", anggota: [] });
+    kelompok.get(kode).anggota.push(m);
+  });
+  return kelompok;
+}
+
+function renderAnggota(anggota) {
+  return [...kelompokBidang(anggota).values()].map(({ nama, anggota: daftar }) => `
+    <section class="reveal">
+      <h3 class="judul-grup-surat"><span>${nama}</span><span class="jumlah">${daftar.length}</span></h3>
+      <div class="grid-adaptif grid-orang rata-kiri" data-maks="4" data-hp="2">${daftar.map(kartuMahasiswa).join("")}</div>
+    </section>
+  `).join("");
+}
+
+function kartuMahasiswa(m) {
+  // "Anggota" tidak perlu label; peran lain (Koordinator, Sekretaris, …) ditandai.
+  const peran = m.peran && !/^anggota$/i.test(teksPolos(m.peran).trim()) ? m.peran : "";
+  return `
+    <article class="kartu flex flex-col overflow-hidden">
+      ${visualOrang(m, "w-full aspect-[4/5] text-[40px] border-b border-[var(--line)]", "kkt")}
+      <div class="p-4 md:p-5 flex-1">
+        ${peran ? `<p class="label-kecil text-[var(--accent-ink)]">${peran}</p>` : ""}
+        <h4 class="nama-orang${peran ? " mt-1" : ""}">${m.nama}</h4>
+        ${m.nim ? `<p class="nim mt-2">NIM ${m.nim}</p>` : ""}
+        ${m.fakultas ? `<p class="text-[13px] text-[var(--muted)] mt-1 leading-snug">${m.fakultas}</p>` : ""}
+      </div>
+    </article>
+  `;
+}

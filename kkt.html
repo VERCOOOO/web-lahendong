@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KKT Unsrat Angkatan 149 — Kelurahan Lahendong</title>
+  <meta name="description" content="Mahasiswa Kuliah Kerja Terpadu (KKT) Universitas Sam Ratulangi Angkatan 149 di Kelurahan Lahendong, Tomohon Selatan." />
+  <link rel="icon" href="img/emblem.svg" type="image/svg+xml" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/style.css?v=012ecc74" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body class="bg-[var(--bg)] text-[var(--ink)] min-h-screen flex flex-col">
+
+  <div id="header"></div>
+
+  <main id="konten-utama" class="flex-1">
+
+    <!-- Halaman ini tidak ada di menu atas; ditautkan dari baris bawah footer (ui.js). -->
+    <section class="kop-halaman">
+      <div class="wadah kop-isi">
+        <nav class="remah" aria-label="Lokasi halaman" data-remah></nav>
+        <h1 class="judul-halaman">KKT Unsrat Angkatan 149</h1>
+        <p class="kop-ringkas">Mahasiswa Kuliah Kerja Terpadu Universitas Sam Ratulangi yang bertugas di Kelurahan Lahendong, sekaligus tim yang menyusun situs ini.</p>
+        <p id="info-kkt" class="label-kecil kop-catatan"><!-- diisi oleh JS: periode & DPL (DATA_KKT) --></p>
+      </div>
+    </section>
+
+    <!-- TENTANG — DATA_KKT.tentang & jumlah anggota (assets/js/halaman/kkt.js); disembunyikan bila kosong -->
+    <section id="seksi-tentang-kkt" class="wadah seksi pb-0 md:pb-0">
+      <div class="grid md:grid-cols-12 gap-8 md:gap-12">
+        <div class="reveal md:col-span-5">
+          <span class="eyebrow">Kuliah Kerja Terpadu</span>
+          <h2 class="judul-seksi garis-aksen mt-4">Belajar bersama warga Lahendong</h2>
+        </div>
+        <div class="reveal md:col-span-7">
+          <div id="tentang-kkt" class="prosa"><!-- diisi oleh JS --></div>
+          <div id="angka-kkt" class="deret-statistik mt-8"><!-- diisi oleh JS --></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ANGGOTA — DATA_KKT.anggota, dikelompokkan per bidang -->
+    <section class="wadah seksi">
+      <div class="reveal mb-10 md:mb-12">
+        <span class="eyebrow">Anggota Kelompok</span>
+        <h2 class="judul-seksi garis-aksen mt-4">Mahasiswa KKT</h2>
+      </div>
+      <div id="daftar-kkt" class="grid gap-12"><!-- diisi oleh JS --></div>
+    </section>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="assets/js/data.js?v=2247cfe5"></script>
+  <script src="assets/js/data-contoh.js?v=15a23b69"></script>
+  <script src="assets/js/ui.js?v=c906c268"></script>
+  <script src="assets/js/komponen.js?v=0605d30a"></script>
+  <script src="assets/js/halaman/kkt.js?v=b744d8b5"></script>
+</body>
+</html>

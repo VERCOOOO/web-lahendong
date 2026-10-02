@@ -263,12 +263,13 @@ function namaOrang(nama) {
 
 /**
  * Foto orang (kolom foto atau FOTO.aparat); monogram inisial bila tidak ada atau gagal dimuat.
- * @param {object} orang  baris tab aparat
+ * @param {object} orang  baris tab aparat (atau kkt)
  * @param {string} kelas  kelas ukuran/bentuk, mis. "avatar" atau "potret"
+ * @param {string} [tab]  tab asal, untuk mencari foto cadangan di FOTO
  */
-function visualOrang(orang, kelas) {
+function visualOrang(orang, kelas, tab = "aparat") {
   const isi = orang.nama ? inisial(orang.nama) : '<i data-lucide="user-round" class="w-1/3 h-1/3"></i>';
-  const [utama, ...cadangan] = sumberFoto("aparat", orang, 800);
+  const [utama, ...cadangan] = sumberFoto(tab, orang, 800);
   // Monogram selalu dirender di belakang foto, jadi bila foto gagal dimuat monogramlah yang tampil.
   const foto = utama
     ? `<img src="${escapeHtml(utama)}" data-cadangan="${escapeHtml(cadangan.join(" "))}" data-tanpa-pengganti alt="${orang.nama}" class="absolute inset-0 w-full h-full object-cover" loading="lazy" onerror="fotoBerikutnya(this)" />`

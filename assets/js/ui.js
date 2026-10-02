@@ -205,9 +205,14 @@ function renderFooter() {
       </div>
 
       <div class="border-t border-white/10">
-        <p class="wadah py-5 text-xs text-white/60">
-          &copy; ${new Date().getFullYear()} Pemerintah Kelurahan Lahendong. Seluruh hak cipta dilindungi.
-        </p>
+        <div class="wadah py-5 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-xs text-white/60">
+          <p>&copy; ${new Date().getFullYear()} Pemerintah Kelurahan Lahendong. Seluruh hak cipta dilindungi.</p>
+          <!-- Kredit tim penyusun situs; halaman KKT sengaja tidak ada di menu atas. -->
+          <a href="kkt.html" class="inline-flex items-center gap-1.5 text-white/75 hover:text-white">
+            Dikembangkan oleh Mahasiswa KKT Unsrat Angkatan 149
+            <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+          </a>
+        </div>
       </div>
     </footer>
   `;

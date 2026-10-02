@@ -1205,6 +1205,20 @@ details[open] { border-color: var(--primary); }
   border-left: 2px solid var(--line);
 }
 
+/* Kartu orang (mahasiswa KKT): lebar dibatasi agar kelompok beranggota sedikit tidak menghasilkan
+   potret raksasa; kartu tetap di tengah seperti grid adaptif lain. */
+@media (min-width: 640px) {
+  .grid-adaptif.grid-orang > * { max-width: 260px; }
+}
+
+/* NIM mahasiswa KKT */
+.nim {
+  font-size: 13.5px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
 /* --- Kartu lingkungan --------------------------------------------------- */
 
 .tile-lingkungan {

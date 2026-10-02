@@ -17,10 +17,10 @@ const DATA_DUMMY = {
     { kunci: "luas_wilayah", nilai: "7,85", keterangan: "CONTOH — ganti. Angka saja, satuan km². Beranda dan Profil." },
     { kunci: "ketinggian", nilai: "800–950", keterangan: "CONTOH — ganti. Satuan mdpl. Profil." },
     { kunci: "suhu", nilai: "22–26", keterangan: "CONTOH — ganti. Satuan °C. Profil." },
-    { kunci: "batas_utara", nilai: "Kelurahan Kampung Jawa", keterangan: "Profil, tabel batas wilayah." },
-    { kunci: "batas_selatan", nilai: "Kabupaten Minahasa", keterangan: "Profil, tabel batas wilayah." },
-    { kunci: "batas_timur", nilai: "Kecamatan Pangolombian", keterangan: "Profil, tabel batas wilayah." },
-    { kunci: "batas_barat", nilai: "Kelurahan Pinaras", keterangan: "Profil, tabel batas wilayah." },
+    { kunci: "batas_utara", nilai: "Tumatangtang 1, Kampung Jawa", keterangan: "Profil, tabel batas wilayah." },
+    { kunci: "batas_selatan", nilai: "Leilem", keterangan: "Profil, tabel batas wilayah." },
+    { kunci: "batas_timur", nilai: "Pangolombian, Tondangow", keterangan: "Profil, tabel batas wilayah." },
+    { kunci: "batas_barat", nilai: "Pinaras, Rambunan", keterangan: "Profil, tabel batas wilayah." },
     {
       kunci: "sejarah",
       nilai:

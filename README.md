@@ -30,7 +30,11 @@ Kode hanya menentukan **tampilan**.
 Tabel yang sama, beserta arti setiap kolom, ada di tab `petunjuk` pada spreadsheet.
 
 **Tidak diatur dari spreadsheet:** judul dan kalimat pengantar tiap halaman (berkas HTML),
-ilustrasi bawaan (`img/`), dan peta wilayah (`img/peta-wilayah.png` — tampil otomatis bila ada).
+ilustrasi bawaan (`img/`), peta wilayah (`img/peta-wilayah.png` — tampil otomatis bila ada), dan
+halaman **KKT Unsrat Angkatan 149** (`kkt.html`, ditautkan dari baris bawah footer, tidak ada di menu):
+datanya ditulis di `DATA_KKT` pada awal [`assets/js/halaman/kkt.js`](assets/js/halaman/kkt.js) —
+nama, NIM, fakultas, peran (opsional), foto (nama berkas di `img/` atau tautan Drive, opsional),
+serta periode, DPL, dan paragraf "tentang".
 
 ## Mengelola spreadsheet
 
