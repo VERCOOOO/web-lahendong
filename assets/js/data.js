@@ -35,9 +35,10 @@ const SKEMA = {
   // Narahubung non-aparat. kategori: "darurat" atau "umum".
   kontak: ["id", "nama", "peran", "nomor", "kategori"],
   wisata: ["id", "nama", "ringkas", "deskripsi", "jam", "tiket", "fasilitas", "waktu_terbaik", "cara_kesana", "pengelola", "maps_link"],
-  potensi: ["id", "judul", "deskripsi"],
   umkm: ["id", "nama", "produk", "kontak", "lingkungan"],
-  layanan: ["id", "nama_surat", "syarat", "alur", "waktu", "biaya"],
+  // Satu baris per jenis surat. syarat & alur: satu butir per baris di dalam sel.
+  // kategori (opsional) mengelompokkan surat; catatan (opsional) tampil sebagai pemberitahuan.
+  layanan: ["id", "nama_surat", "kategori", "syarat", "alur", "waktu", "biaya", "catatan"],
 };
 
 /** URL CSV satu tab, dicari berdasarkan nama tab. */

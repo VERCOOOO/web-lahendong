@@ -1,29 +1,12 @@
-/* Potensi (potensi.html): daftar potensi & kartu UMKM.
-   Sumber: tab potensi & umkm. Foto UMKM statis dari FOTO.umkm di komponen.js. */
+/* UMKM (umkm.html): kartu usaha warga.
+   Sumber: tab umkm. Foto UMKM statis dari FOTO.umkm di komponen.js. */
 
 document.addEventListener("DOMContentLoaded", () => {
-  isiDariData(document.getElementById("daftar-potensi"), "potensi",
-    (data) => data.map(blokPotensi).join(""),
-    { kosong: "Data potensi belum tersedia.", gagal: "Data potensi belum bisa dimuat saat ini." }
-  );
-
   isiDariData(document.getElementById("grid-umkm"), "umkm",
     (data) => data.map(kartuUmkm).join(""),
-    { kosong: "Data UMKM sedang dihimpun.", gagal: "Data UMKM belum bisa dimuat saat ini." }
+    { kosong: "Data UMKM sedang dihimpun oleh kelurahan.", gagal: "Data UMKM belum bisa dimuat saat ini." }
   );
 });
-
-function blokPotensi(item, i) {
-  return `
-    <article class="reveal grid md:grid-cols-12 gap-4 md:gap-12 py-8 md:py-10 border-b border-[var(--line)]">
-      <div class="md:col-span-4">
-        <p class="nomor-urut">${nomorUrut(i)}</p>
-        <h3 class="judul-kartu mt-2">${item.judul}</h3>
-      </div>
-      <div class="md:col-span-8 prosa">${paragraf(item.deskripsi)}</div>
-    </article>
-  `;
-}
 
 function kartuUmkm(item) {
   return `

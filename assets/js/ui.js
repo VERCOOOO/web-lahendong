@@ -9,7 +9,7 @@ const NAV_LINKS = [
   { href: "pemerintahan.html", label: "Pemerintahan" },
   { href: "penduduk.html", label: "Penduduk" },
   { href: "wisata.html", label: "Wisata" },
-  { href: "potensi.html", label: "Potensi" },
+  { href: "umkm.html", label: "UMKM" },
   { href: "galeri.html", label: "Galeri" },
   { href: "legenda.html", label: "Legenda" },
   { href: "layanan.html", label: "Layanan" },
@@ -172,7 +172,7 @@ function renderFooter() {
               </div>
             </div>
             <p class="text-sm text-white/75 leading-relaxed mt-5 max-w-[320px]">
-              Pusat informasi resmi mengenai pemerintahan, data kependudukan, potensi wilayah,
+              Pusat informasi resmi mengenai pemerintahan, data kependudukan, layanan surat,
               dan destinasi wisata Kelurahan Lahendong.
             </p>
           </div>

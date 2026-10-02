@@ -1,25 +1,19 @@
-/* Pemerintahan (pemerintahan.html): bagan struktur, profil aparat, kepala lingkungan.
-   Sumber: tab aparat (kolom atasan membentuk bagan) & lingkungan. */
+/* Pemerintahan (pemerintahan.html): struktur aparat & lingkungan.
+   Sumber: tab aparat (kolom atasan membentuk struktur) & lingkungan. */
 
 document.addEventListener("DOMContentLoaded", () => {
-  isiDariData(document.getElementById("bagan"), "aparat",
-    (data) => renderBagan(susunPohon(data)),
-    { kosong: "Struktur organisasi belum tersedia.", gagal: "Bagan belum bisa dimuat saat ini." }
+  isiDariData(document.getElementById("struktur"), "aparat",
+    (data) => susunPohon(data).map(renderStruktur).join(""),
+    { kosong: "Struktur organisasi belum tersedia.", gagal: "Struktur organisasi belum bisa dimuat saat ini." }
   );
 
-  isiDariData(document.getElementById("grid-aparat"), "aparat",
-    (data) => urutkanAparat(data).map(kartuAparat).join(""),
-    { kosong: "Belum ada data aparat kelurahan.", gagal: "Data aparat belum bisa dimuat saat ini." }
-  );
-
-  isiDariData(document.getElementById("grid-lingkungan"), "lingkungan",
-    (data) => data.map(kartuLingkungan).join(""),
+  isiDariData(document.getElementById("grid-lingkungan"), "lingkungan", renderLingkungan,
     { kosong: "Belum ada data lingkungan.", gagal: "Data lingkungan belum bisa dimuat saat ini." }
   );
 });
 
 /* ---------------------------------------------------------------------- */
-/* Bagan                                                                   */
+/* Struktur                                                                */
 /* ---------------------------------------------------------------------- */
 
 /**
@@ -43,43 +37,89 @@ function susunPohon(aparat) {
   return puncak;
 }
 
-function renderBagan(puncak, tingkat = 0) {
-  if (!puncak.length) return "";
-  return `<ul>${puncak.map((s) => `
-    <li>
-      <div class="bagan-simpul${tingkat === 0 ? " akar" : ""}">
-        ${visualOrang(s, "w-11 h-11 rounded-full text-[15px] shrink-0")}
+/** Satu puncak (biasanya Lurah): panel pimpinan, lalu bawahan langsungnya sebagai cabang. */
+function renderStruktur(pimpinan) {
+  const cabang = pimpinan.bawahan;
+  // Garis penyambung hanya digambar bila semua cabang muat dalam satu baris (maks. 4).
+  const tersambung = cabang.length && cabang.length <= 4 ? " tersambung" : "";
+  return `
+    <div class="struktur reveal">
+      <article class="pimpinan">
+        ${visualOrang(pimpinan, "potret")}
         <div class="min-w-0">
-          <p class="label-kecil">${s.jabatan}</p>
-          <p class="font-judul text-[17px] leading-tight mt-1">${namaOrang(s.nama)}</p>
+          <p class="label-kecil text-[var(--toska)]">${pimpinan.jabatan}</p>
+          <h3 class="nama-pimpinan">${namaOrang(pimpinan.nama)}</h3>
+          ${cabang.length ? `
+            <p class="label-kecil text-[var(--on-deep-muted)] mt-6">Membawahi</p>
+            <div class="membawahi">${cabang.map((c) => `<span>${c.jabatan}</span>`).join("")}</div>` : ""}
         </div>
-      </div>
-      ${renderBagan(s.bawahan, tingkat + 1)}
-    </li>`).join("")}</ul>`;
+      </article>
+      ${cabang.length ? `
+        <div class="cabang-struktur grid-adaptif${tersambung}" data-maks="4">
+          ${cabang.map(kartuCabang).join("")}
+        </div>` : ""}
+    </div>
+  `;
 }
 
-/* ---------------------------------------------------------------------- */
-/* Kartu                                                                   */
-/* ---------------------------------------------------------------------- */
-
-function kartuAparat(orang) {
+function kartuCabang(orang) {
   return `
-    <div class="kartu reveal overflow-hidden">
-      ${visualOrang(orang, "w-full aspect-[4/3] border-b border-[var(--line)] text-[44px]")}
-      <div class="p-5">
+    <div class="cabang">
+      <article class="kartu kartu-cabang p-4 md:p-5">
+        ${barisOrang(orang)}
+        ${daftarStaf(orang.bawahan)}
+      </article>
+    </div>
+  `;
+}
+
+/** Staf di bawah kepala cabang; tingkat yang lebih dalam menjorok dengan garis di kiri. */
+function daftarStaf(staf) {
+  if (!staf.length) return "";
+  return `<ul class="staf">${staf.map((s) => `<li>${barisOrang(s)}${daftarStaf(s.bawahan)}</li>`).join("")}</ul>`;
+}
+
+function barisOrang(orang) {
+  return `
+    <div class="orang">
+      ${visualOrang(orang, "avatar")}
+      <div class="min-w-0">
         <p class="label-kecil">${orang.jabatan}</p>
-        <h3 class="font-judul text-[21px] leading-tight mt-2">${namaOrang(orang.nama)}</h3>
+        <p class="nama-orang mt-1">${namaOrang(orang.nama)}</p>
       </div>
     </div>
   `;
 }
 
-function kartuLingkungan(item) {
+/* ---------------------------------------------------------------------- */
+/* Lingkungan                                                              */
+/* ---------------------------------------------------------------------- */
+
+/* Batang kecil di tiap kartu = jumlah jiwa dibanding lingkungan terbesar. */
+function renderLingkungan(data) {
+  const terbesar = Math.max(0, ...data.map((l) => keAngka(l.jumlah_jiwa) || 0));
+  return data.map((l) => kartuLingkungan(l, terbesar)).join("");
+}
+
+function kartuLingkungan(item, terbesar) {
+  // "Lingkungan 3" ditulis sebagai angka besar; nama lain ditampilkan utuh.
+  const nomor = teksPolos(item.nama).match(/^lingkungan\s+(\S+)$/i);
+  const jiwa = keAngka(item.jumlah_jiwa);
+  const kk = keAngka(item.jumlah_kk);
+  const angka = [jiwa !== null && formatAngka(jiwa) + " jiwa", kk !== null && formatAngka(kk) + " KK"].filter(Boolean);
+
   return `
-    <div class="kartu reveal p-5">
-      <p class="font-judul text-[22px] leading-tight">${item.nama}</p>
-      <p class="label-kecil mt-4">Kepala lingkungan</p>
-      <p class="text-[15px] mt-1">${item.kepala || '<span class="text-[var(--muted)]">Belum dicantumkan</span>'}</p>
-    </div>
+    <article class="kartu tile-lingkungan reveal">
+      ${nomor
+        ? `<p class="label-kecil">Lingkungan</p><p class="nomor-lingkungan mt-2">${escapeHtml(nomor[1])}</p>`
+        : `<h3 class="judul-kartu">${item.nama}</h3>`}
+      <p class="label-kecil mt-5">Kepala lingkungan</p>
+      <p class="text-[15px] font-semibold mt-1 leading-snug">${item.kepala || '<span class="text-[var(--muted)] font-normal">Belum dicantumkan</span>'}</p>
+      ${angka.length ? `
+        <div class="mt-auto pt-5">
+          <p class="text-[13px] text-[var(--muted)]">${angka.join(" · ")}</p>
+          ${jiwa !== null && terbesar ? `<div class="porsi" title="${formatAngka(jiwa)} jiwa"><span style="width:${Math.max(4, Math.round((jiwa / terbesar) * 100))}%"></span></div>` : ""}
+        </div>` : ""}
+    </article>
   `;
 }

@@ -1,5 +1,7 @@
-/* Beranda (index.html): fakta ringkas, pimpinan, destinasi wisata, potensi.
-   Sumber: tab statistik & profil (fakta), aparat (pimpinan), wisata, potensi. */
+/* Beranda (index.html): fakta ringkas, pimpinan, layanan surat, destinasi wisata.
+   Sumber: tab statistik & profil (fakta), aparat (pimpinan), layanan, wisata. */
+
+const MAKS_LAYANAN_BERANDA = 6;
 
 const FAKTA_BERANDA = [
   { tab: "statistik", kunci: "jumlah_penduduk", label: "Jumlah penduduk", satuan: "jiwa" },
@@ -26,9 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
     { gagal: "Daftar destinasi belum bisa dimuat saat ini." }
   );
 
-  isiDariData(document.getElementById("daftar-potensi"), "potensi",
-    (data) => data.map(ringkasanPotensi).join(""),
-    { kosong: "Data potensi belum tersedia.", gagal: "Data potensi belum bisa dimuat saat ini." }
+  isiDariData(document.getElementById("ringkas-layanan"), "layanan", renderRingkasLayanan,
+    { kosong: "Daftar layanan surat sedang disiapkan.", gagal: "Daftar layanan belum bisa dimuat saat ini." }
   );
 });
 
@@ -46,14 +47,21 @@ function renderPimpinan(aparat) {
   `;
 }
 
-function ringkasanPotensi(item, i) {
-  return `
-    <div class="flex gap-5 md:gap-8 py-7 border-b border-white/15">
-      <span class="nomor-urut shrink-0 mt-0.5">${nomorUrut(i)}</span>
-      <div>
-        <h3 class="judul-kartu">${item.judul}</h3>
-        <p class="muted-gelap mt-2 max-w-[560px]">${kalimatPertama(item.deskripsi)}</p>
-      </div>
-    </div>
-  `;
+/** Surat-surat pertama dari tab layanan; tiap baris menaut ke suratnya di layanan.html. */
+function renderRingkasLayanan(data) {
+  const tampil = data.slice(0, MAKS_LAYANAN_BERANDA);
+  const sisa = data.length - tampil.length;
+  return tampil.map((item) => {
+    const meta = [item.waktu, item.biaya].map((t) => barisDari(t)[0]).filter(Boolean).join(" · ");
+    return `
+      <a href="layanan.html#surat-${encodeURIComponent(teksPolos(item.id))}">
+        <span class="min-w-0">
+          <span class="nama">${item.nama_surat}</span>
+          ${meta ? `<span class="meta">${meta}</span>` : ""}
+        </span>
+        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+      </a>`;
+  }).join("") + (sisa > 0
+    ? `<p class="pt-5 text-[14px] muted-gelap">dan ${sisa} jenis surat lainnya di halaman Layanan.</p>`
+    : "");
 }

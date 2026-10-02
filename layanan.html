@@ -30,30 +30,40 @@
       </div>
     </section>
 
+    <!-- DAFTAR SURAT — tab layanan; satu baris per surat, kolom kategori opsional -->
     <section class="wadah seksi">
-      <div class="grid md:grid-cols-12 gap-8 md:gap-12">
-        <div class="reveal md:col-span-4">
-          <span class="eyebrow">Jenis Surat</span>
-          <h2 class="judul-seksi mt-4">Pilih layanan</h2>
-          <p class="text-[var(--muted)] mt-4 text-[15px] leading-[1.65]">
-            Ketuk salah satu jenis surat untuk melihat syarat dan alur pengurusannya.
-          </p>
+      <div class="grid lg:grid-cols-12 gap-10 lg:gap-14">
+        <aside class="lg:col-span-4">
+          <div class="panel-layanan">
+            <span class="eyebrow">Jenis Surat</span>
+            <h2 class="judul-seksi mt-4">Pilih layanan</h2>
+            <p class="text-[var(--muted)] mt-4 text-[15px] leading-[1.65]">
+              <span id="jumlah-surat" class="font-semibold text-[var(--ink)]"></span>
+              Ketuk satu surat untuk melihat syarat dan alur pengurusannya.
+            </p>
 
-          <div class="kartu p-5 mt-8 bg-[var(--surface)]">
-            <div data-wadah-profil>
-              <p class="label-kecil mb-2">Jam layanan</p>
-              <p class="text-[15px]" data-profil="jam_layanan"></p>
+            <div class="mt-6" data-wadah-cari hidden>
+              <label for="cari-surat" class="label-kecil">Cari surat</label>
+              <div class="kotak-cari mt-2">
+                <i data-lucide="search" class="w-4 h-4"></i>
+                <input id="cari-surat" type="search" placeholder="mis. SKTM, usaha, nikah" autocomplete="off" />
+              </div>
             </div>
-            <a href="kontak.html" class="tautan mt-4">
-              <span class="relative">Hubungi kantor<span class="garis absolute left-0 -bottom-0.5"></span></span>
-              <i data-lucide="arrow-right" class="w-4 h-4"></i>
-            </a>
-          </div>
-        </div>
 
-        <div id="daftar-layanan" class="md:col-span-8 space-y-3">
-          <!-- diisi oleh JS -->
-        </div>
+            <div id="filter-kategori" class="flex flex-wrap gap-2 mt-5" aria-label="Saring menurut kategori" hidden></div>
+
+            <div class="kartu p-5 mt-8" data-wadah-profil>
+              <p class="label-kecil mb-2">Jam layanan kantor</p>
+              <p class="text-[15px]" data-profil="jam_layanan"></p>
+              <a href="kontak.html" class="tautan mt-4">
+                <span class="relative">Hubungi kantor<span class="garis absolute left-0 -bottom-0.5"></span></span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </div>
+        </aside>
+
+        <div id="daftar-layanan" class="lg:col-span-8 grid gap-10"><!-- diisi oleh JS --></div>
       </div>
     </section>
   </main>

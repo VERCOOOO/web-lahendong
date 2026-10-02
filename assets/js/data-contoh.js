@@ -2,9 +2,9 @@
    Data awal — dipakai saat PAKAI_DUMMY = true (lihat data.js), dan menjadi
    isi template spreadsheet (data/template-data-lahendong.xlsx).
 
-   Sumber data asli: Statistik Kelurahan Lahendong 2026, Potensi Kelurahan Lahendong,
-   daftar wisata, dan susunan aparat dari kelurahan. Nilai yang belum ada
-   data resminya ditandai "CONTOH" di kolom keterangan dan wajib diganti.
+   Sumber data asli: Statistik Kelurahan Lahendong 2026, daftar wisata, dan
+   susunan aparat dari kelurahan. Nilai yang belum ada data resminya ditandai
+   "CONTOH" di kolom keterangan dan wajib diganti.
    Baris baru dalam satu sel ("\n") ditampilkan sebagai paragraf/daftar.
    ========================================================================== */
 
@@ -152,39 +152,61 @@ const DATA_DUMMY = {
     },
   ],
 
-  // Sumber: dokumen Potensi Kelurahan Lahendong.
-  potensi: [
-    {
-      id: "P1",
-      judul: "Wisata Alam Hutan Pinus",
-      deskripsi: "Salah satu potensi utama Lahendong adalah wisata alam, khususnya kawasan Hutan Pinus Lahendong. Kawasan ini memiliki hutan pinus yang cukup luas, udara pegunungan yang sejuk, serta pemandangan alam yang memberikan suasana tenang dan nyaman. Kondisi tersebut mendukung pengembangan kegiatan wisata alam, rekreasi, relaksasi, dan kegiatan luar ruangan.",
-    },
-    {
-      id: "P2",
-      judul: "Sumber Air Panas Alami",
-      deskripsi: "Lahendong memiliki sumber air panas alami yang mengandung belerang. Keberadaan air panas menjadi salah satu daya tarik utama kawasan karena memberikan pengalaman relaksasi bagi pengunjung, dan dapat dikembangkan menjadi bagian dari wisata berbasis alam dan kesehatan. Kawasan ini telah dimanfaatkan masyarakat sebagai tempat pemandian air panas alami sejak tahun 1980-an.",
-    },
-    {
-      id: "P3",
-      judul: "Panas Bumi (Geotermal)",
-      deskripsi: "Lahendong mempunyai potensi geotermal atau panas bumi. Potensi ini dapat dikembangkan bukan hanya sebagai daya tarik wisata, tetapi juga sebagai sarana edukasi bagi masyarakat dan wisatawan mengenai panas bumi, lingkungan, serta energi terbarukan, sehingga wisata di Lahendong memiliki nilai tambah berupa pengetahuan tentang kondisi alam dan sumber daya di wilayah ini.",
-    },
-    {
-      id: "P4",
-      judul: "Keanekaragaman Flora dan Fauna",
-      deskripsi: "Kawasan Hutan Pinus Lahendong memiliki vegetasi lokal serta beberapa jenis fauna, seperti burung, landak, dan babi hutan. Keanekaragaman hayati tersebut mendukung pengembangan ekowisata sekaligus menjadi sarana edukasi mengenai pentingnya menjaga kelestarian lingkungan.",
-    },
-  ],
-
   // Belum ada data UMKM resmi.
   umkm: [],
 
   // CONTOH — syarat, alur, waktu, dan biaya perlu dicocokkan dengan ketentuan kantor kelurahan.
+  // Satu syarat / satu langkah per baris di dalam sel. Tambah atau hapus baris surat sesuka hati.
   layanan: [
-    { id: "S1", nama_surat: "Surat Keterangan Domisili", syarat: "Fotokopi KTP, fotokopi KK, pengantar RT/lingkungan", alur: "Ajukan ke kantor lurah → verifikasi berkas → tanda tangan lurah → surat selesai", waktu: "1 hari kerja", biaya: "Gratis" },
-    { id: "S2", nama_surat: "Surat Keterangan Tidak Mampu (SKTM)", syarat: "Fotokopi KTP, KK, surat pengantar RT, keterangan penghasilan", alur: "Ajukan ke kantor lurah → survei singkat bila perlu → tanda tangan lurah", waktu: "1–2 hari kerja", biaya: "Gratis" },
-    { id: "S3", nama_surat: "Surat Pengantar Nikah", syarat: "Fotokopi KTP kedua calon, KK, surat pengantar RT, pas foto", alur: "Ajukan ke kantor lurah → verifikasi data → surat diteruskan ke KUA", waktu: "1 hari kerja", biaya: "Gratis" },
-    { id: "S4", nama_surat: "Surat Keterangan Usaha", syarat: "Fotokopi KTP, KK, foto lokasi usaha, pengantar RT/lingkungan", alur: "Ajukan ke kantor lurah → verifikasi lokasi usaha → tanda tangan lurah", waktu: "1–3 hari kerja", biaya: "Gratis" },
-    { id: "S5", nama_surat: "Surat Keterangan Kelahiran", syarat: "Fotokopi KTP orang tua, KK, surat keterangan bidan/rumah sakit", alur: "Ajukan ke kantor lurah → verifikasi berkas → tanda tangan lurah", waktu: "1 hari kerja", biaya: "Gratis" },
+    {
+      id: "S1",
+      nama_surat: "Surat Keterangan Domisili",
+      kategori: "Kependudukan",
+      syarat: "Fotokopi KTP\nFotokopi Kartu Keluarga\nSurat pengantar RT/lingkungan",
+      alur: "Bawa berkas ke kantor kelurahan\nPetugas memeriksa berkas\nSurat ditandatangani lurah\nSurat diambil pemohon",
+      waktu: "1 hari kerja",
+      biaya: "Gratis",
+      catatan: "",
+    },
+    {
+      id: "S2",
+      nama_surat: "Surat Keterangan Tidak Mampu (SKTM)",
+      kategori: "Sosial",
+      syarat: "Fotokopi KTP\nFotokopi Kartu Keluarga\nSurat pengantar RT/lingkungan\nKeterangan penghasilan",
+      alur: "Bawa berkas ke kantor kelurahan\nPetugas memeriksa berkas dan, bila perlu, melakukan survei singkat\nSurat ditandatangani lurah",
+      waktu: "1–2 hari kerja",
+      biaya: "Gratis",
+      catatan: "Sebutkan keperluan SKTM (sekolah, kesehatan, atau bantuan sosial) saat mengajukan.",
+    },
+    {
+      id: "S3",
+      nama_surat: "Surat Pengantar Nikah",
+      kategori: "Kependudukan",
+      syarat: "Fotokopi KTP kedua calon mempelai\nFotokopi Kartu Keluarga\nSurat pengantar RT/lingkungan\nPas foto",
+      alur: "Bawa berkas ke kantor kelurahan\nPetugas memeriksa data\nSurat diteruskan ke KUA atau Dinas Kependudukan",
+      waktu: "1 hari kerja",
+      biaya: "Gratis",
+      catatan: "",
+    },
+    {
+      id: "S4",
+      nama_surat: "Surat Keterangan Usaha",
+      kategori: "Usaha",
+      syarat: "Fotokopi KTP\nFotokopi Kartu Keluarga\nFoto lokasi usaha\nSurat pengantar RT/lingkungan",
+      alur: "Bawa berkas ke kantor kelurahan\nPetugas memeriksa lokasi usaha\nSurat ditandatangani lurah",
+      waktu: "1–3 hari kerja",
+      biaya: "Gratis",
+      catatan: "",
+    },
+    {
+      id: "S5",
+      nama_surat: "Surat Keterangan Kelahiran",
+      kategori: "Kependudukan",
+      syarat: "Fotokopi KTP kedua orang tua\nFotokopi Kartu Keluarga\nSurat keterangan lahir dari bidan atau rumah sakit",
+      alur: "Bawa berkas ke kantor kelurahan\nPetugas memeriksa berkas\nSurat ditandatangani lurah",
+      waktu: "1 hari kerja",
+      biaya: "Gratis",
+      catatan: "",
+    },
   ],
 };

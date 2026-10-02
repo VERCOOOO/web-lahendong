@@ -28,12 +28,13 @@ Semua warna didefinisikan di `:root`. Warna di luar daftar ini ditolak.
 | `--deep-2` | `#0A221E` | footer, bilah resmi di atas header |
 | `--on-deep` / `--on-deep-muted` | `#E6F0EC` / `#A7C1BA` | teks di bidang gelap |
 | `--accent` | `#E0AE1E` | belerang — **penanda saja**: kotak eyebrow, garis bawah judul, garis atas papan |
-| `--accent-ink` | `#8A6400` | belerang untuk **teks** di latar terang (nomor urut, salam) |
+| `--accent-ink` | `#8A6400` | belerang untuk **teks** di latar terang (jumlah per kelompok, salam) |
+| `--belerang-muda` | `#FBF1D3` | latar catatan/pemberitahuan |
 | `--danger` | `#A8382A` | peringatan, ikon darurat |
 
 Aturan:
 - `--accent` tidak pernah dipakai untuk teks di latar terang (kontrasnya 2:1). Untuk teks pakai `--accent-ink`.
-- Bidang gelap hanya tiga: kop halaman, satu seksi sorotan per halaman, footer.
+- Bidang gelap hanya: kop halaman, satu seksi/panel sorotan per halaman (layanan di Beranda, pimpinan di Pemerintahan), footer.
 - Tanpa gradien warna, tanpa overlay hitam di atas ilustrasi.
 - Kontras teks minimal 4,5:1 (semua pasangan di atas sudah diperiksa).
 
@@ -73,15 +74,21 @@ Eyebrow     : kotak belerang 9px + label huruf besar di atas judul seksi.
 Kartu       : `--surface`, border 1px, foto 3:2. Hover: naik 3px, border `--primary`, bayangan lembut.
               Kartu wisata menampilkan baris info tiket & jam (baris pertama sel, maks 2 baris).
 Grid kartu  : `.grid-adaptif` — lihat §6.
-Tombol      : `--primary` teks putih; sekunder bergaris; `tombol-terang` (di panel hijau);
-              `tombol-belerang` (di bidang gelap, teks `--ink`).
+Tombol      : `--primary` teks putih; sekunder bergaris; `tombol-belerang` (di bidang gelap, teks `--ink`).
 Statistik   : `.deret-statistik`, pembatas garis rambut; jumlah kolom mengikuti jumlah angka.
 Tabel       : garis horizontal saja, header latar `--bg`, baris total bergaris tebal.
 Footer      : `--deep-2`, siluet punggungan di atasnya, 3 kolom, judul kolom `--toska`.
 Orang       : foto statis bila ada; bila tidak, monogram inisial di latar `--toska-muda`. Tanpa foto stok.
+Struktur    : pimpinan = panel `--deep` berpotret 4:5, nama besar, daftar jabatan yang dibawahi.
+              Bawahan langsung = kolom kartu; staf mereka di dalam kolom. Garis penghubung tipis `--line`:
+              HP/tablet berupa garis jalur di kiri, desktop berupa rel mendatar (bila ≤ 4 kolom).
+Layanan     : daftar surat buka-tutup. Judul surat menampilkan waktu & biaya; syarat = kotak centang,
+              alur = langkah bernomor bergaris (urutannya bermakna), catatan = blok `--belerang-muda`.
+              Kelompok per kategori, pencarian & penyaring muncul hanya bila berguna.
+Lingkungan  : nomor lingkungan sebagai angka besar `--primary`, batang porsi jiwa `--primary` di atas `--toska-muda`.
 
 ## 6. GRID ADAPTIF
-Kartu yang jumlahnya ditentukan admin (wisata, UMKM, galeri, aparat, lingkungan, kontak) memakai
+Kartu yang jumlahnya ditentukan admin (wisata, UMKM, galeri, kolom struktur aparat, lingkungan, kontak) memakai
 `.grid-adaptif`. `aturKolom()` di `komponen.js` menghitung:
 
     baris = ceil(n / maks)      kolom = ceil(n / baris)      (maks bawaan 4, atribut data-maks)

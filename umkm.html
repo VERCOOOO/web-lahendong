@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UMKM — Kelurahan Lahendong</title>
+  <meta name="description" content="Usaha mikro, kecil, dan menengah milik warga Kelurahan Lahendong, Tomohon Selatan." />
+  <link rel="icon" href="img/emblem.svg" type="image/svg+xml" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body class="bg-[var(--bg)] text-[var(--ink)] min-h-screen flex flex-col">
+
+  <div id="header"></div>
+
+  <main id="konten-utama" class="flex-1">
+
+    <section class="kop-halaman">
+      <div class="wadah kop-isi">
+        <nav class="remah" aria-label="Lokasi halaman" data-remah></nav>
+        <h1 class="judul-halaman">UMKM</h1>
+        <p class="kop-ringkas">Usaha mikro, kecil, dan menengah milik warga yang tersebar di lingkungan-lingkungan Kelurahan Lahendong.</p>
+      </div>
+    </section>
+
+    <!-- UMKM — tab umkm; susunan kartu mengikuti jumlah baris di sheet -->
+    <section class="wadah seksi">
+      <div class="reveal mb-10 md:mb-12">
+        <span class="eyebrow">Ekonomi Warga</span>
+        <h2 class="judul-seksi garis-aksen mt-4">Usaha warga Lahendong</h2>
+      </div>
+      <div id="grid-umkm" class="grid-adaptif" data-maks="4"><!-- diisi oleh JS --></div>
+    </section>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/data-contoh.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/komponen.js"></script>
+  <script src="assets/js/halaman/umkm.js"></script>
+</body>
+</html>

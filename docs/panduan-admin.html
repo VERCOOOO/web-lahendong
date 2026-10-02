@@ -223,7 +223,6 @@
         <button type="button" data-tab="aparat" aria-pressed="false">aparat</button>
         <button type="button" data-tab="kontak" aria-pressed="false">kontak</button>
         <button type="button" data-tab="wisata" aria-pressed="false">wisata</button>
-        <button type="button" data-tab="potensi" aria-pressed="false">potensi</button>
         <button type="button" data-tab="umkm" aria-pressed="false">umkm</button>
         <button type="button" data-tab="layanan" aria-pressed="false">layanan</button>
         <button type="button" class="reset" data-tab="" aria-pressed="true">Tampilkan semua</button>
@@ -235,7 +234,7 @@
             <tr>
               <th scope="col"></th>
               <th scope="col">Beranda</th><th scope="col">Profil</th><th scope="col">Pemerin&shy;tahan</th><th scope="col">Pendu&shy;duk</th>
-              <th scope="col">Wisata</th><th scope="col">Detail wisata</th><th scope="col">Potensi</th><th scope="col">Galeri</th>
+              <th scope="col">Wisata</th><th scope="col">Detail wisata</th><th scope="col">UMKM</th><th scope="col">Galeri</th>
               <th scope="col">Legenda</th><th scope="col">Layanan</th><th scope="col">Kontak</th><th scope="col">Header &amp; footer</th>
             </tr>
           </thead>
@@ -285,16 +284,16 @@
             <li>Ganti isi kolom <code>nama</code>. Id, jabatan, dan atasan dibiarkan.</li>
             <li>Muat ulang situs.</li>
           </ol>
-          <p class="hasil">Berubah di: bagan &amp; profil (Pemerintahan), blok pimpinan (Beranda), dan Kontak bila nomornya diisi.</p>
+          <p class="hasil">Berubah di: struktur aparat (Pemerintahan), blok pimpinan (Beranda), dan Kontak bila nomornya diisi.</p>
         </article>
         <article class="resep">
-          <h3>Menambah aparat ke bagan</h3>
+          <h3>Menambah aparat ke struktur</h3>
           <ol>
             <li>Tab <code>aparat</code> → isi baris baru dengan id baru, mis. <code>A4</code>.</li>
             <li>Isi <code>nama</code>, <code>jabatan</code>, dan <code>urutan</code> (angka urut tampil).</li>
             <li>Isi <code>atasan</code> dengan id orang di atasnya, mis. <code>A1</code> (Lurah) atau <code>A2</code> (Sekretaris).</li>
           </ol>
-          <p class="hasil">Bagan otomatis menambah kotak di bawah atasannya. Atasan kosong = kotak berdiri di puncak.</p>
+          <p class="hasil">Atasan = Lurah: tampil sebagai kolom baru di bawah panel Lurah. Atasan = Sekretaris/Kasi: tampil sebagai staf di dalam kolom orang itu. Atasan kosong = tampil sebagai pimpinan.</p>
         </article>
         <article class="resep">
           <h3>Menampilkan nomor aparat di Kontak</h3>
@@ -340,12 +339,21 @@
           <p class="hasil">Muncul di Wisata, Galeri, dan halaman detail <code>wisata-detail.html?id=W5</code>. Tanpa foto terdaftar, kartunya memakai gambar pengganti. Susunan kartu menyesuaikan jumlahnya sendiri (maks. 4 per baris: 5 kartu → 3 + 2, 6 → 3 × 2, 8 → 4 × 2).</p>
         </article>
         <article class="resep">
-          <h3>Menambah potensi atau UMKM</h3>
+          <h3>Menambah atau menghapus surat</h3>
           <ol>
-            <li>Potensi: tab <code>potensi</code> → id <code>P5</code>, <code>judul</code>, <code>deskripsi</code> (boleh beberapa paragraf).</li>
-            <li>UMKM: tab <code>umkm</code> → id <code>U1</code>, <code>nama</code>, <code>produk</code>, <code>kontak</code>, <code>lingkungan</code>.</li>
+            <li>Tab <code>layanan</code> → baris baru, id <code>S6</code>, <code>nama_surat</code>.</li>
+            <li><code>syarat</code> dan <code>alur</code>: satu butir per baris di dalam sel (Ctrl+Enter).</li>
+            <li>Opsional: <code>kategori</code> (mis. Kependudukan, Sosial, Usaha) dan <code>catatan</code>.</li>
+            <li>Menghapus surat: hapus barisnya, atau kosongkan id-nya untuk menyembunyikan sementara.</li>
           </ol>
-          <p class="hasil">Potensi tampil di halaman Potensi dan Beranda (kalimat pertamanya saja). UMKM tampil di Potensi dan Galeri.</p>
+          <p class="hasil">Muncul di halaman Layanan (dikelompokkan per kategori, bisa dicari) dan di daftar surat Beranda. Tautan langsung: <code>layanan.html#surat-S6</code>.</p>
+        </article>
+        <article class="resep">
+          <h3>Menambah UMKM</h3>
+          <ol>
+            <li>Tab <code>umkm</code> → id <code>U1</code>, <code>nama</code>, <code>produk</code>, <code>kontak</code>, <code>lingkungan</code>.</li>
+          </ol>
+          <p class="hasil">Tampil di halaman UMKM dan Galeri; susunan kartunya menyesuaikan jumlah usaha.</p>
         </article>
         <article class="resep">
           <h3>Menyembunyikan sementara</h3>
@@ -391,7 +399,6 @@
             <li><code>statistik</code> &amp; <code>lingkungan</code> — Kelurahan Lahendong, 2026</li>
             <li><code>aparat</code> — Lurah, Sekretaris Kelurahan, Kasi Pemerintahan</li>
             <li><code>wisata</code> — 4 destinasi</li>
-            <li><code>potensi</code> — 4 potensi</li>
             <li><code>kontak</code> — nomor darurat nasional 110, 113, 119</li>
           </ul>
         </div>
@@ -446,7 +453,7 @@
             <tr><td>Satu bagian “belum bisa dimuat”, bagian lain normal</td><td>Nama tab diubah, atau kolom pertamanya hilang</td><td>Samakan nama tab &amp; baris judul dengan tabel di panduan ini</td></tr>
             <tr><td>Satu nilai hilang padahal sel terisi</td><td>Format sel berubah dari Teks biasa</td><td>Pilih kolom → Format → Angka → Teks biasa</td></tr>
             <tr><td>Nomor telepon kehilangan angka 0 di depan</td><td>Sel diformat angka</td><td>Format Teks biasa, lalu ketik ulang nomornya</td></tr>
-            <tr><td>Kotak di bagan tidak di bawah atasannya</td><td>Kolom <code>atasan</code> berisi id yang tidak ada</td><td>Isi dengan id aparat yang benar (mis. <code>A1</code>)</td></tr>
+            <tr><td>Aparat tidak berada di bawah atasannya di struktur</td><td>Kolom <code>atasan</code> berisi id yang tidak ada</td><td>Isi dengan id aparat yang benar (mis. <code>A1</code>)</td></tr>
             <tr><td>Orang yang sama muncul dua kali di Kontak</td><td>Ditulis di tab <code>aparat</code> dan <code>kontak</code></td><td>Hapus barisnya dari tab <code>kontak</code></td></tr>
           </tbody>
         </table>
@@ -466,13 +473,14 @@
         <summary>Susunan berkas dan cara menerbitkan</summary>
         <div class="isi-dev">
 <pre>*.html                satu berkas per halaman — markup saja
-assets/css/style.css  sistem desain (palet, tipografi, komponen, bagan)
+assets/css/style.css  sistem desain (palet, tipografi, komponen, struktur)
 assets/js/data.js     PAKAI_DUMMY, ID_SPREADSHEET, SKEMA tab, ambilData()
 assets/js/data-contoh.js  data awal = isi template sheet
 assets/js/ui.js       header, footer, info kantor, animasi, status memuat
 assets/js/komponen.js FOTO statis + potongan HTML bersama
 assets/js/halaman/    logika per halaman (index.html → beranda.js)
-data/template-data-lahendong.xlsx  template spreadsheet</pre>
+data/template-data-lahendong.xlsx  template spreadsheet
+tools/buat_template.py  membuat ulang template (python3 tools/buat_template.py)</pre>
           <p><strong>Menambah kolom atau tab:</strong> tambahkan di <code>SKEMA</code> (<code>data.js</code>) dan <code>data-contoh.js</code>, buat ulang template, <strong>perbarui sheet lebih dulu</strong>, baru commit &amp; push. Urutan ini mencegah situs live sempat menampilkan “belum bisa dimuat”.</p>
           <p><strong>Tanpa sheet:</strong> ubah <code>PAKAI_DUMMY</code> menjadi <code>true</code> di <code>data.js</code> — situs memakai <code>data-contoh.js</code>.</p>
           <p><strong>Pratinjau lokal:</strong> jalankan <code>python3 -m http.server</code> di folder repo, lalu buka <code>http://localhost:8000</code>.</p>
@@ -495,8 +503,7 @@ data/template-data-lahendong.xlsx  template spreadsheet</pre>
       { isi: "Sambutan", tetap: true },
       { isi: "Pimpinan kelurahan", tab: ["aparat"], kolom: "aparat dengan urutan terkecil (Lurah)" },
       { isi: "Destinasi wisata (4 pertama)", tab: ["wisata"], kolom: "nama, ringkas, baris pertama tiket & jam + foto statis" },
-      { isi: "Potensi", tab: ["potensi"], kolom: "judul + kalimat pertama deskripsi" },
-      { isi: "Panel “Butuh surat keterangan?”", tetap: true },
+      { isi: "Layanan surat (6 teratas)", tab: ["layanan", "profil"], kolom: "layanan: nama_surat, waktu, biaya · profil: jam_layanan" },
     ]},
     { nama: "Profil", berkas: "profil.html", bagian: [
       { isi: "Asal usul (sejarah)", tab: ["profil"], kolom: "profil: sejarah" },
@@ -506,9 +513,8 @@ data/template-data-lahendong.xlsx  template spreadsheet</pre>
       { isi: "Peta interaktif Google", tetap: true },
     ]},
     { nama: "Pemerintahan", berkas: "pemerintahan.html", bagian: [
-      { isi: "Bagan struktur", tab: ["aparat"], kolom: "jabatan, nama, atasan" },
-      { isi: "Profil aparat", tab: ["aparat"], kolom: "jabatan, nama, diurutkan menurut urutan" },
-      { isi: "Lingkungan & kepala lingkungan", tab: ["lingkungan"], kolom: "nama, kepala" },
+      { isi: "Struktur aparat (pimpinan, kolom bawahan, staf)", tab: ["aparat"], kolom: "jabatan, nama, atasan, urutan" },
+      { isi: "Kartu lingkungan", tab: ["lingkungan"], kolom: "nama, kepala, jumlah_jiwa, jumlah_kk" },
     ]},
     { nama: "Penduduk", berkas: "penduduk.html", bagian: [
       { isi: "Tahun & sumber data", tab: ["statistik"], kolom: "tahun_data, sumber_data" },
@@ -523,9 +529,8 @@ data/template-data-lahendong.xlsx  template spreadsheet</pre>
       { isi: "Tentang, rute, pengelola", tab: ["wisata"], kolom: "deskripsi, cara_kesana, pengelola, maps_link" },
       { isi: "Informasi kunjungan", tab: ["wisata"], kolom: "jam, tiket, fasilitas, waktu_terbaik" },
     ]},
-    { nama: "Potensi", berkas: "potensi.html", bagian: [
-      { isi: "Daftar potensi", tab: ["potensi"], kolom: "judul, deskripsi" },
-      { isi: "UMKM", tab: ["umkm"], kolom: "nama, produk, lingkungan, kontak" },
+    { nama: "UMKM", berkas: "umkm.html", bagian: [
+      { isi: "Kartu usaha (kolom menyesuaikan jumlah)", tab: ["umkm"], kolom: "nama, produk, lingkungan, kontak + foto statis" },
     ]},
     { nama: "Galeri", berkas: "galeri.html", bagian: [
       { isi: "Foto wisata & UMKM + penyaring", tab: ["wisata", "umkm"], kolom: "nama + foto statis" },
@@ -534,7 +539,7 @@ data/template-data-lahendong.xlsx  template spreadsheet</pre>
       { isi: "Kisah Danau Linow", tab: ["profil"], kolom: "profil: legenda" },
     ]},
     { nama: "Layanan", berkas: "layanan.html", bagian: [
-      { isi: "Daftar surat (bisa dibuka-tutup)", tab: ["layanan"], kolom: "nama_surat, syarat, alur, waktu, biaya" },
+      { isi: "Daftar surat: kelompok, pencarian, buka-tutup", tab: ["layanan"], kolom: "nama_surat, kategori, syarat, alur, waktu, biaya, catatan" },
       { isi: "Kartu jam layanan", tab: ["profil"], kolom: "profil: jam_layanan" },
     ]},
     { nama: "Kontak", berkas: "kontak.html", bagian: [
@@ -573,7 +578,7 @@ data/template-data-lahendong.xlsx  template spreadsheet</pre>
     { nama: "aparat", isi: "Satu baris per aparat — sumber tunggal nama & jabatan.",
       kolom: [
         ["id", "Pengenal unik", "A1"], ["nama", "Nama lengkap dengan gelar", "Reymon Stive Londok, S.T"], ["jabatan", "Jabatan", "Lurah"],
-        ["urutan", "Urutan tampil; 1 = pimpinan di Beranda", "1"], ["atasan", "Id aparat di atasnya pada bagan; kosong = puncak", "A1"],
+        ["urutan", "Urutan tampil; 1 = pimpinan di Beranda", "1"], ["atasan", "Id aparat di atasnya pada struktur; kosong = pimpinan", "A1"],
         ["nomor", "Diisi bila boleh tampil di halaman Kontak", "0812-3456-7890"],
       ] },
     { nama: "kontak", isi: "Nomor penting selain aparat.",
@@ -588,12 +593,13 @@ data/template-data-lahendong.xlsx  template spreadsheet</pre>
         ["fasilitas", "Dipisah koma", "Kafe, area parkir, toilet"], ["waktu_terbaik", "Waktu berkunjung ↵", "Pagi hari atau sore…"],
         ["cara_kesana", "Rute, satu langkah per baris ↵", "(langkah)"], ["pengelola", "Pengelola ↵", "PT Karyadeka Alam Asri"], ["maps_link", "Tautan Google Maps (https://)", "https://maps.google.com/?q=…"],
       ] },
-    { nama: "potensi", isi: "Satu baris per potensi.",
-      kolom: [["id", "Pengenal unik", "P1"], ["judul", "Nama potensi", "Sumber Air Panas Alami"], ["deskripsi", "Uraian ↵; kalimat pertamanya dipakai di Beranda", "(paragraf)"]] },
     { nama: "umkm", isi: "Satu baris per usaha. Saat ini masih kosong.",
       kolom: [["id", "Pengenal unik", "U1"], ["nama", "Nama usaha", "Nama usaha"], ["produk", "Produk utama", "Kue khas Minahasa"], ["kontak", "Nomor telepon", "0812-…"], ["lingkungan", "Lokasi", "Lingkungan 2"]] },
-    { nama: "layanan", isi: "Satu baris per jenis surat.",
-      kolom: [["id", "Pengenal unik", "S1"], ["nama_surat", "Nama surat", "Surat Keterangan Domisili"], ["syarat", "Berkas yang dibawa", "Fotokopi KTP, KK, …"], ["alur", "Tahapan", "Ajukan → verifikasi → …"], ["waktu", "Lama proses", "1 hari kerja"], ["biaya", "Biaya", "Gratis"]] },
+    { nama: "layanan", isi: "Satu baris per jenis surat. Tambah atau hapus baris sesuka hati; halaman Layanan menyesuaikan sendiri.",
+      kolom: [["id", "Pengenal unik; jadi tautan layanan.html#surat-S1", "S1"], ["nama_surat", "Nama surat", "Surat Keterangan Tidak Mampu (SKTM)"], ["kategori", "Kelompok (opsional)", "Sosial"],
+        ["syarat", "Satu berkas per baris ↵", "Fotokopi KTP ↵ Fotokopi KK"], ["alur", "Satu langkah per baris ↵", "Bawa berkas ke kantor ↵ …"], ["waktu", "Lama proses", "1 hari kerja"], ["biaya", "Biaya", "Gratis"],
+        ["catatan", "Pemberitahuan tambahan (opsional) ↵", "Sebutkan keperluan SKTM…"]],
+      catatan: "Surat tanpa kategori masuk kelompok \"Lainnya\". Kotak pencarian muncul otomatis bila surat berjumlah 5 atau lebih." },
   ];
 
   const tabDipakai = (h, tab) => h.bagian.some((b) => (b.tab || []).includes(tab));

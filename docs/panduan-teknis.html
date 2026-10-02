@@ -133,6 +133,7 @@
       <li><a href="#berkas">Isi setiap berkas</a></li>
       <li><a href="#fungsi">Fungsi kunci</a></li>
       <li><a href="#grid">Grid adaptif</a></li>
+      <li><a href="#dinamis">Layanan &amp; struktur</a></li>
       <li><a href="#tampilan">Sistem tampilan</a></li>
       <li><a href="#resep">Resep perubahan</a></li>
       <li><a href="#debug">Mencari kesalahan</a></li>
@@ -185,14 +186,15 @@
           <thead><tr><th>Berkas</th><th>Isi</th><th>Kapan diubah</th></tr></thead>
           <tbody>
             <tr><td><code>*.html</code></td><td>Satu berkas per halaman. Hanya markup: judul, kalimat pengantar, wadah ber-<code>id</code>. Tidak ada data dan tidak ada logika.</td><td>Mengubah judul/teks tetap, menambah seksi</td></tr>
-            <tr><td><code>assets/css/style.css</code></td><td>Sistem desain: warna (<code>:root</code>), tipografi, kartu, tombol, hero, kop, grid adaptif, bagan, tabel.</td><td>Mengubah rupa</td></tr>
+            <tr><td><code>assets/css/style.css</code></td><td>Sistem desain: warna (<code>:root</code>), tipografi, kartu, tombol, hero, kop, grid adaptif, struktur aparat, layanan, tabel.</td><td>Mengubah rupa</td></tr>
             <tr><td><code>assets/js/data.js</code></td><td>Pengaturan (<code>PAKAI_DUMMY</code>, <code>ID_SPREADSHEET</code>), <code>SKEMA</code> kolom tiap tab, <code>ambilData()</code>, normalisasi, dan utilitas nilai (<code>keAngka</code>, <code>escapeHtml</code>, <code>urlAman</code>).</td><td>Ganti sheet, tambah tab/kolom</td></tr>
             <tr><td><code>assets/js/data-contoh.js</code></td><td><code>DATA_DUMMY</code>: data awal. Dipakai saat mode contoh, dan menjadi sumber template <code>.xlsx</code>.</td><td>Bersama perubahan <code>SKEMA</code></td></tr>
             <tr><td><code>assets/js/ui.js</code></td><td>Kerangka yang sama di semua halaman: menu (<code>NAV_LINKS</code>), header, footer, breadcrumb, info kantor, animasi muncul, pesan memuat/gagal/kosong.</td><td>Menambah halaman ke menu, mengubah header/footer</td></tr>
             <tr><td><code>assets/js/komponen.js</code></td><td>Registri <code>FOTO</code>, <code>isiDariData()</code>, <code>aturKolom()</code>, format angka, teks bertanda baris baru, kartu wisata, monogram aparat.</td><td>Menambah foto, mengubah potongan bersama</td></tr>
             <tr><td><code>assets/js/halaman/*.js</code></td><td>Logika satu halaman: tab mana yang diambil dan bagaimana dirender. <code>index.html</code> memakai <code>beranda.js</code>; halaman lain bernama sama.</td><td>Mengubah isi satu halaman</td></tr>
             <tr><td><code>img/</code></td><td>Gambar statis: ilustrasi hero, foto wisata, <code>placeholder.webp</code>, <code>emblem.svg</code>, dan (nanti) <code>peta-wilayah.png</code>.</td><td>Mengganti foto</td></tr>
-            <tr><td><code>data/template-data-lahendong.xlsx</code></td><td>Template spreadsheet (semua sel format Teks biasa) untuk diimpor ke Google Sheets.</td><td>Setelah <code>SKEMA</code>/data contoh berubah</td></tr>
+            <tr><td><code>tools/buat_template.py</code></td><td>Membuat ulang template <code>.xlsx</code> dari <code>SKEMA</code> dan <code>DATA_DUMMY</code>, termasuk tab <em>petunjuk</em>. Butuh LibreOffice.</td><td>Setelah <code>SKEMA</code>/data contoh berubah</td></tr>
+            <tr><td><code>data/template-data-lahendong.xlsx</code></td><td>Template spreadsheet (semua sel format Teks biasa, termasuk 100 baris kosong siap isi) untuk diimpor ke Google Sheets.</td><td>Setelah <code>SKEMA</code>/data contoh berubah</td></tr>
             <tr><td><code>docs/</code></td><td>Panduan Admin dan panduan ini.</td><td>—</td></tr>
           </tbody>
         </table>
@@ -288,7 +290,7 @@
     <section class="bagian" id="grid">
       <span class="eyebrow">Grid adaptif</span>
       <h2>Susunan kartu mengikuti jumlahnya</h2>
-      <p>Wisata, UMKM, Galeri, aparat, lingkungan, dan kontak memakai kelas <code>.grid-adaptif</code>. Aturannya: bagi kartu ke <strong>baris sesedikit mungkin</strong> (maks. 4 per baris), lalu bagi rata per baris.</p>
+      <p>Wisata, UMKM, Galeri, kolom struktur aparat, lingkungan, dan kontak memakai kelas <code>.grid-adaptif</code>. Aturannya: bagi kartu ke <strong>baris sesedikit mungkin</strong> (maks. 4 per baris), lalu bagi rata per baris.</p>
 <pre><code><span class="k">function</span> hitungKolom(n, maks = <span class="s">4</span>) {
   <span class="k">const</span> baris = Math.ceil(n / maks);   <span class="c">// 6 kartu → 2 baris</span>
   <span class="k">return</span> Math.ceil(n / baris);          <span class="c">// 6 / 2 → 3 kolom</span>
@@ -309,6 +311,28 @@
   .grid-adaptif &gt; * { flex-basis: calc((100% - (var(--kolom) - 1) * var(--jarak)) / var(--kolom)); }
 }</code></pre>
       <p>Pengaturan per wadah lewat atribut HTML: <code>data-maks="3"</code> (paling banyak 3 per baris), <code>data-hp="2"</code> (2 kolom di HP), dan kelas <code>rata-kiri</code> (baris terakhir rata kiri, dipakai di Kontak). Deret angka statistik (<code>.deret-statistik</code>) memakai hitungan yang sama, sehingga bila satu angka dikosongkan, sisanya tetap mengisi lebar penuh.</p>
+    </section>
+
+    <!-- 5b -->
+    <section class="bagian" id="dinamis">
+      <span class="eyebrow">Layanan &amp; struktur</span>
+      <h2>Dua bagian yang dibentuk sepenuhnya oleh sheet</h2>
+
+      <h3>Layanan surat (<code>halaman/layanan.js</code>)</h3>
+      <ul>
+        <li><strong>Kelompok</strong>: <code>kelompokkan()</code> mengumpulkan surat per kolom <code>kategori</code>, urut sesuai kemunculan pertama di sheet; surat tanpa kategori masuk "Lainnya" di akhir. Bila hanya ada satu kelompok, judul kelompok dan tombol penyaring tidak ditampilkan.</li>
+        <li><strong>Isi sel → daftar</strong>: <code>butirDari()</code> memecah <code>syarat</code> dan <code>alur</code> per baris. Sel lama yang masih satu baris tetap terbaca: syarat dipecah di koma/titik koma, alur di tanda <code>→</code>.</li>
+        <li><strong>Pencarian & penyaring</strong>: tiap surat menyimpan teks yang dicari di atribut <code>data-cari</code> (nama, kategori, syarat). <code>terapkanSaringan()</code> menyembunyikan surat dan kelompok yang tidak cocok, lalu menampilkan pesan bila hasilnya kosong. Kotak cari baru muncul bila surat ≥ 5.</li>
+        <li><strong>Tautan langsung</strong>: id surat menjadi <code>id="surat-S2"</code>; <code>bukaDariAlamat()</code> membuka dan menggulir ke surat itu bila alamatnya <code>layanan.html#surat-S2</code>. Beranda memakainya untuk daftar surat (<code>MAKS_LAYANAN_BERANDA</code> = 6).</li>
+      </ul>
+
+      <h3>Struktur aparat (<code>halaman/pemerintahan.js</code>)</h3>
+      <ul>
+        <li><code>susunPohon()</code> mengubah baris tab <code>aparat</code> menjadi pohon memakai kolom <code>atasan</code>. Baris tanpa atasan (atau atasannya tidak ditemukan) menjadi puncak.</li>
+        <li><code>renderStruktur()</code> menggambar puncak sebagai panel pimpinan, bawahan langsungnya sebagai kolom (<code>.cabang</code> di dalam <code>.grid-adaptif</code>), dan bawahan mereka sebagai daftar staf bertingkat (<code>daftarStaf()</code>, rekursif).</li>
+        <li>Garis penghubung murni CSS. Di HP & tablet, setiap <code>.cabang</code> menggambar ruas garis jalur di kirinya (<code>::after</code>) dan ranting ke kartunya (<code>::before</code>). Di desktop, kelas <code>.tersambung</code> (dipasang bila bawahan langsung ≤ 4, jadi muat satu baris) menggambar garis turun, rel mendatar, dan garis ke tiap kolom. Lebih dari 4 kolom → kartu membungkus ke baris berikut tanpa garis.</li>
+        <li>Kartu lingkungan menulis "Lingkungan 3" sebagai angka besar dan menggambar batang <code>.porsi</code> = jumlah jiwa dibanding lingkungan terbesar.</li>
+      </ul>
     </section>
 
     <!-- 6 -->
@@ -334,7 +358,7 @@
       <ol class="langkah">
         <li>Tambahkan <code>"instagram"</code> di <code>SKEMA.umkm</code> (<code>data.js</code>).</li>
         <li>Tambahkan <code>instagram: ""</code> ke setiap baris <code>umkm</code> di <code>data-contoh.js</code>.</li>
-        <li>Tampilkan di <code>kartuUmkm()</code> (<code>halaman/potensi.js</code>), dengan syarat kosong = tidak tampil:
+        <li>Tampilkan di <code>kartuUmkm()</code> (<code>halaman/umkm.js</code>), dengan syarat kosong = tidak tampil:
 <pre><code>${item.instagram ? `&lt;p&gt;@${item.instagram}&lt;/p&gt;` : <span class="s">""</span>}</code></pre></li>
         <li>Tambahkan kolom yang sama di Google Sheet (baris judul). Urutan kolom bebas; namanya yang penting.</li>
       </ol>
@@ -419,7 +443,7 @@ git push</code></pre>
       <ul>
         <li><strong>Menambah kolom atau tab</strong>: push kode dulu atau sheet dulu sama-sama aman. Kolom yang belum ada terbaca kosong, tab yang belum ada menampilkan pesan gagal di bagian itu saja.</li>
         <li><strong>Mengganti nama kolom/tab</strong>: siapkan keduanya, ubah sheet, lalu segera push kode. Di antara keduanya bagian itu kosong atau gagal.</li>
-        <li><strong>Setelah mengubah <code>SKEMA</code> atau data contoh</strong>: buat ulang <code>data/template-data-lahendong.xlsx</code> agar template tetap sama dengan situs.</li>
+        <li><strong>Setelah mengubah <code>SKEMA</code> atau data contoh</strong>: jalankan <code>python3 tools/buat_template.py</code> agar template <code>.xlsx</code> tetap sama dengan situs.</li>
       </ul>
       <div class="catatan">Semua path di situs bersifat relatif (tanpa garis miring di depan, mis. <code>img/emblem.svg</code>), karena situs terbit di sub-folder <code>/web-lahendong/</code>. Pertahankan kebiasaan ini untuk berkas baru.</div>
     </section>

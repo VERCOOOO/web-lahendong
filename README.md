@@ -18,15 +18,14 @@ Kode hanya menentukan **tampilan**.
 
 | Tab sheet | Tampil di halaman | Isi |
 |---|---|---|
-| `profil` | Profil, Legenda, Kontak, header & footer semua halaman | Alamat, telepon, email & jam layanan kantor; luas, ketinggian, suhu; batas wilayah; sejarah; legenda |
+| `profil` | Profil, Legenda, Kontak, Layanan, header & footer semua halaman | Alamat, telepon, email & jam layanan kantor; luas, ketinggian, suhu; batas wilayah; sejarah; legenda |
 | `statistik` | Beranda (angka ringkas), Penduduk | Jumlah penduduk, laki-laki, perempuan, KK, lingkungan; tahun & sumber data |
-| `lingkungan` | Penduduk (tabel & grafik), Pemerintahan (kepala lingkungan) | Satu baris per lingkungan |
-| `aparat` | Pemerintahan (bagan & profil), Beranda (pimpinan), Kontak | Satu baris per aparat |
+| `lingkungan` | Penduduk (tabel & grafik), Pemerintahan (kartu lingkungan) | Satu baris per lingkungan |
+| `aparat` | Pemerintahan (struktur), Beranda (pimpinan), Kontak | Satu baris per aparat |
 | `kontak` | Kontak | Nomor darurat & layanan umum selain aparat |
 | `wisata` | Wisata, detail wisata, Beranda, Galeri | Satu baris per destinasi |
-| `potensi` | Potensi, Beranda | Satu baris per potensi |
-| `umkm` | Potensi (bagian UMKM), Galeri | Satu baris per usaha |
-| `layanan` | Layanan | Satu baris per jenis surat |
+| `umkm` | UMKM, Galeri | Satu baris per usaha |
+| `layanan` | Layanan, Beranda (daftar surat) | Satu baris per jenis surat |
 
 Tabel yang sama ada di tab `petunjuk` pada spreadsheet.
 
@@ -56,11 +55,25 @@ Satu baris = satu data, kolom `id` sebagai pengenal unik.
 - **Susunan kartu** menyesuaikan jumlah baris sendiri (maks. 4 per baris di desktop: 3 kartu → 3 kolom,
   5 → 3 + 2, 6 → 3 × 2, 8 → 4 × 2). Tidak perlu mengubah kode saat menambah atau menghapus wisata/UMKM.
 
-### Aparat, bagan, dan kontak
+### Layanan surat
+
+- Satu baris = satu jenis surat (SKTM, domisili, dsb.). Menambah/menghapus baris langsung
+  menambah/mengurangi surat di halaman Layanan dan daftar surat di Beranda (6 teratas).
+- **`syarat`** dan **`alur`**: satu butir per baris di dalam sel (Ctrl+Enter). Syarat tampil sebagai
+  daftar periksa, alur sebagai langkah bernomor.
+- **`kategori`** (opsional): mis. `Kependudukan`, `Sosial`, `Usaha`. Bila diisi, surat dikelompokkan dan
+  muncul tombol penyaring; surat tanpa kategori masuk kelompok "Lainnya".
+- **`catatan`** (opsional): pemberitahuan tambahan, mis. "Bawa dokumen asli saat pengambilan".
+- `waktu` dan `biaya` tampil di baris judul surat. Kotak pencarian muncul otomatis bila surat ≥ 5.
+- Tautan langsung ke satu surat: `layanan.html#surat-S2` (S2 = id surat).
+
+### Aparat, struktur, dan kontak
 
 - Satu orang cukup ditulis **sekali**, di tab `aparat`.
-- Kolom **`atasan`** berisi id aparat di atasnya; bagan di halaman Pemerintahan tersusun dari kolom
-  ini. Kosong = puncak bagan. Contoh: Sekretaris `atasan = A1` (Lurah).
+- Kolom **`atasan`** berisi id aparat di atasnya; struktur di halaman Pemerintahan tersusun dari kolom
+  ini. Kosong = pimpinan (Lurah). Bawahan langsung Lurah tampil sebagai kolom (Sekretaris, para Kasi),
+  dan staf yang `atasan`-nya salah satu dari mereka tampil di bawah kolom tersebut.
+  Contoh: Sekretaris `atasan = A1` (Lurah), staf administrasi `atasan = A2` (Sekretaris).
 - Isi kolom **`nomor`** bila nomor aparat itu boleh tampil di halaman Kontak.
 - Tab `kontak` untuk nomor **selain aparat**. Kolom `kategori`: `darurat` (polisi, pemadam
   kebakaran, ambulans) atau `umum` (puskesmas, polsek, dsb.). Kontak tanpa nomor tidak ditampilkan.
@@ -84,7 +97,7 @@ Nilai yang belum ada data resminya ditandai **CONTOH** di kolom `keterangan` dan
 sebelum situs diumumkan:
 
 - Tab `profil`: jam layanan, luas, ketinggian, suhu, batas wilayah, sejarah, legenda.
-- Tab `layanan`: syarat, alur, waktu, dan biaya setiap surat.
+- Tab `layanan`: syarat, alur, waktu, biaya, dan catatan setiap surat.
 - Masih kosong: telepon & email kantor, nama kepala lingkungan, nomor aparat, UMKM.
 
 ### Menyambungkan sheet ke situs
@@ -122,7 +135,7 @@ Situs menampilkan "… belum bisa dimuat". Buka konsol browser (F12 → Console)
 
 ```
 ├── *.html               satu berkas per halaman — hanya markup, tanpa logika
-├── assets/css/style.css sistem desain: palet, tipografi, komponen, bagan
+├── assets/css/style.css sistem desain: palet, tipografi, komponen, struktur
 ├── assets/js/
 │   ├── data.js          pengaturan (PAKAI_DUMMY, ID_SPREADSHEET), SKEMA tab, ambilData()
 │   ├── data-contoh.js   data awal: isi template spreadsheet & data saat PAKAI_DUMMY = true
@@ -131,6 +144,7 @@ Situs menampilkan "… belum bisa dimuat". Buka konsol browser (F12 → Console)
 │   └── halaman/         logika per halaman (index.html → beranda.js)
 ├── img/                 gambar statis
 ├── data/                template spreadsheet
+├── tools/               buat_template.py — membuat ulang template dari SKEMA & data contoh
 └── docs/                Panduan Admin & Panduan Teknis
 ```
 
@@ -138,16 +152,17 @@ Setiap halaman memuat skrip dengan urutan yang sama:
 `data.js` → `data-contoh.js` → `ui.js` → `komponen.js` → `halaman/<nama>.js`.
 
 **Menambah kolom atau tab**: tambahkan di `SKEMA` ([`data.js`](assets/js/data.js)) dan di
-[`data-contoh.js`](assets/js/data-contoh.js), lalu buat ulang template. Kolom baru yang belum ada
+[`data-contoh.js`](assets/js/data-contoh.js), lalu buat ulang template dengan
+`python3 tools/buat_template.py` (butuh LibreOffice). Kolom baru yang belum ada
 di sheet terbaca kosong, jadi situs tetap berjalan.
 
 **Menambah blok data** cukup satu panggilan `isiDariData()` — fungsi ini menampilkan "Memuat data…",
 mengambil tab, merender, dan menangani kondisi kosong atau gagal (termasuk bila wadahnya `<tbody>`):
 
 ```js
-isiDariData(document.getElementById("daftar-potensi"), "potensi",
-  (data) => data.map(blokPotensi).join(""),
-  { kosong: "Data potensi belum tersedia.", gagal: "Data potensi belum bisa dimuat saat ini." }
+isiDariData(document.getElementById("grid-umkm"), "umkm",
+  (data) => data.map(kartuUmkm).join(""),
+  { kosong: "Data UMKM sedang dihimpun.", gagal: "Data UMKM belum bisa dimuat saat ini." }
 );
 ```
 

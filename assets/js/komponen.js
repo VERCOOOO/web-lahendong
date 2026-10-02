@@ -125,11 +125,6 @@ function formatAngka(nilai) {
   return n === null ? nilai : n.toLocaleString("id-ID", { maximumFractionDigits: 2 });
 }
 
-/** Nomor urut dua digit untuk daftar bernomor: 0 → "01". */
-function nomorUrut(i) {
-  return String(i + 1).padStart(2, "0");
-}
-
 /** "0812-3456-7801" → "tel:081234567801". */
 function hrefTelepon(nomor) {
   return "tel:" + teksPolos(nomor).replace(/[^0-9+]/g, "");
