@@ -421,7 +421,7 @@
           <h3>Masih kosong</h3>
           <ul>
             <li>Telepon &amp; email kantor</li>
-            <li>Nama kepala lingkungan (8)</li>
+            <li>Kepala &amp; wakil kepala Lingkungan 7</li>
             <li>Nomor aparat</li>
             <li>Data UMKM &amp; galeri</li>
             <li>Peta wilayah PNG</li>
@@ -521,7 +521,7 @@ tools/buat_template.py  membuat ulang template (python3 tools/buat_template.py)<
     ]},
     { nama: "Pemerintahan", berkas: "pemerintahan.html", bagian: [
       { isi: "Struktur aparat (pimpinan, kolom bawahan, staf)", tab: ["aparat"], kolom: "jabatan, nama, atasan, foto; urutan = urutan baris" },
-      { isi: "Kartu lingkungan", tab: ["lingkungan"], kolom: "nama, kepala, jumlah_jiwa, jumlah_kk" },
+      { isi: "Kartu lingkungan", tab: ["lingkungan"], kolom: "nama, kepala, wakil_kepala, jiwa (laki + perempuan), jumlah_kk" },
     ]},
     { nama: "Penduduk", berkas: "penduduk.html", bagian: [
       { isi: "Tahun & sumber data", tab: ["profil"], kolom: "profil: tahun_data, sumber_data" },
@@ -571,7 +571,8 @@ tools/buat_template.py  membuat ulang template (python3 tools/buat_template.py)<
       catatan: "Kunci yang dikenal: alamat_kantor, telepon_kantor, email, jam_layanan, luas_wilayah (angka, km²), ketinggian (mdpl), suhu (°C), batas_utara, batas_selatan, batas_timur, batas_barat, sejarah ↵, legenda ↵, tahun_data, sumber_data, foto_hero (tautan Drive). Kunci salah ketik ditandai Cek Data." },
     { nama: "lingkungan", isi: "Satu baris per lingkungan. Jumlah jiwa (laki + perempuan) dan semua total dihitung otomatis — tidak ada kolom jumlah jiwa.",
       kolom: [
-        ["nama", "Wajib. Nama lingkungan", "Lingkungan 1"], ["kepala", "Nama kepala lingkungan", "(belum diisi)"],
+        ["nama", "Wajib. Nama lingkungan", "Lingkungan 1"], ["kepala", "Kepala lingkungan; kosong = \"Belum tersedia\"", "Julius Joni Rondonuwu"],
+        ["wakil_kepala", "Wakil kepala lingkungan; kosong = \"Belum tersedia\"", "Jetni Vinsensia Poli"],
         ["jumlah_kk", "Kepala keluarga", "124"], ["laki", "Laki-laki", "169"], ["perempuan", "Perempuan", "176"],
         ["jumlah_lansia", "Lansia", "37"], ["jumlah_rumah", "Rumah", "106"],
       ] },

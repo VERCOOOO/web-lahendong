@@ -1296,10 +1296,18 @@ details[open] { border-color: var(--primary); }
 
 /* --- Kartu lingkungan --------------------------------------------------- */
 
+/* Nomor & angka di atas, batang porsi jiwa, lalu kepala dan wakil kepala lingkungan. */
 .tile-lingkungan {
   display: flex;
   flex-direction: column;
   padding: 18px;
+}
+
+.kepala-tile {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .nomor-lingkungan {
@@ -1312,9 +1320,35 @@ details[open] { border-color: var(--primary); }
   font-variant-numeric: tabular-nums;
 }
 
+.ringkas-tile {
+  display: flex;
+  gap: 14px;
+  margin: 0;
+  text-align: right;
+}
+
+.ringkas-tile dt {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ringkas-tile dd {
+  margin: 2px 0 0;
+  font-family: var(--font-judul);
+  font-weight: 700;
+  font-stretch: 80%;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
 .porsi {
   height: 6px;
-  margin-top: 8px;
+  margin-top: 14px;
   border-radius: 999px;
   background: var(--toska-muda);
   overflow: hidden;
@@ -1327,9 +1361,45 @@ details[open] { border-color: var(--primary); }
   border-radius: inherit;
 }
 
+.pengurus-lingkungan {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.pengurus-lingkungan li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-pengurus {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  font-size: 14px;
+}
+
+.pengurus-lingkungan .jabatan-utama { color: var(--accent-ink); }
+
+.nama-pengurus {
+  margin-top: 2px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+/* Jabatan yang belum terisi: diredupkan, bukan disembunyikan, agar jelas memang kosong */
+.pengurus-lingkungan .kosong .avatar-pengurus { background: var(--bg); color: var(--muted); border: 1px dashed var(--line); }
+.pengurus-lingkungan .kosong .nama-pengurus { font-weight: 500; font-style: italic; color: var(--muted); }
+
 @media (min-width: 768px) {
   .tile-lingkungan { padding: 22px; }
-  .nomor-lingkungan { font-size: 68px; }
+  .nomor-lingkungan { font-size: 64px; }
 }
 
 /* --- Cek Data (halaman alat admin) ------------------------------------ */

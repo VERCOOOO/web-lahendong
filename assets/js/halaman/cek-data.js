@@ -156,6 +156,20 @@ const ATURAN_TAB = {
   },
 
   lingkungan(baris, lapor) {
+    // Satu orang di dua jabatan/lingkungan biasanya tanda baris yang tertukar saat menyalin.
+    const tercatat = new Map();
+    baris.forEach((b) => ["kepala", "wakil_kepala"].forEach((k) => {
+      const kode = kodeDari(b[k]);
+      if (kode) tercatat.set(kode, [...(tercatat.get(kode) || []), { b, k }]);
+    }));
+    tercatat.forEach((daftar) => {
+      // Kepala = wakil di baris yang sama dilaporkan terpisah di bawah; di sini hanya antarlingkungan.
+      if (new Set(daftar.map(({ b }) => b)).size > 1) {
+        const tempat = daftar.map(({ b, k }) => `${teksPolos(b.nama)} (${k === "kepala" ? "kepala" : "wakil"})`).join(", ");
+        lapor("periksa", daftar[1].b, daftar[1].k, `"${teksPolos(daftar[0].b[daftar[0].k])}" tercatat lebih dari sekali: ${tempat}.`,
+          "Pastikan nama ditulis di baris lingkungan dan kolom jabatan yang benar.");
+      }
+    });
     const kolomAngka = ["jumlah_kk", "laki", "perempuan", "jumlah_lansia", "jumlah_rumah"];
     baris.forEach((b) => {
       kolomAngka.forEach((k) => {
@@ -163,6 +177,12 @@ const ATURAN_TAB = {
           lapor("salah", b, k, `"${teksPolos(b[k])}" bukan angka, jadi tidak ikut dihitung.`, "Tulis angka bulat tanpa titik, mis. 345.");
         }
       });
+      // Kepala & wakil: jabatan ditentukan kolomnya, jadi yang perlu dijaga hanya isinya.
+      [["kepala", "Kepala"], ["wakil_kepala", "Wakil kepala"]].filter(([k]) => !b[k]).forEach(([k, label]) =>
+        lapor("info", b, k, `${label} ${teksPolos(b.nama)} belum diisi; tampil sebagai "Belum tersedia".`));
+      if (b.kepala && kodeDari(b.kepala) === kodeDari(b.wakil_kepala)) {
+        lapor("periksa", b, "wakil_kepala", `${teksPolos(b.nama)}: kepala dan wakil kepala diisi orang yang sama.`, "Periksa kembali nama wakil kepala lingkungan.");
+      }
       if (!b.laki || !b.perempuan) {
         lapor("periksa", b, !b.laki ? "laki" : "perempuan", `${teksPolos(b.nama)}: jumlah laki-laki atau perempuan kosong, jadi jumlah jiwanya tidak lengkap.`,
           "Isi keduanya; jumlah jiwa dan total penduduk dihitung otomatis dari dua kolom ini.");

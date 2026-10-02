@@ -42,17 +42,18 @@ const DATA_DUMMY = {
     { kunci: "foto_hero", nilai: "", keterangan: "Opsional. Tautan Google Drive foto lanskap untuk gambar besar di Beranda. Kosong = ilustrasi bawaan." },
   ],
 
-  // Sumber: Kelurahan Lahendong, 2026. Nama kepala lingkungan belum tersedia.
+  // Sumber: Kelurahan Lahendong, 2026. Kepala & wakil kepala lingkungan dari daftar kelurahan;
+  // Lingkungan 7 belum memiliki kepala dan wakil (sel kosong → "Belum tersedia").
   // Jumlah jiwa (laki + perempuan) dan semua total dihitung situs dari tab ini.
   lingkungan: [
-    { nama: "Lingkungan 1", kepala: "", jumlah_kk: "124", laki: "169", perempuan: "176", jumlah_lansia: "37", jumlah_rumah: "106" },
-    { nama: "Lingkungan 2", kepala: "", jumlah_kk: "116", laki: "172", perempuan: "156", jumlah_lansia: "45", jumlah_rumah: "80" },
-    { nama: "Lingkungan 3", kepala: "", jumlah_kk: "80", laki: "114", perempuan: "107", jumlah_lansia: "33", jumlah_rumah: "64" },
-    { nama: "Lingkungan 4", kepala: "", jumlah_kk: "67", laki: "111", perempuan: "99", jumlah_lansia: "29", jumlah_rumah: "51" },
-    { nama: "Lingkungan 5", kepala: "", jumlah_kk: "113", laki: "157", perempuan: "173", jumlah_lansia: "54", jumlah_rumah: "71" },
-    { nama: "Lingkungan 6", kepala: "", jumlah_kk: "96", laki: "139", perempuan: "132", jumlah_lansia: "40", jumlah_rumah: "65" },
-    { nama: "Lingkungan 7", kepala: "", jumlah_kk: "69", laki: "109", perempuan: "113", jumlah_lansia: "32", jumlah_rumah: "59" },
-    { nama: "Lingkungan 8", kepala: "", jumlah_kk: "97", laki: "152", perempuan: "156", jumlah_lansia: "42", jumlah_rumah: "75" },
+    { nama: "Lingkungan 1", kepala: "Julius Joni Rondonuwu", wakil_kepala: "Jetni Vinsensia Poli", jumlah_kk: "124", laki: "169", perempuan: "176", jumlah_lansia: "37", jumlah_rumah: "106" },
+    { nama: "Lingkungan 2", kepala: "Jonathan Tombuku Londok", wakil_kepala: "Femmi Selvie Kowel", jumlah_kk: "116", laki: "172", perempuan: "156", jumlah_lansia: "45", jumlah_rumah: "80" },
+    { nama: "Lingkungan 3", kepala: "Reynold Happy Sondakh", wakil_kepala: "Jefry Hengky Mende", jumlah_kk: "80", laki: "114", perempuan: "107", jumlah_lansia: "33", jumlah_rumah: "64" },
+    { nama: "Lingkungan 4", kepala: "Djerry Andreu Legi", wakil_kepala: "Fredy Ali", jumlah_kk: "67", laki: "111", perempuan: "99", jumlah_lansia: "29", jumlah_rumah: "51" },
+    { nama: "Lingkungan 5", kepala: "Tombuku Costan Sumolang", wakil_kepala: "Trully Treyse Lalawi", jumlah_kk: "113", laki: "157", perempuan: "173", jumlah_lansia: "54", jumlah_rumah: "71" },
+    { nama: "Lingkungan 6", kepala: "Marho Katotje Singal", wakil_kepala: "Marten Singal", jumlah_kk: "96", laki: "139", perempuan: "132", jumlah_lansia: "40", jumlah_rumah: "65" },
+    { nama: "Lingkungan 7", kepala: "", wakil_kepala: "", jumlah_kk: "69", laki: "109", perempuan: "113", jumlah_lansia: "32", jumlah_rumah: "59" },
+    { nama: "Lingkungan 8", kepala: "Jon Junus Mende", wakil_kepala: "Treisye Roisye Rondonuwu", jumlah_kk: "97", laki: "152", perempuan: "156", jumlah_lansia: "42", jumlah_rumah: "75" },
   ],
 
   // Struktur belum final. "atasan" = jabatan atasannya; kosong = pimpinan. Urutan = urutan baris.

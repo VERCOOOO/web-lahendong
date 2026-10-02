@@ -34,8 +34,9 @@ const ID_SPREADSHEET = "11f8D-qzWt1rdkin7uBMmrbrEkZmc4dih39ruUwTh1gQ";
 const SKEMA = {
   // Informasi umum: kantor, wilayah, sejarah, legenda, tahun & sumber data penduduk, foto hero.
   profil: ["kunci", "nilai", "keterangan"],
-  // Satu baris per lingkungan. Jiwa = laki + perempuan; semua total dihitung dari tab ini.
-  lingkungan: ["nama", "kepala", "jumlah_kk", "laki", "perempuan", "jumlah_lansia", "jumlah_rumah"],
+  // Satu baris per lingkungan. Jabatan ditentukan kolomnya (kepala / wakil_kepala), jadi tidak bisa tertukar;
+  // sel kosong tampil "Belum tersedia". Jiwa = laki + perempuan; semua total dihitung dari tab ini.
+  lingkungan: ["nama", "kepala", "wakil_kepala", "jumlah_kk", "laki", "perempuan", "jumlah_lansia", "jumlah_rumah"],
   // Sumber tunggal identitas aparat. "atasan" berisi jabatan atasannya; kosong = pimpinan.
   // Urutan tampil = urutan baris. Aparat yang nomornya diisi tampil di halaman Kontak.
   aparat: ["jabatan", "nama", "atasan", "nomor", "foto"],

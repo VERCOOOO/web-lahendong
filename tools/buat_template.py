@@ -61,7 +61,7 @@ PETA = {
     "profil": ("Profil, Legenda, Kontak, Layanan, Penduduk (tahun & sumber), Beranda (foto besar), header & footer",
                "Alamat, telepon, email & jam layanan kantor; luas, ketinggian, suhu; batas wilayah; sejarah; legenda; tahun & sumber data; foto hero"),
     "lingkungan": ("Penduduk (angka, grafik & tabel), Beranda (angka ringkas), Pemerintahan (kartu lingkungan)",
-                   "Satu baris per lingkungan. Semua total (penduduk, KK, jiwa) dihitung otomatis dari tab ini"),
+                   "Satu baris per lingkungan: kepala & wakil kepala lingkungan, KK, laki-laki, perempuan, lansia, rumah. Semua total dihitung otomatis dari tab ini"),
     "aparat": ("Pemerintahan (struktur), Beranda (pimpinan), Kontak (bila nomor diisi)",
                "Satu baris per aparat. Kolom atasan = jabatan atasannya (pilih dari daftar); kosong = pimpinan"),
     "kontak": ("Kontak", "Nomor selain aparat. kategori: darurat (polisi, damkar, ambulans) atau umum (puskesmas, dsb.)"),
@@ -85,7 +85,8 @@ KOLOM = {
     },
     "lingkungan": {
         "nama": ("WAJIB. Nama lingkungan. \"Lingkungan 3\" ditampilkan sebagai angka besar.", "Lingkungan 3"),
-        "kepala": ("Nama kepala lingkungan. Kosong = \"Belum dicantumkan\".", "Nama lengkap"),
+        "kepala": ("Nama KEPALA lingkungan di baris lingkungannya. Kosong = tampil \"Belum tersedia\".", "Julius Joni Rondonuwu"),
+        "wakil_kepala": ("Nama WAKIL kepala lingkungan di baris lingkungannya. Kosong = tampil \"Belum tersedia\".", "Jetni Vinsensia Poli"),
         "jumlah_kk": ("Jumlah kepala keluarga. Angka tanpa titik.", "124"),
         "laki": ("Penduduk laki-laki. Jumlah jiwa = laki + perempuan, dihitung otomatis.", "169"),
         "perempuan": ("Penduduk perempuan.", "176"),
@@ -213,7 +214,7 @@ MASIH_CONTOH = [
     "Nilai yang belum ada data resminya ditandai \"CONTOH\" di kolom keterangan dan wajib diganti sebelum situs diumumkan:",
     "• Tab profil: jam_layanan, luas_wilayah, ketinggian, suhu, sejarah, legenda.",
     "• Tab layanan: syarat, alur, waktu, biaya, dan catatan setiap surat perlu dicocokkan dengan ketentuan kantor kelurahan.",
-    "• Masih kosong: telepon_kantor, email, nama kepala lingkungan, nomor aparat, UMKM, galeri.",
+    "• Masih kosong: telepon_kantor, email, kepala & wakil kepala Lingkungan 7, nomor aparat, UMKM, galeri.",
 ]
 
 

@@ -103,31 +103,54 @@ function barisOrang(orang) {
 /* Lingkungan                                                              */
 /* ---------------------------------------------------------------------- */
 
-/* Batang kecil di tiap kartu = jumlah jiwa dibanding lingkungan terbesar. */
+/* Batang di tiap kartu = jumlah jiwa dibanding lingkungan terbesar. */
 function renderLingkungan(data) {
   const terbesar = Math.max(0, ...data.map((l) => jiwaLingkungan(l) || 0));
   return data.map((l) => kartuLingkungan(l, terbesar)).join("");
 }
+
+/* Isi sel kosong (mis. jabatan belum diisi, atau sel terhapus tanpa sengaja). Netral dan tetap benar
+   dalam kedua keadaan, sama dengan "Nama belum tersedia" untuk aparat. */
+const BELUM_TERSEDIA = "Belum tersedia";
 
 function kartuLingkungan(item, terbesar) {
   // "Lingkungan 3" ditulis sebagai angka besar; nama lain ditampilkan utuh.
   const nomor = teksPolos(item.nama).match(/^lingkungan\s+(\S+)$/i);
   const jiwa = jiwaLingkungan(item);
   const kk = keAngka(item.jumlah_kk);
-  const angka = [jiwa !== null && formatAngka(jiwa) + " jiwa", kk !== null && formatAngka(kk) + " KK"].filter(Boolean);
 
   return `
     <article class="kartu tile-lingkungan reveal">
-      ${nomor
-        ? `<p class="label-kecil">Lingkungan</p><p class="nomor-lingkungan mt-2">${escapeHtml(nomor[1])}</p>`
-        : `<h3 class="judul-kartu">${item.nama}</h3>`}
-      <p class="label-kecil mt-5">Kepala lingkungan</p>
-      <p class="text-[15px] font-semibold mt-1 leading-snug">${item.kepala || '<span class="text-[var(--muted)] font-normal">Belum dicantumkan</span>'}</p>
-      ${angka.length ? `
-        <div class="mt-auto pt-5">
-          <p class="text-[13px] text-[var(--muted)]">${angka.join(" · ")}</p>
-          ${jiwa !== null && terbesar ? `<div class="porsi" title="${formatAngka(jiwa)} jiwa"><span style="width:${Math.max(4, Math.round((jiwa / terbesar) * 100))}%"></span></div>` : ""}
-        </div>` : ""}
+      <header class="kepala-tile">
+        <div class="min-w-0">
+          <p class="label-kecil">Lingkungan</p>
+          ${nomor
+            ? `<p class="nomor-lingkungan mt-1">${escapeHtml(nomor[1])}</p>`
+            : `<h3 class="judul-kartu mt-1">${item.nama}</h3>`}
+        </div>
+        <dl class="ringkas-tile">
+          ${jiwa !== null ? `<div><dt>Jiwa</dt><dd>${formatAngka(jiwa)}</dd></div>` : ""}
+          ${kk !== null ? `<div><dt>KK</dt><dd>${formatAngka(kk)}</dd></div>` : ""}
+        </dl>
+      </header>
+      ${jiwa !== null && terbesar ? `<div class="porsi" title="${formatAngka(jiwa)} jiwa"><span style="width:${Math.max(4, Math.round((jiwa / terbesar) * 100))}%"></span></div>` : ""}
+      <ul class="pengurus-lingkungan">
+        ${barisPengurus("Kepala", item.kepala, true)}
+        ${barisPengurus("Wakil kepala", item.wakil_kepala, false)}
+      </ul>
     </article>
+  `;
+}
+
+/** Satu jabatan di kartu lingkungan; jabatan ditentukan kolom sheet-nya, bukan isian admin. */
+function barisPengurus(jabatan, nama, utama) {
+  return `
+    <li class="${nama ? "" : "kosong"}">
+      ${visualOrang({ nama }, "avatar-pengurus", "lingkungan")}
+      <div class="min-w-0">
+        <p class="label-kecil ${utama ? "jabatan-utama" : ""}">${jabatan}</p>
+        <p class="nama-pengurus">${nama || BELUM_TERSEDIA}</p>
+      </div>
+    </li>
   `;
 }

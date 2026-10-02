@@ -114,7 +114,7 @@ sebelum situs diumumkan:
 
 - Tab `profil`: jam layanan, luas, ketinggian, suhu, sejarah, legenda.
 - Tab `layanan`: syarat, alur, waktu, biaya, dan catatan setiap surat.
-- Masih kosong: telepon & email kantor, nama kepala lingkungan, nomor aparat, UMKM, galeri.
+- Masih kosong: telepon & email kantor, kepala & wakil kepala Lingkungan 7, nomor aparat, UMKM, galeri.
 
 ### Menyambungkan sheet ke situs
 
