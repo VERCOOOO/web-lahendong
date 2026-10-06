@@ -58,18 +58,17 @@ SKEMA = js_ke_json(ambil_objek(open(f"{REPO}/assets/js/data.js").read(), "const 
 DATA = js_ke_json(ambil_objek(open(f"{REPO}/assets/js/data-contoh.js").read(), "const DATA_DUMMY"))
 
 PETA = {
-    "profil": ("Profil, Legenda, Kontak, Layanan, Penduduk (tahun & sumber), Beranda (foto besar), header & footer",
-               "Alamat, telepon, email & jam layanan kantor; luas, ketinggian, suhu; batas wilayah; sejarah; legenda; tahun & sumber data; foto hero"),
+    "profil": ("Profil, Kontak, Layanan, Penduduk (tahun & sumber), Beranda (foto besar), header & footer",
+               "Alamat, telepon, email & jam layanan kantor; luas, ketinggian, suhu; batas wilayah; sejarah; tahun & sumber data; foto hero"),
     "lingkungan": ("Penduduk (angka, grafik & tabel), Beranda (angka ringkas), Pemerintahan (kartu lingkungan)",
                    "Satu baris per lingkungan: kepala & wakil kepala lingkungan, KK, laki-laki, perempuan, lansia, rumah. Semua total dihitung otomatis dari tab ini"),
     "aparat": ("Pemerintahan (struktur), Beranda (pimpinan), Kontak (bila nomor diisi)",
                "Satu baris per aparat. Kolom atasan = jabatan atasannya (pilih dari daftar); kosong = pimpinan"),
     "kontak": ("Kontak", "Nomor selain aparat. kategori: darurat (polisi, damkar, ambulans) atau umum (puskesmas, dsb.)"),
     "wisata": ("Wisata, halaman detail wisata, Beranda, Galeri", "Satu baris per destinasi"),
-    "umkm": ("UMKM, Galeri", "Satu baris per usaha"),
     "layanan": ("Layanan, Beranda (daftar surat)",
                 "Satu baris per jenis surat. syarat & alur: satu butir per baris dalam sel"),
-    "galeri": ("Galeri", "Foto tambahan (kegiatan, alam, budaya) selain foto wisata & UMKM"),
+    "galeri": ("Galeri", "Foto tambahan (kegiatan, alam, budaya) selain foto wisata"),
 }
 
 TAMPIL = ("Ya = tampil di situs. Tidak = disembunyikan, data tetap tersimpan. Kosong dianggap Ya.", "Ya")
@@ -121,14 +120,6 @@ KOLOM = {
         "pengelola": ("Pengelola, satu per baris.", "Pemerintah Kota Tomohon"),
         "maps_link": ("Tautan Google Maps lengkap, diawali https://", "https://maps.google.com/?q=Danau+Linow"),
     },
-    "umkm": {
-        "nama": ("WAJIB. Nama usaha. Untuk menghapus usaha: hapus barisnya.", "Kue Lapis Bu Ani"),
-        "tampil": TAMPIL,
-        "foto": FOTO,
-        "produk": ("Produk utama.", "Kue lapis legit, kue kering"),
-        "kontak": ("Nomor telepon/WA usaha — hanya bila pemilik setuju ditampilkan.", "0812-3456-7890"),
-        "lingkungan": ("Lokasi usaha, pilih dari daftar (diambil dari tab lingkungan).", "Lingkungan 2"),
-    },
     "layanan": {
         "nama_surat": ("WAJIB. Nama surat. Untuk menghapus surat: hapus barisnya.", "Surat Keterangan Tidak Mampu (SKTM)"),
         "tampil": TAMPIL,
@@ -152,13 +143,11 @@ KOLOM = {
 PILIHAN = {
     ("kontak", "tampil"): (["Ya", "Tidak"], True),
     ("wisata", "tampil"): (["Ya", "Tidak"], True),
-    ("umkm", "tampil"): (["Ya", "Tidak"], True),
     ("layanan", "tampil"): (["Ya", "Tidak"], True),
     ("galeri", "tampil"): (["Ya", "Tidak"], True),
     ("kontak", "kategori"): (["darurat", "umum"], True),
     ("layanan", "kategori"): (sorted({r.get("kategori", "") for r in DATA.get("layanan", [])} - {""}) or ["Kependudukan"], False),
     ("galeri", "kategori"): (["Kegiatan", "Alam", "Budaya"], False),
-    ("umkm", "lingkungan"): ("lingkungan.nama", True),
     ("aparat", "atasan"): ("aparat.jabatan", True),
 }
 
@@ -201,7 +190,7 @@ KUNCI_PROFIL = [
     ("jam_layanan", "Jam layanan kantor"), ("luas_wilayah", "Luas wilayah, angka saja (km²)"), ("ketinggian", "Ketinggian (mdpl)"),
     ("suhu", "Suhu rata-rata (°C)"), ("batas_utara", "Batas utara"), ("batas_selatan", "Batas selatan"),
     ("batas_timur", "Batas timur"), ("batas_barat", "Batas barat"), ("sejarah", "Sejarah, satu paragraf per baris"),
-    ("legenda", "Legenda Danau Linow, satu paragraf per baris"), ("tahun_data", "Tahun data kependudukan"),
+    ("tahun_data", "Tahun data kependudukan"),
     ("sumber_data", "Sumber data kependudukan"), ("foto_hero", "Foto besar di Beranda (tautan Google Drive, opsional)"),
 ]
 
@@ -212,9 +201,9 @@ TIDAK_DIATUR = [
 
 MASIH_CONTOH = [
     "Nilai yang belum ada data resminya ditandai \"CONTOH\" di kolom keterangan dan wajib diganti sebelum situs diumumkan:",
-    "• Tab profil: jam_layanan, luas_wilayah, ketinggian, suhu, sejarah, legenda.",
+    "• Tab profil: jam_layanan, luas_wilayah, ketinggian, suhu, sejarah.",
     "• Tab layanan: syarat, alur, waktu, biaya, dan catatan setiap surat perlu dicocokkan dengan ketentuan kantor kelurahan.",
-    "• Masih kosong: telepon_kantor, email, kepala & wakil kepala Lingkungan 7, nomor aparat, UMKM, galeri.",
+    "• Masih kosong: telepon_kantor, email, kepala & wakil kepala Lingkungan 7, nomor aparat, galeri.",
 ]
 
 

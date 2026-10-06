@@ -1,24 +1,22 @@
 /* Galeri (galeri.html): foto dengan penyaring kategori.
-   Sumber: tab galeri (foto bebas, kolom kategori), ditambah foto wisata & UMKM yang punya foto.
+   Sumber: tab galeri (foto bebas, kolom kategori), ditambah foto wisata yang punya foto.
    Penyaring dibuat dari kategori yang benar-benar ada, jadi kategori baru di sheet langsung muncul. */
 
 document.addEventListener("DOMContentLoaded", () => {
-  isiDariData(document.getElementById("grid-galeri"), ["galeri", "wisata", "umkm"], ([galeri, wisata, umkm]) => {
+  isiDariData(document.getElementById("grid-galeri"), ["galeri", "wisata"], ([galeri, wisata]) => {
     const item = [
       // Baris tanpa foto tidak dimasukkan: galeri berisi gambar pengganti tidak ada gunanya.
       ...galeri.filter((row) => sumberFoto("galeri", row).length)
         .map((row) => ({ tab: "galeri", data: row, judul: row.judul, kategori: teksPolos(row.kategori) || "Lainnya" })),
       ...wisata.filter((row) => sumberFoto("wisata", row).length)
         .map((row) => ({ tab: "wisata", data: row, judul: row.nama, kategori: "Wisata" })),
-      ...umkm.filter((row) => sumberFoto("umkm", row).length)
-        .map((row) => ({ tab: "umkm", data: row, judul: row.nama, kategori: "UMKM" })),
     ];
     return item.map(kartuGaleri).join("");
   }, {
     kosong: "Belum ada foto untuk ditampilkan.",
     gagal: "Galeri belum bisa dimuat saat ini.",
     setelah: pasangPenyaring,
-    opsional: ["galeri"], // tab galeri belum ada pun, foto wisata & UMKM tetap tampil
+    opsional: ["galeri"], // tab galeri belum ada pun, foto wisata tetap tampil
   });
 });
 

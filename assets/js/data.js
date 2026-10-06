@@ -32,7 +32,7 @@ const ID_SPREADSHEET = "11f8D-qzWt1rdkin7uBMmrbrEkZmc4dih39ruUwTh1gQ";
    Peta tab → halaman ada di tab "petunjuk" pada sheet dan di README.md.
    Halaman cek-data.html memeriksa semua aturan ini dan melaporkan kesalahan isian. */
 const SKEMA = {
-  // Informasi umum: kantor, wilayah, sejarah, legenda, tahun & sumber data penduduk, foto hero.
+  // Informasi umum: kantor, wilayah, sejarah, tahun & sumber data penduduk, foto hero.
   profil: ["kunci", "nilai", "keterangan"],
   // Satu baris per lingkungan. Jabatan ditentukan kolomnya (kepala / wakil_kepala), jadi tidak bisa tertukar;
   // sel kosong tampil "Belum tersedia". Jiwa = laki + perempuan; semua total dihitung dari tab ini.
@@ -43,11 +43,10 @@ const SKEMA = {
   // Narahubung non-aparat. kategori: "darurat" atau "umum".
   kontak: ["nama", "tampil", "peran", "nomor", "kategori"],
   wisata: ["nama", "tampil", "foto", "ringkas", "deskripsi", "jam", "tiket", "fasilitas", "waktu_terbaik", "cara_kesana", "pengelola", "maps_link"],
-  umkm: ["nama", "tampil", "foto", "produk", "kontak", "lingkungan"],
   // Satu baris per jenis surat. syarat & alur: satu butir per baris di dalam sel.
   // kategori (opsional) mengelompokkan surat; catatan (opsional) tampil sebagai pemberitahuan.
   layanan: ["nama_surat", "tampil", "kategori", "syarat", "alur", "waktu", "biaya", "catatan"],
-  // Foto tambahan untuk halaman Galeri (selain foto wisata & UMKM).
+  // Foto tambahan untuk halaman Galeri (selain foto wisata).
   galeri: ["judul", "tampil", "foto", "kategori"],
 };
 
@@ -55,7 +54,7 @@ const SKEMA = {
 const KUNCI_PROFIL = [
   "alamat_kantor", "telepon_kantor", "email", "jam_layanan",
   "luas_wilayah", "ketinggian", "suhu", "batas_utara", "batas_selatan", "batas_timur", "batas_barat",
-  "sejarah", "legenda", "tahun_data", "sumber_data", "foto_hero",
+  "sejarah", "tahun_data", "sumber_data", "foto_hero",
 ];
 
 /** URL CSV satu tab, dicari berdasarkan nama tab. */
@@ -247,7 +246,7 @@ function kodeDari(teks) {
  * - tautan berbagi Google Drive (…/file/d/ID/view, open?id=ID, uc?id=ID) → gambar Drive
  *   berukuran `lebar` piksel (file harus dibagikan "Siapa saja yang memiliki link");
  * - tautan gambar https lain, dipakai apa adanya;
- * - nama berkas di folder img/ situs, mis. "umkm-kue-lapis.webp".
+ * - nama berkas di folder img/ situs, mis. "galeri-panen.webp".
  */
 function urlFoto(nilai, lebar = 1200) {
   const teks = teksPolos(nilai).trim();

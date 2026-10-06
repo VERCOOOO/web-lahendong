@@ -36,7 +36,7 @@ async function jalankanCek() {
   Object.keys(tembolokData).forEach((tab) => delete tembolokData[tab]); // selalu ambil data terbaru
 
   // Semua tab diambil lebih dulu karena beberapa pemeriksaan melihat tab lain
-  // (mis. lingkungan UMKM harus ada di tab lingkungan).
+  // (mis. atasan aparat harus ada di kolom jabatan).
   const tab = {};
   await Promise.all(Object.keys(SKEMA).map(async (nama) => {
     try {
@@ -236,16 +236,6 @@ const ATURAN_TAB = {
       if (b.maps_link && !urlAman(teksPolos(b.maps_link))) {
         lapor("salah", b, "maps_link", "Tautan peta tidak diawali https://, jadi tombol Google Maps tidak muncul.", "Salin tautan lengkap dari Google Maps (Bagikan → Salin link).");
       }
-    });
-  },
-
-  umkm(baris, lapor, semua) {
-    const namaLingkungan = (semua.lingkungan?.baris || []).map((l) => kodeDari(l.nama)).filter(Boolean);
-    baris.forEach((b) => {
-      if (b.lingkungan && namaLingkungan.length && !namaLingkungan.includes(kodeDari(b.lingkungan))) {
-        lapor("periksa", b, "lingkungan", `Lingkungan "${teksPolos(b.lingkungan)}" tidak ada di tab lingkungan.`, "Pilih dari daftar pilihan agar ejaannya sama.");
-      }
-      if (!b.produk) lapor("periksa", b, "produk", `${teksPolos(b.nama)} belum punya keterangan produk.`, "Isi produk utama usaha ini.");
     });
   },
 

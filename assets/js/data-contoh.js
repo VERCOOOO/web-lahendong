@@ -29,14 +29,6 @@ const DATA_DUMMY = {
         "Seiring waktu, wilayah ini berkembang menjadi salah satu kelurahan definitif di Kecamatan Tomohon Selatan, dengan warga yang bertumpu pada pertanian, usaha rumahan, serta pariwisata di sekitar Danau Linow dan kawasan panas bumi.",
       keterangan: "CONTOH — ganti. Profil. Satu baris dalam sel = satu paragraf; paragraf pertama ditampilkan lebih besar.",
     },
-    {
-      kunci: "legenda",
-      nilai:
-        "Warga percaya kawasan Danau Linow adalah tempat bersemayamnya roh penjaga alam, dan uap belerang yang terus mengepul adalah napasnya.\n" +
-        "Cerita turun-temurun menyebutkan bahwa warna air danau yang berubah-ubah adalah pertanda suasana hati sang penjaga. Saat air berwarna cerah, warga meyakini alam sedang tenang dan hasil panen akan melimpah.\n" +
-        "Secara ilmiah, perubahan warna air danau dipengaruhi kandungan mineral dan aktivitas vulkanik di dasar danau. Namun kisah rakyat ini tetap diwariskan sebagai bagian dari kekayaan budaya setempat.",
-      keterangan: "CONTOH — ganti dengan cerita yang dituturkan warga. Halaman Legenda. Satu baris dalam sel = satu paragraf.",
-    },
     { kunci: "tahun_data", nilai: "2026", keterangan: "Tahun data kependudukan (tab lingkungan). Halaman Penduduk." },
     { kunci: "sumber_data", nilai: "Kelurahan Lahendong", keterangan: "Sumber data kependudukan. Halaman Penduduk." },
     { kunci: "foto_hero", nilai: "", keterangan: "Opsional. Tautan Google Drive foto lanskap untuk gambar besar di Beranda. Kosong = ilustrasi bawaan." },
@@ -132,9 +124,6 @@ const DATA_DUMMY = {
       maps_link: "https://maps.google.com/?q=Mahwatu+Tomohon",
     },
   ],
-
-  // Belum ada data UMKM resmi.
-  umkm: [],
 
   // Foto tambahan untuk Galeri (kegiatan, alam, budaya). Belum ada.
   galeri: [],

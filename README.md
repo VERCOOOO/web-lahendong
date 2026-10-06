@@ -18,12 +18,11 @@ Kode hanya menentukan **tampilan**.
 
 | Tab sheet | Tampil di halaman | Isi |
 |---|---|---|
-| `profil` | Profil, Legenda, Kontak, Layanan, Penduduk, Beranda, header & footer | Alamat, telepon, email & jam layanan; luas, ketinggian, suhu; batas wilayah; sejarah; legenda; tahun & sumber data; foto hero |
+| `profil` | Profil, Kontak, Layanan, Penduduk, Beranda, header & footer | Alamat, telepon, email & jam layanan; luas, ketinggian, suhu; batas wilayah; sejarah; tahun & sumber data; foto hero |
 | `lingkungan` | Penduduk, Beranda (angka ringkas), Pemerintahan (kartu lingkungan) | Satu baris per lingkungan — **semua total dihitung dari sini** |
 | `aparat` | Pemerintahan (struktur), Beranda (pimpinan), Kontak | Satu baris per aparat |
 | `kontak` | Kontak | Nomor darurat & layanan umum selain aparat |
 | `wisata` | Wisata, detail wisata, Beranda, Galeri | Satu baris per destinasi |
-| `umkm` | UMKM, Galeri | Satu baris per usaha |
 | `layanan` | Layanan, Beranda (daftar surat) | Satu baris per jenis surat |
 | `galeri` | Galeri | Foto tambahan (kegiatan, alam, budaya) |
 
@@ -45,8 +44,7 @@ Spreadsheet dirancang agar sulit salah isi:
   "Danau Linow" → `wisata-detail.html?id=danau-linow`.
 - **Tidak ada angka yang ditulis dua kali.** Jumlah penduduk, KK, laki-laki/perempuan, jumlah jiwa per
   lingkungan, dan jumlah lingkungan dihitung dari tab `lingkungan`.
-- **Dropdown** untuk isian pilihan: `tampil`, `kategori`, `lingkungan` (UMKM, diambil dari tab
-  lingkungan), dan `atasan` (aparat, diambil dari kolom jabatan).
+- **Dropdown** untuk isian pilihan: `tampil`, `kategori`, dan `atasan` (aparat, diambil dari kolom jabatan).
 - **Catatan di judul kolom**: arahkan kursor ke judul kolom untuk melihat arti dan contohnya.
 - **Halaman [Cek Data](https://vercoooo.github.io/web-lahendong/cek-data.html)** memeriksa seluruh sheet
   dan menunjukkan setiap isian yang keliru: kolom salah ketik, atasan tidak ditemukan, angka tidak valid,
@@ -56,18 +54,18 @@ Spreadsheet dirancang agar sulit salah isi:
 
 - **Menambah**: isi baris kosong pertama di bawah data.
 - **Menghapus**: klik kanan nomor baris → **Hapus baris**.
-- **Menyembunyikan sementara**: kolom **`tampil`** = `Tidak` (tab wisata, umkm, layanan, kontak, galeri).
+- **Menyembunyikan sementara**: kolom **`tampil`** = `Tidak` (tab wisata, layanan, kontak, galeri).
 - **Mengurutkan**: urutan di situs = urutan baris di sheet. Pindahkan barisnya.
 - **Susunan kartu** menyesuaikan jumlah baris sendiri (maks. 4 per baris di desktop).
 
 ### Foto dari Google Drive
 
-Kolom `foto` (wisata, umkm, aparat, galeri) dan kunci `foto_hero` di tab `profil` menerima:
+Kolom `foto` (wisata, aparat, galeri) dan kunci `foto_hero` di tab `profil` menerima:
 
 1. **Tautan berbagi Google Drive satu foto** — cara utama. Foto harus dibagikan
    "Siapa saja yang memiliki link" (atur sekali di foldernya). Situs mengambil versi berukuran pas.
 2. Tautan gambar `https://` lain.
-3. Nama berkas di folder `img/` situs, mis. `umkm-kue-lapis.webp`.
+3. Nama berkas di folder `img/` situs, mis. `galeri-panen.webp`.
 
 Bila foto gagal dimuat, situs memakai foto cadangan (`FOTO` di
 [`komponen.js`](assets/js/komponen.js)), lalu gambar pengganti; aparat tanpa foto memakai monogram.
@@ -112,9 +110,9 @@ ditandai halaman Cek Data beserta saran ejaan yang benar.
 Nilai yang belum ada data resminya ditandai **CONTOH** di kolom `keterangan` dan wajib diganti
 sebelum situs diumumkan:
 
-- Tab `profil`: jam layanan, luas, ketinggian, suhu, sejarah, legenda.
+- Tab `profil`: jam layanan, luas, ketinggian, suhu, sejarah.
 - Tab `layanan`: syarat, alur, waktu, biaya, dan catatan setiap surat.
-- Masih kosong: telepon & email kantor, kepala & wakil kepala Lingkungan 7, nomor aparat, UMKM, galeri.
+- Masih kosong: telepon & email kantor, kepala & wakil kepala Lingkungan 7, nomor aparat, galeri.
 
 ### Menyambungkan sheet ke situs
 
@@ -177,9 +175,9 @@ di sheet terbaca kosong, jadi situs tetap berjalan.
 mengambil tab, merender, dan menangani kondisi kosong atau gagal (termasuk bila wadahnya `<tbody>`):
 
 ```js
-isiDariData(document.getElementById("grid-umkm"), "umkm",
-  (data) => data.map(kartuUmkm).join(""),
-  { kosong: "Data UMKM sedang dihimpun.", gagal: "Data UMKM belum bisa dimuat saat ini." }
+isiDariData(document.getElementById("grid-wisata"), "wisata",
+  (data) => data.map((item) => kartuWisata(item)).join(""),
+  { kosong: "Belum ada destinasi wisata.", gagal: "Daftar destinasi belum bisa dimuat saat ini." }
 );
 ```
 

@@ -372,19 +372,6 @@ img { max-width: 100%; }
 .hero-foto .tombol-sekunder { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.7); }
 .hero-foto .tombol-sekunder:hover { background: #fff; color: var(--primary-d); }
 
-/* Halaman legenda: ilustrasi malam, judul putih, hero lebih pendek */
-.hero-legenda {
-  min-height: 420px;
-  height: min(64vh, 560px);
-  background: var(--deep);
-}
-.hero-legenda .hero-gambar { object-position: 50% 100%; }
-.hero-legenda .judul-hero { font-size: clamp(48px, 11vw, 104px); }
-.hero-legenda .remah { color: var(--on-deep-muted); }
-.hero-legenda .remah a { color: var(--toska); }
-.hero-legenda .remah [aria-current] { color: var(--on-deep); }
-.hero-legenda .hero-isi { padding-top: 36px; }
-
 /* Papan informasi: panel angka yang menumpang di tepi bawah hero */
 .papan-info {
   position: relative;

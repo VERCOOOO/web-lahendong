@@ -258,11 +258,10 @@
       <article class="fungsi">
         <header><code>urlFoto()</code>, <code>FOTO</code> &amp; <code>gambar(tab, item)</code><span class="label">data.js · komponen.js</span></header>
         <div class="badan">
-          <p>Kolom <code>foto</code> (wisata, umkm, aparat, galeri) dan kunci <code>foto_hero</code> diatur dari sheet. <code>urlFoto()</code> menerima tautan berbagi Google Drive (<code>…/file/d/ID/view</code>, <code>open?id=ID</code>) dan mengubahnya menjadi <code>drive.google.com/thumbnail?id=ID&amp;sz=w800</code> — gambar seukuran yang dibutuhkan, bukan berkas aslinya. Tautan https lain dipakai apa adanya; nama berkas biasa dianggap berada di <code>img/</code>. Tautan folder ditolak.</p>
+          <p>Kolom <code>foto</code> (wisata, aparat, galeri) dan kunci <code>foto_hero</code> diatur dari sheet. <code>urlFoto()</code> menerima tautan berbagi Google Drive (<code>…/file/d/ID/view</code>, <code>open?id=ID</code>) dan mengubahnya menjadi <code>drive.google.com/thumbnail?id=ID&amp;sz=w800</code> — gambar seukuran yang dibutuhkan, bukan berkas aslinya. Tautan https lain dipakai apa adanya; nama berkas biasa dianggap berada di <code>img/</code>. Tautan folder ditolak.</p>
           <p><code>sumberFoto()</code> menyusun urutan sumber: kolom foto → foto cadangan di registri <code>FOTO</code> (menurut kode baris) → <code>placeholder.webp</code>. Bila satu sumber gagal dimuat (mis. foto Drive belum dibagikan), <code>fotoBerikutnya()</code> di <code>onerror</code> mencoba sumber berikutnya. Aparat memakai <code>visualOrang()</code>: monogram inisial selalu dirender di belakang foto, jadi bila foto gagal yang tampil monogram.</p>
 <pre><code><span class="k">const</span> FOTO = {
   wisata: { <span class="s">"danau-linow"</span>: <span class="s">"wisata-danau-linow.webp"</span>, … },   <span class="c">// kode dari nama</span>
-  umkm:   { },
   aparat: { },   <span class="c">// menurut kode nama orang</span>
 };</code></pre>
         </div>
@@ -293,7 +292,7 @@
     <section class="bagian" id="grid">
       <span class="eyebrow">Grid adaptif</span>
       <h2>Susunan kartu mengikuti jumlahnya</h2>
-      <p>Wisata, UMKM, Galeri, kolom struktur aparat, lingkungan, dan kontak memakai kelas <code>.grid-adaptif</code>. Aturannya: bagi kartu ke <strong>baris sesedikit mungkin</strong> (maks. 4 per baris), lalu bagi rata per baris.</p>
+      <p>Wisata, Galeri, kolom struktur aparat, lingkungan, dan kontak memakai kelas <code>.grid-adaptif</code>. Aturannya: bagi kartu ke <strong>baris sesedikit mungkin</strong> (maks. 4 per baris), lalu bagi rata per baris.</p>
 <pre><code><span class="k">function</span> hitungKolom(n, maks = <span class="s">4</span>) {
   <span class="k">const</span> baris = Math.ceil(n / maks);   <span class="c">// 6 kartu → 2 baris</span>
   <span class="k">return</span> Math.ceil(n / baris);          <span class="c">// 6 / 2 → 3 kolom</span>
@@ -357,11 +356,11 @@
       <h2>Mengubah kode dengan aman</h2>
 
       <h3>Menambah kolom ke tab yang ada</h3>
-      <p>Contoh: kolom <code>instagram</code> di tab <code>umkm</code>.</p>
+      <p>Contoh: kolom <code>instagram</code> di tab <code>wisata</code>.</p>
       <ol class="langkah">
-        <li>Tambahkan <code>"instagram"</code> di <code>SKEMA.umkm</code> (<code>data.js</code>).</li>
-        <li>Tambahkan <code>instagram: ""</code> ke setiap baris <code>umkm</code> di <code>data-contoh.js</code>.</li>
-        <li>Tampilkan di <code>kartuUmkm()</code> (<code>halaman/umkm.js</code>), dengan syarat kosong = tidak tampil:
+        <li>Tambahkan <code>"instagram"</code> di <code>SKEMA.wisata</code> (<code>data.js</code>).</li>
+        <li>Tambahkan <code>instagram: ""</code> ke setiap baris <code>wisata</code> di <code>data-contoh.js</code>.</li>
+        <li>Tampilkan di <code>tampilanDetail()</code> (<code>halaman/wisata-detail.js</code>), dengan syarat kosong = tidak tampil:
 <pre><code>${item.instagram ? `&lt;p&gt;@${item.instagram}&lt;/p&gt;` : <span class="s">""</span>}</code></pre></li>
         <li>Tambahkan kolom yang sama di Google Sheet (baris judul). Urutan kolom bebas; namanya yang penting.</li>
       </ol>

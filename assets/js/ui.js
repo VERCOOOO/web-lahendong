@@ -9,9 +9,7 @@ const NAV_LINKS = [
   { href: "pemerintahan.html", label: "Pemerintahan" },
   { href: "penduduk.html", label: "Penduduk" },
   { href: "wisata.html", label: "Wisata" },
-  { href: "umkm.html", label: "UMKM" },
   { href: "galeri.html", label: "Galeri" },
-  { href: "legenda.html", label: "Legenda" },
   { href: "layanan.html", label: "Layanan" },
   { href: "kontak.html", label: "Kontak" },
 ];

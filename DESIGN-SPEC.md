@@ -92,7 +92,7 @@ Cek Data    : satu kartu per tab; temuan bergaris kiri `--danger` (perlu diperba
               `--toska` (info). Alat admin, tidak ada di menu.
 
 ## 6. GRID ADAPTIF
-Kartu yang jumlahnya ditentukan admin (wisata, UMKM, galeri, kolom struktur aparat, lingkungan, kontak) memakai
+Kartu yang jumlahnya ditentukan admin (wisata, galeri, kolom struktur aparat, lingkungan, kontak) memakai
 `.grid-adaptif`. `aturKolom()` di `komponen.js` menghitung:
 
     baris = ceil(n / maks)      kolom = ceil(n / baris)      (maks bawaan 4, atribut data-maks)

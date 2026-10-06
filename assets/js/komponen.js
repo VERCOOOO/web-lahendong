@@ -21,7 +21,6 @@ const FOTO = {
     "mah-watu": "wisata-mahwatu.webp",
     "toulangkow-hills": "wisata-toulangkow.webp",
   },
-  umkm: {}, // "kue-lapis-bu-ani": "umkm-kue-lapis.webp"
   aparat: {}, // menurut nama orang: "reymon-stive-londok-s-t": "aparat-lurah.webp"
   galeri: {},
 };
