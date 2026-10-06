@@ -7,7 +7,7 @@
 const DATA_KKT = {
   periode: "", // mis. "Juli – Agustus 2026"; kosong = tidak ditampilkan
 
-  // Tampil di panel tersendiri di atas daftar mahasiswa. foto opsional, sama seperti anggota.
+  // Tampil di panel tersendiri di atas daftar mahasiswa. foto opsional (rasio 3:4), sama seperti anggota.
   dosen: [
     { peran: "Dosen Pembimbing Lapangan", nama: "Dr. Ir. Charles R. Ngangi, MS", foto: "" },
     { peran: "Dosen Pengawas Lapangan", nama: "Decky J. Paseki, SH., M.H", foto: "" },
@@ -22,7 +22,8 @@ const DATA_KKT = {
      - peran: "Koordinator…" ditonjolkan di kepala kolom bidang; "Anggota" tampil di daftar bawahnya.
      - fakultas: tampil di kartu; dihitung untuk angka "Fakultas asal".
      - foto (opsional): nama berkas di folder img/ (mis. "kkt-fidelia.webp") atau tautan Google Drive.
-       Kosong = monogram inisial. */
+       Kosong = monogram inisial. Semua tempat foto berasio 3:4 (pas foto), mis. 600 × 800 piksel,
+       wajah di sepertiga atas; foto dengan rasio lain dipotong otomatis dari tengah-atas. */
   anggota: [
     { bidang: "Pengurus Inti", peran: "Koordinator Posko", nama: "Fidelia Tishri Kololy", nim: "231011030018", fakultas: "Fakultas Matematika dan Ilmu Pengetahuan Alam", foto: "" },
     { bidang: "Pengurus Inti", peran: "Sekretaris", nama: "Geofena Theresa Viona Nender", nim: "230511060015", fakultas: "Fakultas Perikanan dan Ilmu Kelautan", foto: "" },

@@ -1214,8 +1214,8 @@ details[open] { border-color: var(--primary); }
 
 .foto-dosen {
   flex: none;
-  width: 92px;
-  height: 115px;
+  width: 96px;
+  aspect-ratio: 3 / 4;
   border-radius: var(--radius);
   font-size: 30px;
   background: rgba(255, 255, 255, 0.08);
@@ -1262,10 +1262,10 @@ details[open] { border-color: var(--primary); }
 }
 
 .foto-pengurus {
-  width: 76px;
-  height: 95px;
+  width: 90px;
+  aspect-ratio: 3 / 4;
   border-radius: var(--radius);
-  font-size: 26px;
+  font-size: 28px;
   margin-bottom: 14px;
 }
 
@@ -1293,7 +1293,7 @@ details[open] { border-color: var(--primary); }
 
 /* Ketua (Koordinator Posko): lebih besar, bergaris atas belerang */
 .kartu-pengurus.ketua { border-top: 4px solid var(--accent); padding-block: 28px 24px; }
-.kartu-pengurus.ketua .foto-pengurus { width: 96px; height: 120px; font-size: 32px; }
+.kartu-pengurus.ketua .foto-pengurus { width: 114px; font-size: 34px; }
 .kartu-pengurus.ketua .nama-pengurus-kkt { font-size: 25px; }
 
 /* HP & tablet: ketua di atas, sekretaris & bendahara berdampingan di bawahnya */
@@ -1304,7 +1304,7 @@ details[open] { border-color: var(--primary); }
 
 @media (max-width: 639px) {
   .kartu-pengurus:not(.ketua) { padding: 16px 10px; }
-  .kartu-pengurus:not(.ketua) .foto-pengurus { width: 56px; height: 70px; font-size: 20px; margin-bottom: 10px; }
+  .kartu-pengurus:not(.ketua) .foto-pengurus { width: 72px; font-size: 22px; margin-bottom: 10px; }
   .kartu-pengurus:not(.ketua) .nama-pengurus-kkt { font-size: 17px; }
   .kartu-pengurus:not(.ketua) .fakultas { font-size: 12px; }
 }
@@ -1379,14 +1379,18 @@ details[open] { border-color: var(--primary); }
   background: var(--toska-muda);
 }
 
-.foto-koordinator {
+/* Koordinator & anggota bidang memakai foto berukuran sama; koordinator dibedakan oleh
+   latar dan labelnya, bukan oleh ukuran foto. */
+.foto-koordinator,
+.foto-anggota {
   flex: none;
-  width: 60px;
-  height: 75px;
+  width: 64px;
+  aspect-ratio: 3 / 4;
   border-radius: var(--radius);
   font-size: 20px;
-  background: var(--surface);
 }
+
+.foto-koordinator { background: var(--surface); }
 
 .koordinator-bidang .peran { color: var(--accent-ink); }
 
@@ -1409,7 +1413,7 @@ details[open] { border-color: var(--primary); }
   font-variant-numeric: tabular-nums;
 }
 
-.anggota-bidang { padding: 6px 16px 10px; }
+.anggota-bidang { padding: 4px 16px 8px; }
 
 .anggota-bidang li {
   display: flex;
@@ -1420,15 +1424,14 @@ details[open] { border-color: var(--primary); }
 
 .anggota-bidang li + li { border-top: 1px solid var(--line); }
 
-.foto-anggota {
-  flex: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-  font-size: 14px;
-}
+.anggota-bidang .nama { font-size: 17px; }
 
-.anggota-bidang .nama { font-size: 16px; }
+/* Semua foto orang di halaman KKT berasio 3:4 (pas foto). Bagian atas foto diutamakan
+   agar wajah tidak terpotong bila foto aslinya sedikit lebih tinggi/lebar. */
+.foto-dosen img,
+.foto-pengurus img,
+.foto-koordinator img,
+.foto-anggota img { object-position: 50% 20%; }
 
 /* Pada bagan KKT, sela pengurus → kolom bidang sedikit lebih lega */
 .struktur-kkt .cabang-struktur { --sela: 36px; }
