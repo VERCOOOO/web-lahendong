@@ -27,9 +27,8 @@ const DATA_KKT = {
     { bidang: "Pengurus Inti", peran: "Sekretaris", nama: "Geofena Theresa Viona Nender", nim: "230511060015", fakultas: "Fakultas Perikanan dan Ilmu Kelautan", foto: "" },
     { bidang: "Pengurus Inti", peran: "Bendahara", nama: "Tiara Tisya Paraso", nim: "230411040070", fakultas: "Fakultas Peternakan", foto: "" },
 
-    { bidang: "Bidang Program", peran: "Koordinator", nama: "Theodorus Dirly Keintjem", nim: "230911020066", fakultas: "Fakultas Ilmu Budaya", foto: "" },
+    { bidang: "Bidang Program", peran: "Koordinator", nama: "Vergino F. Maindoka", nim: "230211060074", fakultas: "Fakultas Teknik", foto: "" },
     { bidang: "Bidang Program", peran: "Anggota", nama: "Elistiani Meisye Manansang", nim: "230911020148", fakultas: "Fakultas Ilmu Budaya", foto: "" },
-    { bidang: "Bidang Program", peran: "Anggota", nama: "Vergino F. Maindoka", nim: "230211060074", fakultas: "Fakultas Teknik", foto: "" },
 
     { bidang: "Bidang Pelaporan", peran: "Koordinator", nama: "Militia Meisya Revalinny Senduk", nim: "230111040116", fakultas: "Fakultas Kedokteran", foto: "" },
     { bidang: "Bidang Pelaporan", peran: "Anggota", nama: "Pipit Desriyani", nim: "230911010009", fakultas: "Fakultas Ilmu Budaya", foto: "" },
@@ -38,6 +37,7 @@ const DATA_KKT = {
     { bidang: "Bidang Publikasi dan Dokumentasi", peran: "Koordinator", nama: "Emmanuel Arthur Wirakusumah", nim: "230211050022", fakultas: "Fakultas Teknik", foto: "" },
     { bidang: "Bidang Publikasi dan Dokumentasi", peran: "Anggota", nama: "Frianita M. T. Lumy", nim: "230311090016", fakultas: "Fakultas Pertanian", foto: "" },
     { bidang: "Bidang Publikasi dan Dokumentasi", peran: "Anggota", nama: "Natalia Paduli", nim: "230311090002", fakultas: "Fakultas Pertanian", foto: "" },
+    { bidang: "Bidang Publikasi dan Dokumentasi", peran: "Anggota", nama: "Theodorus Dirly Keintjem", nim: "230911020066", fakultas: "Fakultas Ilmu Budaya", foto: "" },
 
     { bidang: "Bidang Hubungan Masyarakat", peran: "Koordinator", nama: "Ferlika Novalisa Pasalo", nim: "230111040059", fakultas: "Fakultas Kedokteran", foto: "" },
     { bidang: "Bidang Hubungan Masyarakat", peran: "Anggota", nama: "Elsa Theresia Br. Sitorus", nim: "230711010017", fakultas: "Fakultas Hukum", foto: "" },
