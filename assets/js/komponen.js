@@ -9,10 +9,12 @@
 /* ---------------------------------------------------------------------- */
 
 /* Urutan sumber foto untuk satu baris:
-   1. kolom "foto" di sheet (tautan Google Drive, tautan gambar, atau nama berkas di img/);
-   2. foto cadangan di folder img/ yang didaftarkan di FOTO, menurut kode baris
+   1. kolom "foto" di sheet (tautan Google Drive, tautan gambar, atau nama berkas di img/), bila diisi;
+   2. berkas di folder foto Google Drive yang NAMANYA cocok (tab "foto", diisi tools/sinkron-foto.gs),
+      mis. wisata/Danau Linow.jpg, aparat/Lurah.jpg, kkt/230211060074.jpg — lihat kodeFotoDrive();
+   3. foto cadangan di folder img/ yang didaftarkan di FOTO, menurut kode baris
       (kode = kolom pertama, huruf kecil, selain huruf/angka jadi "-": "Danau Linow" → "danau-linow");
-   3. gambar pengganti. Aparat tanpa foto memakai monogram inisial.
+   4. gambar pengganti. Orang tanpa foto memakai monogram inisial.
    Bila sebuah sumber gagal dimuat (mis. foto Drive belum dibagikan), sumber berikutnya dicoba. */
 const FOTO = {
   wisata: {
@@ -31,7 +33,79 @@ const FOTO_PENGGANTI = "img/placeholder.webp";
 function sumberFoto(tab, item, lebar = 1200) {
   const kode = tab === "aparat" ? kodeDari(item.nama) : teksPolos(item.id);
   const cadangan = FOTO[tab]?.[kode];
-  return [urlFoto(item.foto, lebar), cadangan ? "img/" + cadangan : ""].filter(Boolean);
+  const drive = fotoDrive(tab, item);
+  return [
+    urlFoto(item.foto, lebar),
+    drive ? urlDrive(teksPolos(drive.id_drive), lebar) : "",
+    cadangan ? "img/" + cadangan : "",
+  ].filter(Boolean);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Foto dari folder Google Drive                                            */
+/* ---------------------------------------------------------------------- */
+
+/* indeksFotoDrive: subfolder teratas ("wisata", "galeri", …) → kode nama berkas → baris tab foto.
+   Bila ada dua berkas berkode sama di satu subfolder, yang paling baru diubah yang dipakai. */
+let indeksFotoDrive = new Map();
+let janjiFotoDrive = null;
+
+/** Muat tab foto sekali per kunjungan. Tidak pernah gagal: tanpa tab foto, indeksnya kosong. */
+function siapkanFotoDrive() {
+  if (!janjiFotoDrive) {
+    janjiFotoDrive = ambilData("foto")
+      .catch(() => [])
+      .then((baris) => (indeksFotoDrive = susunIndeksFoto(baris)));
+  }
+  return janjiFotoDrive;
+}
+
+function susunIndeksFoto(baris) {
+  const indeks = new Map();
+  baris.forEach((b) => {
+    const folder = folderTeratas(b.folder);
+    const kode = kodeDari(namaTanpaEkstensi(b.nama_file));
+    if (!folder || !kode || !b.id_drive) return;
+    if (!indeks.has(folder)) indeks.set(folder, new Map());
+    const lama = indeks.get(folder).get(kode);
+    if (!lama || teksPolos(b.diubah) > teksPolos(lama.diubah)) indeks.get(folder).set(kode, { ...b, kode });
+  });
+  return indeks;
+}
+
+/** "galeri/Kegiatan" → "galeri". */
+function folderTeratas(folder) {
+  return teksPolos(folder).split("/")[0].trim().toLowerCase();
+}
+
+/** "Danau Linow.JPG" → "Danau Linow". */
+function namaTanpaEkstensi(nama) {
+  return teksPolos(nama).replace(/\.[a-z0-9]{2,5}$/i, "");
+}
+
+/**
+ * Nama berkas yang dikenali untuk satu baris, per subfolder (berupa kode: huruf kecil, bertanda hubung).
+ * Orang boleh difoto dengan nama lengkap, nama tanpa gelar, jabatan (aparat), atau NIM (KKT).
+ */
+function kodeFotoDrive(tab, item) {
+  switch (tab) {
+    case "aparat":
+      return [kodeDari(item.jabatan), kodeDari(item.nama), kodeDari(namaTanpaGelar(item.nama))];
+    case "kkt":
+      return [kodeDari(item.nim), kodeDari(item.nama), kodeDari(namaTanpaGelar(item.nama))];
+    case "lingkungan":
+      return [kodeDari(item.nama), kodeDari(namaTanpaGelar(item.nama))];
+    default:
+      return [teksPolos(item.id)];
+  }
+}
+
+/** Baris tab foto yang cocok untuk satu baris data, atau null. */
+function fotoDrive(tab, item) {
+  const folder = indeksFotoDrive.get(tab);
+  if (!folder) return null;
+  const kode = kodeFotoDrive(tab, item).find((k) => k && folder.has(k));
+  return kode ? folder.get(kode) : null;
 }
 
 /** Dipanggil onerror <img>: coba sumber berikutnya, lalu gambar pengganti. */
@@ -80,7 +154,8 @@ async function isiDariData(wadah, tab, render, opsi = {}) {
   tampilkanMemuat(wadah);
   let data;
   try {
-    data = Array.isArray(tab) ? await Promise.all(tab.map(ambil)) : await ambil(tab);
+    // Indeks foto Drive dimuat bersamaan, agar render bisa langsung memakai foto dari folder.
+    [data] = await Promise.all([Array.isArray(tab) ? Promise.all(tab.map(ambil)) : ambil(tab), siapkanFotoDrive()]);
   } catch (err) {
     gagal === null ? wadah.remove() : tampilkanGagal(wadah, gagal);
     return null;
@@ -276,17 +351,26 @@ function visualOrang(orang, kelas, tab = "aparat") {
   return `<span class="monogram relative overflow-hidden ${kelas}">${foto}<span aria-hidden="true">${isi}</span></span>`;
 }
 
-/** Inisial nama untuk monogram, melewati gelar: "Reymon Stive Londok, S.T" → "RL". */
-function inisial(nama) {
-  const kata = teksPolos(nama)
+/** Nama tanpa gelar: "Dr. Ir. Charles R. Ngangi, MS" → "Charles R. Ngangi". */
+function namaTanpaGelar(nama) {
+  return teksPolos(nama)
     .split(",")[0] // gelar di belakang koma: "Nama, S.STP"
     .trim()
     .split(/\s+/)
-    .filter((k) =>
+    .filter((k, i, semua) =>
       k &&
-      !/^[a-z]{1,4}\.$/i.test(k) && // gelar depan & inisial tengah: Drs. Ir. H. M.
-      !/^[a-z]{1,4}(\.[a-z]{1,4})+\.?$/i.test(k) // gelar akademik: S.T S.St M.Kes S.STP
-    );
+      !/^(dr|drs|dra|ir|h|hj|prof)\.?$/i.test(k) && // gelar depan
+      !/^[a-z]{1,4}(\.[a-z]{1,4})+\.?$/i.test(k) && // gelar akademik: S.T S.St M.Kes S.STP
+      !(i === 0 && semua.length > 1 && /^[a-z]{1,4}\.$/i.test(k)) // gelar depan lain: "Kol."
+    )
+    .join(" ");
+}
+
+/** Inisial nama untuk monogram, melewati gelar: "Reymon Stive Londok, S.T" → "RL". */
+function inisial(nama) {
+  const kata = namaTanpaGelar(nama)
+    .split(/\s+/)
+    .filter((k) => k && !/^[a-z]\.$/i.test(k)); // inisial tengah: "R." "F."
   if (!kata.length) return "—";
   if (kata.length === 1) return kata[0].slice(0, 2).toUpperCase();
   return (kata[0][0] + kata[kata.length - 1][0]).toUpperCase();

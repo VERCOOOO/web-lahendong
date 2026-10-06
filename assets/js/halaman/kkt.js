@@ -21,8 +21,10 @@ const DATA_KKT = {
        bidang lain tampil sebagai kolom di bawahnya. Tulis nama bidang sama persis untuk satu bidang.
      - peran: "Koordinator…" ditonjolkan di kepala kolom bidang; "Anggota" tampil di daftar bawahnya.
      - fakultas: tampil di kartu; dihitung untuk angka "Fakultas asal".
-     - foto (opsional): nama berkas di folder img/ (mis. "kkt-fidelia.webp") atau tautan Google Drive.
-       Kosong = monogram inisial. Semua tempat foto berasio 3:4 (pas foto), mis. 600 × 800 piksel,
+     - foto: cara termudah — unggah ke folder foto Drive kkt/ dengan nama berkas = NIM
+       (mis. "230211060074.jpg") atau nama (dosen: nama tanpa gelar, mis. "Charles R. Ngangi.jpg").
+       Kolom foto di sini (nama berkas di img/ atau tautan Drive) hanya bila ingin menimpa itu.
+       Kosong semua = monogram inisial. Semua tempat foto berasio 3:4 (pas foto), mis. 600 × 800 piksel,
        wajah di sepertiga atas; foto dengan rasio lain dipotong otomatis dari tengah-atas. */
   anggota: [
     { bidang: "Pengurus Inti", peran: "Koordinator Posko", nama: "Fidelia Tishri Kololy", nim: "231011030018", fakultas: "Fakultas Matematika dan Ilmu Pengetahuan Alam", foto: "" },
@@ -47,7 +49,9 @@ const DATA_KKT = {
   ],
 };
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  if (!document.getElementById("daftar-kkt")) return; // berkas ini juga dimuat cek-data.html (untuk DATA_KKT)
+  await siapkanFotoDrive(); // foto dari folder Drive kkt/ (nama berkas = NIM atau nama)
   isiAtauHapus("info-kkt", DATA_KKT.periode ? escapeHtml("Periode " + DATA_KKT.periode) : "");
   isiAtauHapus("tentang-kkt", DATA_KKT.tentang.map((p, i) => `<p${i === 0 ? ' class="lead"' : ""}>${escapeHtml(p)}</p>`).join(""));
 

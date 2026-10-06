@@ -1,13 +1,23 @@
 /* Galeri (galeri.html): foto dengan penyaring kategori.
-   Sumber: tab galeri (foto bebas, kolom kategori), ditambah foto wisata yang punya foto.
-   Penyaring dibuat dari kategori yang benar-benar ada, jadi kategori baru di sheet langsung muncul. */
+   Sumber: (1) folder foto Drive galeri/ — setiap foto otomatis tampil; judul = nama berkas,
+   kategori = subfolder (galeri/Kegiatan/Panen Raya.jpg); (2) tab galeri, untuk foto yang ingin
+   diberi judul/kategori lewat sheet; (3) foto wisata. Penyaring dibuat dari kategori yang ada. */
 
 document.addEventListener("DOMContentLoaded", () => {
   isiDariData(document.getElementById("grid-galeri"), ["galeri", "wisata"], ([galeri, wisata]) => {
+    // Berkas Drive yang sudah dipakai baris tab galeri (nama berkas = judul) tidak ditampilkan dua kali.
+    const dipakai = new Set(galeri.map((row) => fotoDrive("galeri", row)?.kode).filter(Boolean));
+    const dariDrive = [...(indeksFotoDrive.get("galeri")?.values() || [])].filter((f) => !dipakai.has(f.kode));
     const item = [
       // Baris tanpa foto tidak dimasukkan: galeri berisi gambar pengganti tidak ada gunanya.
       ...galeri.filter((row) => sumberFoto("galeri", row).length)
         .map((row) => ({ tab: "galeri", data: row, judul: row.judul, kategori: teksPolos(row.kategori) || "Lainnya" })),
+      ...dariDrive.map((f) => ({
+        tab: "galeri",
+        data: { id: f.kode, judul: f.nama_file, foto: "" },
+        judul: escapeHtml(namaTanpaEkstensi(f.nama_file).replace(/_+/g, " ").trim()),
+        kategori: teksPolos(f.folder).split("/")[1]?.trim() || "Lainnya",
+      })),
       ...wisata.filter((row) => sumberFoto("wisata", row).length)
         .map((row) => ({ tab: "wisata", data: row, judul: row.nama, kategori: "Wisata" })),
     ];

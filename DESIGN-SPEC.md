@@ -110,8 +110,9 @@ Satu kartu dibatasi lebar 560px agar tidak melebar sepanjang layar.
 
 ## 7. IKON & GAMBAR
 - Ikon garis Lucide. DILARANG emoji sebagai ikon UI.
-- Ilustrasi bawaan bergaya poster (bidang datar, palet di atas). Foto asli diisi lewat kolom `foto` di sheet
-  (tautan Google Drive); ilustrasi menjadi cadangan bila foto gagal dimuat. Wajib alt.
+- Ilustrasi bawaan bergaya poster (bidang datar, palet di atas). Foto asli diunggah ke folder foto Google Drive
+  (dikenali dari nama berkas & subfolder) atau ditautkan lewat kolom `foto`; ilustrasi menjadi cadangan bila
+  foto gagal dimuat. Wajib alt. Foto orang 3:4, foto tempat 3:2.
 - Rasio: kartu 3:2, hero penuh layar. Foto gagal dimuat → `img/placeholder.webp`.
 
 ## 8. GERAK

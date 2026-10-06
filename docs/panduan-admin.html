@@ -352,21 +352,31 @@
           <p class="hasil">Datanya tetap tersimpan di sheet, hanya tidak dibaca situs.</p>
         </article>
         <article class="resep">
-          <h3>Menambah foto (Google Drive)</h3>
+          <h3>Menambah atau mengganti foto (Google Drive)</h3>
           <ol>
-            <li>Unggah foto (JPG/PNG) ke folder Drive situs. Atur sekali di folder: Bagikan → Akses umum → “Siapa saja yang memiliki link” (Pelihat).</li>
-            <li>Klik kanan foto → Bagikan → <strong>Salin link</strong>.</li>
-            <li>Tempel di kolom <code>foto</code> (wisata, aparat, galeri), atau di <code>nilai</code> kunci <code>foto_hero</code> (tab profil) untuk gambar besar Beranda.</li>
-            <li>Buka Cek Data: foto yang belum dibagikan atau tautan folder (bukan foto) akan ditandai.</li>
+            <li>Buka folder foto: di spreadsheet, menu <strong>Situs → Buka folder foto</strong>.</li>
+            <li>Unggah foto ke subfolder yang sesuai, <strong>dengan nama berkas yang tepat</strong>:
+              <code>beranda/hero.jpg</code>, <code>wisata/Danau Linow.jpg</code>, <code>aparat/Lurah.jpg</code>,
+              <code>lingkungan/&lt;nama kepala/wakil&gt;.jpg</code>, <code>kkt/&lt;NIM&gt;.jpg</code>.</li>
+            <li>Mengganti: hapus berkas lama, unggah yang baru dengan nama sama. Menghapus: hapus berkasnya.</li>
+            <li>Tunggu ±10 menit, atau <strong>Situs → Sinkronkan foto sekarang</strong>. Lalu buka Cek Data.</li>
           </ol>
-          <p class="hasil">Foto gagal dimuat? Situs memakai foto cadangan atau gambar pengganti, jadi tampilan tidak rusak. Foto orang hanya dengan izin yang bersangkutan.</p>
+          <p class="hasil">Tidak perlu menyalin tautan. Huruf besar/kecil dan ekstensi bebas. Nama berkas yang tidak cocok dengan data mana pun ditandai Cek Data beserta saran nama yang benar. Foto orang 3:4 (pas foto), hanya dengan izin yang bersangkutan.</p>
         </article>
         <article class="resep">
-          <h3>Menambah foto kegiatan ke Galeri</h3>
+          <h3>Menambah foto ke Galeri</h3>
           <ol>
-            <li>Tab <code>galeri</code> → isi baris kosong pertama: <code>judul</code>, <code>foto</code> (tautan Drive), <code>kategori</code> (pilih atau ketik baru, mis. Kegiatan).</li>
+            <li>Unggah ke <code>galeri/&lt;kategori&gt;/</code> di folder foto, mis. <code>galeri/Kegiatan/Panen Raya.jpg</code>.</li>
           </ol>
-          <p class="hasil">Kategori baru langsung menjadi tombol penyaring di halaman Galeri, berdampingan dengan Wisata.</p>
+          <p class="hasil">Setiap foto otomatis tampil: judul = nama berkas, kategori = nama subfolder (jadi tombol penyaring). Tab <code>galeri</code> di sheet hanya perlu bila ingin mengatur judul atau menyembunyikan foto.</p>
+        </article>
+        <article class="resep pengembang">
+          <h3>Memasang sinkronisasi foto (sekali)</h3>
+          <ol>
+            <li>Spreadsheet → Ekstensi → Apps Script. Ganti isi <code>Code.gs</code> dengan isi berkas <code>tools/sinkron-foto.gs</code>, lalu Simpan.</li>
+            <li>Pilih fungsi <code>pasang</code> → Jalankan → setujui izin akun Google.</li>
+          </ol>
+          <p class="hasil">Skrip membuat folder “Foto Situs Lahendong” beserta subfoldernya, membagikannya, mengisi tab <code>foto</code>, dan menyinkronkan otomatis tiap 10 menit. Setelah impor ulang template, jalankan Situs → Sinkronkan foto sekarang.</p>
         </article>
         <article class="resep pengembang">
           <h3>Memasang peta wilayah (PNG)</h3>
@@ -405,7 +415,7 @@
             <li><strong>Sejarah</strong> — tulisan sementara, perlu diganti dengan sejarah resmi</li>
             <li>Jam layanan, luas, ketinggian, suhu</li>
             <li>Syarat, alur, waktu &amp; biaya di tab <code>layanan</code></li>
-            <li>Foto — masih ilustrasi bawaan; ganti lewat kolom <code>foto</code></li>
+            <li>Foto — masih ilustrasi bawaan; ganti lewat folder foto Google Drive</li>
           </ul>
         </div>
         <div class="status kosong">

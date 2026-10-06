@@ -46,6 +46,9 @@ async function jalankanCek() {
     }
   }));
 
+  // Indeks foto Drive dari tab foto, agar aturan lain (mis. galeri) tahu foto mana yang tersedia di folder.
+  indeksFotoDrive = susunIndeksFoto(saringBaris("foto", tab.foto?.baris || []));
+
   const temuan = [];
   Object.keys(SKEMA).forEach((nama) => periksaTab(nama, tab, temuan));
   tampilkanHasil(tab, temuan);
@@ -70,6 +73,11 @@ function periksaTab(nama, semua, temuan) {
   const lapor = (tingkat, b, kolomNya, pesan, saran = "") =>
     temuan.push({ tab: nama, tingkat, baris: b ? b._baris : null, kolom: kolomNya, pesan, saran });
 
+  if (galat && nama === "foto") {
+    lapor("info", null, "", "Sinkronisasi foto dari Google Drive belum dipasang, jadi foto hanya diambil dari kolom foto di tab lain.",
+      "Pasang sekali lewat Ekstensi → Apps Script dengan isi berkas tools/sinkron-foto.gs (lihat Panduan Admin).");
+    return;
+  }
   if (galat) {
     lapor("salah", null, "", "Tab ini tidak bisa dibaca: " + galat + ".",
       `Pastikan ada tab bernama persis "${nama}" (huruf kecil) dan baris pertamanya berisi judul kolom dari template.`);
@@ -124,7 +132,8 @@ function periksaTab(nama, semua, temuan) {
 
   // Nama kembar
   hitungKode.forEach((sama) => {
-    if (sama.length > 1 && nama !== "aparat") {
+    // aparat: jabatan kembar diperiksa aturan aparat; foto: nama kembar diperiksa per subfolder.
+    if (sama.length > 1 && nama !== "aparat" && nama !== "foto") {
       lapor("periksa", sama[1], kunci, `"${teksPolos(sama[0][kunci])}" ditulis lebih dari sekali (baris ${sama.map((b) => b._baris).join(", ")}).`,
         nama === "profil" ? "Situs hanya memakai yang pertama. Hapus baris ganda." : "Bila memang berbeda, bedakan namanya; bila sama, hapus salah satunya.");
     }
@@ -246,9 +255,67 @@ const ATURAN_TAB = {
   },
 
   galeri(baris, lapor) {
-    baris.filter((b) => !b.foto).forEach((b) =>
-      lapor("salah", b, "foto", `"${teksPolos(b.judul)}" tidak punya foto, jadi tidak tampil di Galeri.`, "Tempel tautan foto Google Drive di kolom foto."));
+    baris.filter((b) => !b.foto && !fotoDrive("galeri", { ...b, id: kodeDari(b.judul) })).forEach((b) =>
+      lapor("salah", b, "foto", `"${teksPolos(b.judul)}" tidak punya foto, jadi tidak tampil di Galeri.`,
+        `Unggah fotonya ke folder Drive galeri/ dengan nama "${teksPolos(b.judul)}", atau tempel tautan foto di kolom foto.`));
   },
+
+  /* Tab foto diisi skrip, jadi yang diperiksa adalah folder Drive-nya: nama berkas yang tidak cocok
+     dengan data mana pun tidak akan pernah tampil di situs. */
+  foto(baris, lapor, semua) {
+    const isi = (tab) => saringBaris(tab, semua[tab]?.baris || []);
+    // Nama yang dikenali per subfolder: [kode, nama tampilan untuk saran]
+    const dikenal = {
+      beranda: [["hero", "hero"]],
+      wisata: isi("wisata").map((w) => [kodeDari(w.nama), teksPolos(w.nama)]),
+      aparat: isi("aparat").flatMap((a) => [[kodeDari(a.jabatan), teksPolos(a.jabatan)], [kodeDari(a.nama), teksPolos(a.nama)],
+        [kodeDari(namaTanpaGelar(a.nama)), namaTanpaGelar(a.nama)]]),
+      lingkungan: isi("lingkungan").flatMap((l) => [l.kepala, l.wakil_kepala]).filter(Boolean)
+        .flatMap((n) => [[kodeDari(n), teksPolos(n)], [kodeDari(namaTanpaGelar(n)), namaTanpaGelar(n)]]),
+      kkt: (typeof DATA_KKT === "undefined" ? [] : [...DATA_KKT.dosen, ...DATA_KKT.anggota]).flatMap((m) => [
+        [kodeDari(m.nim), m.nim], [kodeDari(m.nama), m.nama], [kodeDari(namaTanpaGelar(m.nama)), namaTanpaGelar(m.nama)]]),
+    };
+    const terhitung = new Map();
+    baris.forEach((b) => {
+      const folder = folderTeratas(b.folder);
+      const kode = kodeDari(namaTanpaEkstensi(b.nama_file));
+      const nama = teksPolos(b.nama_file);
+      if (!folder) {
+        lapor("periksa", b, "folder", `"${nama}" ada langsung di folder utama, jadi tidak dipakai situs.`,
+          "Pindahkan ke subfolder yang sesuai: beranda, wisata, aparat, lingkungan, galeri, atau kkt.");
+        return;
+      }
+      if (folder !== "galeri" && !(folder in dikenal)) {
+        lapor("periksa", b, "folder", `Subfolder "${teksPolos(b.folder)}" tidak dikenal, jadi "${nama}" tidak dipakai situs.`,
+          "Gunakan subfolder beranda, wisata, aparat, lingkungan, galeri, atau kkt.");
+        return;
+      }
+      const kunci = folder + "/" + kode;
+      terhitung.set(kunci, [...(terhitung.get(kunci) || []), b]);
+      if (folder === "galeri") return; // semua foto galeri dipakai
+      if (!dikenal[folder].some(([k]) => k === kode)) {
+        // Saran: nama yang memuat nama berkas ini ("Hutan Pinus" → "Hutan Pinus Lahendong"), atau yang ejaannya mirip.
+        const memuat = dikenal[folder].find(([k]) => k && kode && (k.includes(kode) || kode.includes(k)));
+        const mirip = memuat ? memuat[1] : palingMirip(namaTanpaEkstensi(nama), dikenal[folder].map(([, tampil]) => tampil).filter(Boolean));
+        lapor("periksa", b, "nama_file", `Foto "${teksPolos(b.folder)}/${nama}" tidak cocok dengan data mana pun, jadi tidak tampil.`,
+          mirip ? `Ganti nama berkasnya menjadi "${mirip}" (ekstensi boleh apa saja).` : `Nama berkas harus sama dengan ${PETUNJUK_NAMA[folder]}.`);
+      }
+    });
+    terhitung.forEach((sama) => {
+      if (sama.length > 1) {
+        lapor("periksa", sama[0], "nama_file", `Ada ${sama.length} foto bernama "${namaTanpaEkstensi(sama[0].nama_file)}" di ${teksPolos(sama[0].folder)}; situs memakai yang paling baru.`,
+          "Hapus foto lama dari folder agar tidak membingungkan.");
+      }
+    });
+  },
+};
+
+const PETUNJUK_NAMA = {
+  beranda: '"hero"',
+  wisata: "nama destinasi di tab wisata",
+  aparat: "jabatan atau nama orang di tab aparat",
+  lingkungan: "nama kepala atau wakil kepala lingkungan",
+  kkt: "NIM atau nama mahasiswa/dosen KKT",
 };
 
 /** Memeriksa bentuk isian foto (bukan apakah fotonya bisa dibuka — itu di ujiSemuaFoto). */
@@ -269,6 +336,10 @@ async function ujiSemuaFoto(semua) {
   const daftar = [];
   Object.entries(semua).forEach(([nama, { baris = [] }]) => {
     baris.forEach((b) => {
+      if (nama === "foto") {
+        if (b.id_drive) daftar.push({ nama, b, url: urlDrive(teksPolos(b.id_drive), 200), kolom: "nama_file" });
+        return;
+      }
       const isian = nama === "profil" ? (b.kunci === "foto_hero" ? b.nilai : "") : b.foto;
       const url = isian && urlFoto(isian, 200);
       if (url) daftar.push({ nama, b, url, kolom: nama === "profil" ? "nilai" : "foto" });

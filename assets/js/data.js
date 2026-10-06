@@ -48,6 +48,9 @@ const SKEMA = {
   layanan: ["nama_surat", "tampil", "kategori", "syarat", "alur", "waktu", "biaya", "catatan"],
   // Foto tambahan untuk halaman Galeri (selain foto wisata).
   galeri: ["judul", "tampil", "foto", "kategori"],
+  // Diisi OTOMATIS oleh tools/sinkron-foto.gs dari folder foto Google Drive — admin tidak mengeditnya.
+  // Situs mencocokkan nama berkas & subfolder dengan baris di tab lain (lihat sumberFoto di komponen.js).
+  foto: ["nama_file", "folder", "id_drive", "diubah"],
 };
 
 /* Kunci yang dikenal di tab profil — dipakai halaman Cek Data untuk menangkap salah ketik. */
@@ -252,12 +255,17 @@ function urlFoto(nilai, lebar = 1200) {
   const teks = teksPolos(nilai).trim();
   if (!teks) return "";
   const idDrive = idGoogleDrive(teks);
-  if (idDrive) return "https://drive.google.com/thumbnail?id=" + encodeURIComponent(idDrive) + "&sz=w" + lebar;
+  if (idDrive) return urlDrive(idDrive, lebar);
   // Tautan Drive tanpa ID berkas (mis. tautan folder) bukan gambar.
   if (/(drive|docs)\.google\.com/i.test(teks)) return "";
   if (/^https:\/\//i.test(teks)) return teks;
   if (/^[\w.-]+\.(webp|jpe?g|png|gif|avif|svg)$/i.test(teks)) return "img/" + teks;
   return "";
+}
+
+/** Alamat gambar berukuran `lebar` piksel untuk satu berkas Google Drive (yang dibagikan publik). */
+function urlDrive(idDrive, lebar = 1200) {
+  return "https://drive.google.com/thumbnail?id=" + encodeURIComponent(idDrive) + "&sz=w" + lebar;
 }
 
 /** ID berkas dari tautan Google Drive, atau "" bila bukan tautan Drive. */

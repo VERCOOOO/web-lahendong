@@ -24,7 +24,8 @@ Kode hanya menentukan **tampilan**.
 | `kontak` | Kontak | Nomor darurat & layanan umum selain aparat |
 | `wisata` | Wisata, detail wisata, Beranda, Galeri | Satu baris per destinasi |
 | `layanan` | Layanan, Beranda (daftar surat) | Satu baris per jenis surat |
-| `galeri` | Galeri | Foto tambahan (kegiatan, alam, budaya) |
+| `galeri` | Galeri | Opsional: judul & kategori foto lewat sheet |
+| `foto` | Semua halaman berfoto | **Diisi otomatis** dari folder foto Drive — jangan diedit |
 
 Tabel yang sama, beserta arti setiap kolom, ada di tab `petunjuk` pada spreadsheet.
 
@@ -60,16 +61,37 @@ Spreadsheet dirancang agar sulit salah isi:
 
 ### Foto dari Google Drive
 
-Kolom `foto` (wisata, aparat, galeri) dan kunci `foto_hero` di tab `profil` menerima:
+**Cara utama: cukup kelola satu folder Google Drive.** Situs mengenali foto dari nama berkas dan
+subfoldernya — tidak perlu menyalin tautan ke spreadsheet.
 
-1. **Tautan berbagi Google Drive satu foto** — cara utama. Foto harus dibagikan
-   "Siapa saja yang memiliki link" (atur sekali di foldernya). Situs mengambil versi berukuran pas.
-2. Tautan gambar `https://` lain.
-3. Nama berkas di folder `img/` situs, mis. `galeri-panen.webp`.
+| Subfolder | Nama berkas | Dipakai untuk |
+|---|---|---|
+| `beranda/` | `hero.jpg` | Gambar besar Beranda |
+| `wisata/` | nama destinasi, mis. `Danau Linow.jpg` | Kartu & halaman detail wisata, Galeri |
+| `aparat/` | jabatan atau nama tanpa gelar, mis. `Lurah.jpg` | Struktur aparat, pimpinan di Beranda |
+| `lingkungan/` | nama kepala/wakil, mis. `Julius Joni Rondonuwu.jpg` | Kartu lingkungan |
+| `kkt/` | NIM atau nama, mis. `230211060074.jpg` | Halaman KKT |
+| `galeri/<kategori>/` | judul foto, mis. `galeri/Kegiatan/Panen Raya.jpg` | Galeri — setiap foto otomatis tampil |
 
-Bila foto gagal dimuat, situs memakai foto cadangan (`FOTO` di
-[`komponen.js`](assets/js/komponen.js)), lalu gambar pengganti; aparat tanpa foto memakai monogram.
-`foto_hero` mengganti ilustrasi Beranda dengan foto dan otomatis memberi lapisan gelap agar judul terbaca.
+Huruf besar/kecil, spasi vs tanda hubung, dan ekstensi (`.jpg` `.png` `.webp`) tidak berpengaruh.
+Mengganti foto: hapus berkas lama, unggah yang baru dengan nama sama (bila ada dua, yang terbaru dipakai).
+
+**Cara kerjanya.** Skrip [`tools/sinkron-foto.gs`](tools/sinkron-foto.gs) (Apps Script di spreadsheet)
+mencatat isi folder ke tab `foto` setiap 10 menit dan memastikan setiap foto dibagikan "Siapa saja yang
+memiliki link". Situs membaca tab itu seperti tab lain — tanpa kunci API. Cek Data menandai nama
+berkas yang tidak cocok dengan data mana pun, beserta saran nama yang benar.
+
+**Memasang (sekali, oleh pemilik spreadsheet):** Ekstensi → Apps Script → tempel isi
+`tools/sinkron-foto.gs` → Simpan → jalankan fungsi `pasang` → setujui izin. Skrip membuat folder
+"Foto Situs Lahendong" beserta subfoldernya dan menu **Situs** (Sinkronkan foto sekarang, Buka folder foto).
+Setelah mengimpor ulang template (Ganti spreadsheet), tab `foto` ikut hilang — jalankan
+**Situs → Sinkronkan foto sekarang** untuk mengisinya lagi.
+
+**Urutan sumber foto** untuk setiap baris: kolom `foto` di tab itu (tautan satu foto, untuk menimpa) →
+foto dari folder Drive → foto cadangan di `img/` (`FOTO` di [`komponen.js`](assets/js/komponen.js)) →
+gambar pengganti/monogram. Bila satu sumber gagal dimuat, sumber berikutnya dicoba otomatis.
+`foto_hero` / `beranda/hero.jpg` mengganti ilustrasi Beranda dan otomatis memberi lapisan gelap agar judul terbaca.
+Foto orang sebaiknya 3:4 (pas foto), foto tempat 3:2; foto orang hanya dengan izin yang bersangkutan.
 
 ### Tab `profil`
 
@@ -159,7 +181,8 @@ dalam bahasa biasa. Untuk detail teknis, buka konsol browser (F12 → Console); 
 │   └── halaman/         logika per halaman (index.html → beranda.js; cek-data.js = pemeriksa sheet)
 ├── img/                 gambar statis
 ├── data/                template spreadsheet
-├── tools/               buat_template.py (template xlsx), versi_aset.py (penanda versi CSS/JS)
+├── tools/               buat_template.py (template xlsx), versi_aset.py (penanda versi CSS/JS),
+│                        sinkron-foto.gs (Apps Script: folder foto Drive → tab foto)
 └── docs/                Panduan Admin & Panduan Teknis
 ```
 
