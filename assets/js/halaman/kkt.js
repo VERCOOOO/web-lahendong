@@ -16,9 +16,10 @@ const DATA_KKT = {
   // Satu paragraf per elemen; kosong = paragraf "tentang" tidak ditampilkan.
   tentang: [],
 
-  /* Satu objek per mahasiswa. Urutan di sini = urutan tampil.
-     - bidang: kelompok kartu di halaman; ditulis sama persis untuk satu bidang.
-     - peran: jabatan dalam bidang. "Anggota" tidak ditampilkan sebagai label.
+  /* Satu objek per mahasiswa. Urutan di sini = urutan tampil di bagan struktur.
+     - bidang: kelompok pertama (Pengurus Inti) tampil di puncak bagan, orang pertamanya di tengah;
+       bidang lain tampil sebagai kolom di bawahnya. Tulis nama bidang sama persis untuk satu bidang.
+     - peran: "Koordinator…" ditonjolkan di kepala kolom bidang; "Anggota" tampil di daftar bawahnya.
      - fakultas: tampil di kartu; dihitung untuk angka "Fakultas asal".
      - foto (opsional): nama berkas di folder img/ (mis. "kkt-fidelia.webp") atau tautan Google Drive.
        Kosong = monogram inisial. */
@@ -70,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const daftar = document.getElementById("daftar-kkt");
   if (anggota.length) {
-    daftar.innerHTML = renderAnggota(anggota);
+    daftar.innerHTML = renderStruktur(anggota);
     aturKolomDi(daftar);
   } else {
     tampilkanKosong(daftar, "Daftar mahasiswa KKT sedang disiapkan.");
@@ -101,14 +102,99 @@ function kelompokBidang(anggota) {
   return kelompok;
 }
 
-function renderAnggota(anggota) {
-  return [...kelompokBidang(anggota).values()].map(({ nama, anggota: daftar }) => `
-    <section class="reveal">
-      <h3 class="judul-grup-surat"><span>${nama}</span><span class="jumlah">${daftar.length}</span></h3>
-      <!-- Kolom tetap (bukan grid adaptif) agar semua kelompok sejajar satu sama lain. -->
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">${daftar.map(kartuMahasiswa).join("")}</div>
-    </section>
-  `).join("");
+/* ---------------------------------------------------------------------- */
+/* Bagan struktur                                                           */
+/* ---------------------------------------------------------------------- */
+
+/* Ikon kolom bidang menurut kata kunci namanya; bidang lain memakai ikon kelompok. */
+const IKON_BIDANG = [
+  [/program/i, "clipboard-list"],
+  [/pelaporan|laporan/i, "file-text"],
+  [/publikasi|dokumentasi/i, "camera"],
+  [/humas|hubungan masyarakat/i, "megaphone"],
+];
+
+/**
+ * Kelompok pertama (Pengurus Inti) menjadi puncak bagan: orang pertamanya di tengah, sisanya mengapit.
+ * Kelompok lain menjadi kolom bidang yang disambung garis dari puncak — sama seperti struktur aparat
+ * di halaman Pemerintahan (kelas .cabang-struktur / .cabang di style.css).
+ */
+function renderStruktur(anggota) {
+  const [inti, ...bidang] = [...kelompokBidang(anggota).values()];
+  const [ketua, ...pendamping] = inti.anggota;
+  // Ketua di tengah: separuh pendamping di kiri, separuh di kanan.
+  const kiri = pendamping.slice(0, Math.ceil(pendamping.length / 2));
+  const kanan = pendamping.slice(kiri.length);
+  const tersambung = bidang.length && bidang.length <= 4 ? " tersambung" : "";
+
+  return `
+    <div class="struktur-kkt reveal">
+      <p class="label-kecil text-center">${inti.nama}</p>
+      <div class="pengurus-kkt">
+        ${kiri.map((m) => kartuPengurus(m)).join("")}
+        ${kartuPengurus(ketua, true)}
+        ${kanan.map((m) => kartuPengurus(m)).join("")}
+      </div>
+      ${bidang.length ? `
+        <div class="cabang-struktur grid-adaptif${tersambung}" data-maks="4">
+          ${bidang.map(kolomBidang).join("")}
+        </div>` : ""}
+    </div>
+  `;
+}
+
+function kartuPengurus(m, ketua = false) {
+  return `
+    <article class="kartu kartu-pengurus${ketua ? " ketua" : ""}">
+      ${visualOrang(m, "foto-pengurus", "kkt")}
+      <p class="label-kecil peran">${m.peran}</p>
+      <h3 class="nama-pengurus-kkt">${m.nama}</h3>
+      ${m.nim ? `<p class="nim">NIM ${m.nim}</p>` : ""}
+      ${m.fakultas ? `<p class="fakultas">${m.fakultas}</p>` : ""}
+    </article>
+  `;
+}
+
+/** Satu kolom bidang: kepala berikon, koordinator ditonjolkan, anggota dalam daftar ringkas. */
+function kolomBidang({ nama, anggota }) {
+  const koordinator = anggota.find((m) => /koordinator/i.test(teksPolos(m.peran))) || anggota[0];
+  const lainnya = anggota.filter((m) => m !== koordinator);
+  const ikon = (IKON_BIDANG.find(([pola]) => pola.test(teksPolos(nama))) || [null, "users"])[1];
+  return `
+    <div class="cabang">
+      <article class="kartu kartu-bidang">
+        <header class="kepala-bidang">
+          <span class="ikon-bidang"><i data-lucide="${ikon}" class="w-[18px] h-[18px]"></i></span>
+          <h3>${nama}</h3>
+          <span class="jumlah-bidang">${anggota.length}</span>
+        </header>
+        <div class="koordinator-bidang">
+          ${visualOrang(koordinator, "foto-koordinator", "kkt")}
+          <div class="min-w-0">
+            <p class="label-kecil peran">${koordinator.peran || "Koordinator"}</p>
+            <p class="nama">${koordinator.nama}</p>
+            <p class="detail">${detailMahasiswa(koordinator)}</p>
+          </div>
+        </div>
+        ${lainnya.length ? `
+          <ul class="anggota-bidang">
+            ${lainnya.map((m) => `
+              <li>
+                ${visualOrang(m, "foto-anggota", "kkt")}
+                <div class="min-w-0">
+                  <p class="nama">${m.nama}</p>
+                  <p class="detail">${detailMahasiswa(m)}</p>
+                </div>
+              </li>`).join("")}
+          </ul>` : ""}
+      </article>
+    </div>
+  `;
+}
+
+/** "230211060074 · Teknik" — kata "Fakultas" dilepas agar muat di kolom yang sempit. */
+function detailMahasiswa(m) {
+  return [m.nim, teksPolos(m.fakultas).replace(/^fakultas\s+/i, "")].filter(Boolean).map(escapeHtml).join(" · ");
 }
 
 /** Dosen lapangan: potret, jabatan, nama besar, dan asal universitas — di panel gelap. */
@@ -120,23 +206,6 @@ function kartuDosen(d) {
         <p class="label-kecil">${d.peran}</p>
         <h3 class="nama-dosen">${d.nama}</h3>
         <p class="asal-dosen">Universitas Sam Ratulangi</p>
-      </div>
-    </article>
-  `;
-}
-
-/* Kartu mendatar: foto/monogram di kiri, teks di kanan. Baris peran selalu ada (Anggota diredupkan)
-   agar nama, NIM, dan fakultas sejajar di semua kartu dalam satu baris. */
-function kartuMahasiswa(m) {
-  const anggota = !m.peran || /^anggota$/i.test(teksPolos(m.peran).trim());
-  return `
-    <article class="kartu kartu-mahasiswa">
-      ${visualOrang(m, "foto-mahasiswa", "kkt")}
-      <div class="min-w-0">
-        <p class="label-kecil ${anggota ? "" : "peran-utama"}">${m.peran || "Anggota"}</p>
-        <h4 class="nama-orang mt-1">${m.nama}</h4>
-        ${m.nim ? `<p class="nim mt-1.5">NIM ${m.nim}</p>` : ""}
-        ${m.fakultas ? `<p class="fakultas">${m.fakultas}</p>` : ""}
       </div>
     </article>
   `;

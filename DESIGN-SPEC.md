@@ -88,6 +88,9 @@ Layanan     : daftar surat buka-tutup. Judul surat menampilkan waktu & biaya; sy
               alur = langkah bernomor bergaris (urutannya bermakna), catatan = blok `--belerang-muda`.
               Kelompok per kategori, pencarian & penyaring muncul hanya bila berguna.
 Lingkungan  : nomor lingkungan sebagai angka besar `--primary`, batang porsi jiwa `--primary` di atas `--toska-muda`.
+Bagan KKT   : pengurus inti di puncak (ketua di tengah, bergaris belerang, diapit sekretaris & bendahara),
+              garis turun ke kolom bidang (kepala `--deep` berikon, koordinator berlatar `--toska-muda`,
+              anggota dalam daftar ringkas). Panel dosen lapangan memakai bidang `--deep`.
 Cek Data    : satu kartu per tab; temuan bergaris kiri `--danger` (perlu diperbaiki), `--accent` (periksa),
               `--toska` (info). Alat admin, tidak ada di menu.
 

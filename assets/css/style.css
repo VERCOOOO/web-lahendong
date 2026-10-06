@@ -1243,42 +1243,197 @@ details[open] { border-color: var(--primary); }
   .nama-dosen { font-size: 28px; }
 }
 
-/* Kartu mahasiswa KKT: mendatar dan ringkas, foto/monogram di kiri */
-.kartu-mahasiswa {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  height: 100%;
-  padding: 16px;
+/* Bagan struktur KKT: pengurus inti di puncak (ketua di tengah), garis turun ke kolom bidang.
+   Garis ke kolom bidang memakai .cabang-struktur / .cabang (struktur aparat). */
+.pengurus-kkt {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  gap: 14px;
+  margin-top: 14px;
 }
 
-.foto-mahasiswa {
-  flex: none;
-  width: 84px;
-  height: 104px; /* 4:5, cukup untuk foto wajah nanti */
+.kartu-pengurus {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 22px 18px;
+  text-align: center;
+}
+
+.foto-pengurus {
+  width: 76px;
+  height: 95px;
   border-radius: var(--radius);
   font-size: 26px;
+  margin-bottom: 14px;
 }
 
-.kartu-mahasiswa .peran-utama { color: var(--accent-ink); }
+.kartu-pengurus .peran { color: var(--accent-ink); }
+
+.nama-pengurus-kkt {
+  margin-top: 4px;
+  font-family: var(--font-judul);
+  font-weight: 700;
+  font-stretch: 80%;
+  font-size: 21px;
+  line-height: 1.15;
+  color: var(--ink);
+}
 
 .nim {
+  margin-top: 6px;
   font-size: 13.5px;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
 }
 
-.kartu-mahasiswa .fakultas {
-  margin-top: 2px;
-  font-size: 13px;
-  line-height: 1.4;
-  color: var(--muted);
+.kartu-pengurus .fakultas { margin-top: 2px; font-size: 13px; line-height: 1.4; color: var(--muted); }
+
+/* Ketua (Koordinator Posko): lebih besar, bergaris atas belerang */
+.kartu-pengurus.ketua { border-top: 4px solid var(--accent); padding-block: 28px 24px; }
+.kartu-pengurus.ketua .foto-pengurus { width: 96px; height: 120px; font-size: 32px; }
+.kartu-pengurus.ketua .nama-pengurus-kkt { font-size: 25px; }
+
+/* HP & tablet: ketua di atas, sekretaris & bendahara berdampingan di bawahnya */
+@media (max-width: 1023px) {
+  .pengurus-kkt { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .pengurus-kkt .ketua { order: -1; grid-column: 1 / -1; justify-self: center; width: min(100%, 360px); }
+}
+
+@media (max-width: 639px) {
+  .kartu-pengurus:not(.ketua) { padding: 16px 10px; }
+  .kartu-pengurus:not(.ketua) .foto-pengurus { width: 56px; height: 70px; font-size: 20px; margin-bottom: 10px; }
+  .kartu-pengurus:not(.ketua) .nama-pengurus-kkt { font-size: 17px; }
+  .kartu-pengurus:not(.ketua) .fakultas { font-size: 12px; }
 }
 
 @media (min-width: 1024px) {
-  .kartu-mahasiswa { padding: 18px; }
-  .foto-mahasiswa { width: 92px; height: 115px; }
+  .pengurus-kkt {
+    grid-template-columns: 1fr 1.15fr 1fr;
+    align-items: center;
+    gap: 40px;
+    max-width: 960px;
+    margin-inline: auto;
+  }
+  /* Garis mendatar yang menghubungkan ketua dengan sekretaris & bendahara */
+  .pengurus-kkt::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: 12%;
+    right: 12%;
+    top: 50%;
+    border-top: 2px solid var(--line);
+  }
+}
+
+/* Kolom bidang */
+.kartu-bidang { height: 100%; overflow: hidden; }
+
+.kepala-bidang {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: var(--deep);
+  color: #fff;
+}
+
+.kepala-bidang h3 {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-judul);
+  font-weight: 700;
+  font-stretch: 80%;
+  font-size: 18px;
+  line-height: 1.15;
+  color: #fff;
+}
+
+.ikon-bidang {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--accent);
+}
+
+.jumlah-bidang {
+  flex: none;
+  font-family: var(--font-judul);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--toska);
+}
+
+.koordinator-bidang {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: var(--toska-muda);
+}
+
+.foto-koordinator {
+  flex: none;
+  width: 60px;
+  height: 75px;
+  border-radius: var(--radius);
+  font-size: 20px;
+  background: var(--surface);
+}
+
+.koordinator-bidang .peran { color: var(--accent-ink); }
+
+.kartu-bidang .nama {
+  font-family: var(--font-judul);
+  font-weight: 700;
+  font-stretch: 80%;
+  font-size: 18px;
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.koordinator-bidang .nama { margin-top: 2px; font-size: 19px; }
+
+.kartu-bidang .detail {
+  margin-top: 3px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.anggota-bidang { padding: 6px 16px 10px; }
+
+.anggota-bidang li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-block: 12px;
+}
+
+.anggota-bidang li + li { border-top: 1px solid var(--line); }
+
+.foto-anggota {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  font-size: 14px;
+}
+
+.anggota-bidang .nama { font-size: 16px; }
+
+/* Pada bagan KKT, sela pengurus → kolom bidang sedikit lebih lega */
+.struktur-kkt .cabang-struktur { --sela: 36px; }
+@media (min-width: 1024px) {
+  .struktur-kkt .cabang-struktur { --sela: 64px; }
 }
 
 /* --- Kartu lingkungan --------------------------------------------------- */
