@@ -1214,7 +1214,7 @@ details[open] { border-color: var(--primary); }
 
 .foto-dosen {
   flex: none;
-  width: 96px;
+  width: 104px;
   aspect-ratio: 3 / 4;
   border-radius: var(--radius);
   font-size: 30px;
@@ -1262,10 +1262,10 @@ details[open] { border-color: var(--primary); }
 }
 
 .foto-pengurus {
-  width: 90px;
+  width: 100px;
   aspect-ratio: 3 / 4;
   border-radius: var(--radius);
-  font-size: 28px;
+  font-size: 30px;
   margin-bottom: 14px;
 }
 
@@ -1293,7 +1293,7 @@ details[open] { border-color: var(--primary); }
 
 /* Ketua (Koordinator Posko): lebih besar, bergaris atas belerang */
 .kartu-pengurus.ketua { border-top: 4px solid var(--accent); padding-block: 28px 24px; }
-.kartu-pengurus.ketua .foto-pengurus { width: 114px; font-size: 34px; }
+.kartu-pengurus.ketua .foto-pengurus { width: 124px; font-size: 36px; }
 .kartu-pengurus.ketua .nama-pengurus-kkt { font-size: 25px; }
 
 /* HP & tablet: ketua di atas, sekretaris & bendahara berdampingan di bawahnya */
@@ -1304,7 +1304,7 @@ details[open] { border-color: var(--primary); }
 
 @media (max-width: 639px) {
   .kartu-pengurus:not(.ketua) { padding: 16px 10px; }
-  .kartu-pengurus:not(.ketua) .foto-pengurus { width: 72px; font-size: 22px; margin-bottom: 10px; }
+  .kartu-pengurus:not(.ketua) .foto-pengurus { width: 80px; font-size: 24px; margin-bottom: 10px; }
   .kartu-pengurus:not(.ketua) .nama-pengurus-kkt { font-size: 17px; }
   .kartu-pengurus:not(.ketua) .fakultas { font-size: 12px; }
 }
@@ -1374,8 +1374,8 @@ details[open] { border-color: var(--primary); }
 .koordinator-bidang {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 16px;
+  gap: 12px;
+  padding: 16px 14px;
   background: var(--toska-muda);
 }
 
@@ -1384,10 +1384,10 @@ details[open] { border-color: var(--primary); }
 .foto-koordinator,
 .foto-anggota {
   flex: none;
-  width: 64px;
+  width: 80px;
   aspect-ratio: 3 / 4;
   border-radius: var(--radius);
-  font-size: 20px;
+  font-size: 24px;
 }
 
 .foto-koordinator { background: var(--surface); }
@@ -1405,15 +1405,17 @@ details[open] { border-color: var(--primary); }
 
 .koordinator-bidang .nama { margin-top: 2px; font-size: 19px; }
 
+.kartu-bidang .nama + .detail { margin-top: 4px; }
+
 .kartu-bidang .detail {
-  margin-top: 3px;
+  margin-top: 2px;
   font-size: 12.5px;
   line-height: 1.4;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
 
-.anggota-bidang { padding: 4px 16px 8px; }
+.anggota-bidang { padding: 4px 14px 8px; }
 
 .anggota-bidang li {
   display: flex;

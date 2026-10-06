@@ -174,7 +174,7 @@ function kolomBidang({ nama, anggota }) {
           <div class="min-w-0">
             <p class="label-kecil peran">${koordinator.peran || "Koordinator"}</p>
             <p class="nama">${koordinator.nama}</p>
-            <p class="detail">${detailMahasiswa(koordinator)}</p>
+            ${detailMahasiswa(koordinator)}
           </div>
         </div>
         ${lainnya.length ? `
@@ -184,7 +184,7 @@ function kolomBidang({ nama, anggota }) {
                 ${visualOrang(m, "foto-anggota", "kkt")}
                 <div class="min-w-0">
                   <p class="nama">${m.nama}</p>
-                  <p class="detail">${detailMahasiswa(m)}</p>
+                  ${detailMahasiswa(m)}
                 </div>
               </li>`).join("")}
           </ul>` : ""}
@@ -193,9 +193,11 @@ function kolomBidang({ nama, anggota }) {
   `;
 }
 
-/** "230211060074 · Teknik" — kata "Fakultas" dilepas agar muat di kolom yang sempit. */
+/** NIM dan fakultas di baris terpisah; kata "Fakultas" dilepas agar muat di kolom yang sempit. */
 function detailMahasiswa(m) {
-  return [m.nim, teksPolos(m.fakultas).replace(/^fakultas\s+/i, "")].filter(Boolean).map(escapeHtml).join(" · ");
+  const fakultas = teksPolos(m.fakultas).replace(/^fakultas\s+/i, "");
+  return [m.nim && `<p class="detail nim-bidang">NIM ${m.nim}</p>`, fakultas && `<p class="detail">${escapeHtml(fakultas)}</p>`]
+    .filter(Boolean).join("");
 }
 
 /** Dosen lapangan: potret, jabatan, nama besar, dan asal universitas — di panel gelap. */
