@@ -24,8 +24,7 @@ Kode hanya menentukan **tampilan**.
 | `kontak` | Kontak | Nomor darurat & layanan umum selain aparat |
 | `wisata` | Wisata, detail wisata, Beranda, Galeri | Satu baris per destinasi |
 | `layanan` | Layanan, Beranda (daftar surat) | Satu baris per jenis surat |
-| `galeri` | Galeri | Opsional: judul & kategori foto lewat sheet |
-| `foto` | Semua halaman berfoto | **Diisi otomatis** dari folder foto Drive — jangan diedit |
+| `galeri` | Galeri | Foto tambahan (kegiatan, alam, budaya) |
 
 Tabel yang sama, beserta arti setiap kolom, ada di tab `petunjuk` pada spreadsheet.
 
@@ -59,39 +58,27 @@ Spreadsheet dirancang agar sulit salah isi:
 - **Mengurutkan**: urutan di situs = urutan baris di sheet. Pindahkan barisnya.
 - **Susunan kartu** menyesuaikan jumlah baris sendiri (maks. 4 per baris di desktop).
 
-### Foto dari Google Drive
+### Foto (lewat panel di spreadsheet)
 
-**Cara utama: cukup kelola satu folder Google Drive.** Situs mengenali foto dari nama berkas dan
-subfoldernya — tidak perlu menyalin tautan ke spreadsheet.
+Operator tidak perlu mengurus tautan, nama berkas, atau folder:
 
-| Subfolder | Nama berkas | Dipakai untuk |
-|---|---|---|
-| `beranda/` | `hero.jpg` | Gambar besar Beranda |
-| `wisata/` | nama destinasi, mis. `Danau Linow.jpg` | Kartu & halaman detail wisata, Galeri |
-| `aparat/` | jabatan atau nama tanpa gelar, mis. `Lurah.jpg` | Struktur aparat, pimpinan di Beranda |
-| `lingkungan/` | nama kepala/wakil, mis. `Julius Joni Rondonuwu.jpg` | Kartu lingkungan |
-| `kkt/` | NIM atau nama, mis. `230211060074.jpg` | Halaman KKT |
-| `galeri/<kategori>/` | judul foto, mis. `galeri/Kegiatan/Panen Raya.jpg` | Galeri — setiap foto otomatis tampil |
+1. Klik baris yang ingin diberi foto — tab `wisata`, `aparat`, `galeri`, atau baris `foto_hero` di tab `profil`.
+2. Menu **Situs → Pasang / ganti foto…**. Panel di samping menampilkan baris itu dan fotonya sekarang.
+3. **Pilih foto → Simpan foto.** Untuk melepas foto: **Hapus foto dari baris ini**.
 
-Huruf besar/kecil, spasi vs tanda hubung, dan ekstensi (`.jpg` `.png` `.webp`) tidak berpengaruh.
-Mengganti foto: hapus berkas lama, unggah yang baru dengan nama sama (bila ada dua, yang terbaru dipakai).
+Skrip [`tools/panel-foto.gs`](tools/panel-foto.gs) memperkecil foto (sisi terpanjang 1600 px), menyimpannya
+ke folder "Foto Situs Lahendong" di Google Drive pemilik spreadsheet, membagikannya agar bisa tampil, lalu
+menulis tautannya ke kolom `foto` baris itu. Panel hanya tersedia di Google Sheets versi komputer (browser).
 
-**Cara kerjanya.** Skrip [`tools/sinkron-foto.gs`](tools/sinkron-foto.gs) (Apps Script di spreadsheet)
-mencatat isi folder ke tab `foto` setiap 10 menit dan memastikan setiap foto dibagikan "Siapa saja yang
-memiliki link". Situs membaca tab itu seperti tab lain — tanpa kunci API. Cek Data menandai nama
-berkas yang tidak cocok dengan data mana pun, beserta saran nama yang benar.
+**Memasang skrip (sekali, oleh pemilik spreadsheet):** Ekstensi → Apps Script → ganti seluruh isi
+`Code.gs` dengan isi `tools/panel-foto.gs` → Simpan → jalankan fungsi `pasang` → setujui izin →
+muat ulang spreadsheet.
 
-**Memasang (sekali, oleh pemilik spreadsheet):** Ekstensi → Apps Script → tempel isi
-`tools/sinkron-foto.gs` → Simpan → jalankan fungsi `pasang` → setujui izin. Skrip membuat folder
-"Foto Situs Lahendong" beserta subfoldernya dan menu **Situs** (Sinkronkan foto sekarang, Buka folder foto).
-Setelah mengimpor ulang template (Ganti spreadsheet), tab `foto` ikut hilang — jalankan
-**Situs → Sinkronkan foto sekarang** untuk mengisinya lagi.
-
-**Urutan sumber foto** untuk setiap baris: kolom `foto` di tab itu (tautan satu foto, untuk menimpa) →
-foto dari folder Drive → foto cadangan di `img/` (`FOTO` di [`komponen.js`](assets/js/komponen.js)) →
-gambar pengganti/monogram. Bila satu sumber gagal dimuat, sumber berikutnya dicoba otomatis.
-`foto_hero` / `beranda/hero.jpg` mengganti ilustrasi Beranda dan otomatis memberi lapisan gelap agar judul terbaca.
-Foto orang sebaiknya 3:4 (pas foto), foto tempat 3:2; foto orang hanya dengan izin yang bersangkutan.
+Kolom `foto` tetap boleh diisi manual (tautan berbagi satu foto Drive, tautan gambar `https://`, atau
+nama berkas di `img/`). Bila foto gagal dimuat, situs memakai foto cadangan (`FOTO` di
+[`komponen.js`](assets/js/komponen.js)), lalu gambar pengganti; orang tanpa foto memakai monogram.
+`foto_hero` mengganti ilustrasi Beranda dengan foto dan otomatis memberi lapisan gelap agar judul terbaca.
+Foto KKT diatur pengembang di `DATA_KKT` (kirim fotonya ke pengembang).
 
 ### Tab `profil`
 
@@ -182,7 +169,7 @@ dalam bahasa biasa. Untuk detail teknis, buka konsol browser (F12 → Console); 
 ├── img/                 gambar statis
 ├── data/                template spreadsheet
 ├── tools/               buat_template.py (template xlsx), versi_aset.py (penanda versi CSS/JS),
-│                        sinkron-foto.gs (Apps Script: folder foto Drive → tab foto)
+│                        panel-foto.gs (Apps Script: panel Pasang foto di spreadsheet)
 └── docs/                Panduan Admin & Panduan Teknis
 ```
 

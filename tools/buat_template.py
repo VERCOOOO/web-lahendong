@@ -68,12 +68,12 @@ PETA = {
     "wisata": ("Wisata, halaman detail wisata, Beranda, Galeri", "Satu baris per destinasi"),
     "layanan": ("Layanan, Beranda (daftar surat)",
                 "Satu baris per jenis surat. syarat & alur: satu butir per baris dalam sel"),
-    "galeri": ("Galeri", "Opsional: judul & kategori lewat sheet. Foto di folder Drive galeri/ sudah otomatis masuk Galeri tanpa baris di sini"),
+    "galeri": ("Galeri", "Foto tambahan (kegiatan, alam, budaya) selain foto wisata"),
 }
 
 TAMPIL = ("Ya = tampil di situs. Tidak = disembunyikan, data tetap tersimpan. Kosong dianggap Ya.", "Ya")
-FOTO = ("Opsional — biasanya cukup unggah foto ke folder foto Drive dengan nama yang sesuai (lihat tab petunjuk). "
-        "Isi kolom ini hanya untuk menimpanya dengan tautan berbagi satu foto.", "https://drive.google.com/file/d/…/view")
+FOTO = ("Diisi otomatis lewat menu Situs → Pasang / ganti foto (pilih barisnya dulu). "
+        "Kosong = foto bawaan situs.", "https://drive.google.com/file/d/…/view")
 
 # (tab, kolom) → (arti, contoh). Tampil sebagai catatan di judul kolom dan di tab petunjuk.
 KOLOM = {
@@ -133,7 +133,7 @@ KOLOM = {
     "galeri": {
         "judul": ("WAJIB. Judul foto, tampil di bawah foto.", "Pengucapan Syukur 2026"),
         "tampil": TAMPIL,
-        "foto": ("Tautan satu foto Drive — atau kosongkan dan unggah foto ke folder Drive galeri/ dengan nama berkas = judul.", "https://drive.google.com/file/d/…/view"),
+        "foto": ("WAJIB untuk galeri. Pilih baris ini lalu menu Situs → Pasang / ganti foto.", "https://drive.google.com/file/d/…/view"),
         "kategori": ("Kelompok foto: pilih dari daftar atau ketik baru. Menjadi tombol penyaring di Galeri.", "Kegiatan"),
     },
 }
@@ -164,16 +164,11 @@ CARA = [
 ]
 
 CARA_FOTO = [
-    "Cara utama: unggah foto ke folder \"Foto Situs Lahendong\" di Google Drive (menu Situs → Buka folder foto). Situs mengenali foto dari NAMA BERKAS dan SUBFOLDER-nya:",
-    "• beranda/hero.jpg → gambar besar di Beranda",
-    "• wisata/<nama destinasi>.jpg → mis. wisata/Danau Linow.jpg",
-    "• aparat/<jabatan atau nama tanpa gelar>.jpg → mis. aparat/Lurah.jpg",
-    "• lingkungan/<nama kepala/wakil>.jpg → mis. lingkungan/Julius Joni Rondonuwu.jpg",
-    "• kkt/<NIM atau nama>.jpg → mis. kkt/230211060074.jpg",
-    "• galeri/<kategori>/<judul>.jpg → setiap foto otomatis masuk Galeri, mis. galeri/Kegiatan/Panen Raya.jpg",
-    "Mengganti foto: hapus berkas lama, unggah yang baru dengan nama sama. Menghapus: hapus berkasnya. Huruf besar/kecil dan ekstensi (.jpg/.png/.webp) bebas.",
-    "Perubahan tampil paling lambat 10 menit kemudian, atau segera lewat menu Situs → Sinkronkan foto sekarang. Foto orang 3:4 (pas foto), lanskap 3:2; hanya dengan izin yang bersangkutan.",
-    "Kolom foto di tab lain (tautan Drive satu foto) tetap bisa dipakai untuk menimpa foto dari folder. Cek Data menandai nama berkas yang tidak cocok dengan data mana pun.",
+    "1. Klik baris yang ingin diberi foto (tab wisata, aparat, galeri, atau baris foto_hero di tab profil).",
+    "2. Menu Situs → Pasang / ganti foto…  (panel muncul di samping kanan).",
+    "3. Pilih foto → Simpan foto. Selesai — tautannya ditulis otomatis ke kolom foto. Muat ulang halaman situs untuk melihatnya.",
+    "• Melepas foto: buka panel yang sama → Hapus foto dari baris ini. Situs kembali memakai gambar bawaan.",
+    "• Panel hanya ada di Google Sheets versi komputer (browser). Foto orang hanya dengan izin yang bersangkutan.",
 ]
 
 ATURAN = [
@@ -268,15 +263,12 @@ p = [baris(["PETUNJUK MENGELOLA DATA — Website Kelurahan Lahendong"], "judul")
      baris(["Setiap tab di spreadsheet ini mengisi bagian tertentu di situs. Ubah isi sel (tersimpan otomatis), lalu muat ulang halaman situs untuk melihat hasilnya."]),
      baris([""]),
      baris(["CARA MENAMBAH, MENGHAPUS & MENYEMBUNYIKAN DATA"], "kepala")] + [baris([c]) for c in CARA]
-p += [baris([""]), baris(["FOTO DARI GOOGLE DRIVE"], "kepala")] + [baris([c]) for c in CARA_FOTO]
+p += [baris([""]), baris(["MEMASANG FOTO (menu Situs)"], "kepala")] + [baris([c]) for c in CARA_FOTO]
 p += [baris([""]), baris(["TAB", "TAMPIL DI HALAMAN", "ISI"], "kepala")]
-p += [baris([tab, *PETA[tab]]) for tab in SKEMA if tab in PETA]
-p += [baris(["foto", "Semua halaman yang berfoto", "Diisi OTOMATIS dari folder foto Google Drive oleh skrip (menu Situs). Jangan diedit."])]
+p += [baris([tab, *PETA[tab]]) for tab in SKEMA]
 p += [baris([""]), baris(["ATURAN PENGISIAN"], "kepala")] + [baris([a]) for a in ATURAN]
 p += [baris([""]), baris(["ARTI SETIAP KOLOM"], "kepala"), baris(["TAB · KOLOM", "ARTI", "CONTOH"], "kepala")]
 for tab, kolom in SKEMA.items():
-    if tab not in KOLOM:  # tab foto: dibuat & diisi skrip, tidak dijelaskan per kolom
-        continue
     for k in kolom:
         arti, contoh = KOLOM[tab][k]
         p.append(baris([f"{tab} · {k}", arti, contoh.replace("⏎", " ↵ ")], "wajib-petunjuk" if k == kolom[0] else "isi"))
@@ -287,8 +279,6 @@ p += [baris([""]), baris(["DATA YANG MASIH CONTOH"], "kepala")] + [baris([a]) fo
 lembar.append(tabel("petunjuk", ["a", "b", "c"], p, [5.6, 14.0, 12.0]))
 
 for tab, kolom in SKEMA.items():
-    if tab == "foto":  # dibuat & diisi tools/sinkron-foto.gs, bukan bagian template
-        continue
     data = DATA.get(tab, [])
     nama_val = []
     for i, k in enumerate(kolom):

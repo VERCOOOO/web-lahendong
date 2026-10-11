@@ -37,8 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /**
- * Kunci foto_hero di tab profil — atau berkas beranda/hero.jpg di folder foto Drive — mengganti
- * ilustrasi hero dengan foto. Foto asli butuh lapisan
+ * Kunci foto_hero di tab profil mengganti ilustrasi hero dengan foto. Foto asli butuh lapisan
  * gelap agar judul tetap terbaca, jadi hero diberi kelas .hero-foto setelah fotonya termuat.
  * Bila foto gagal dimuat, ilustrasi bawaan tetap dipakai.
  */
@@ -49,10 +48,7 @@ async function pasangFotoHero() {
   } catch (err) {
     return;
   }
-  // Tautan di tab profil (foto_hero) didahulukan; bila kosong, berkas "hero" di folder Drive beranda/.
-  await siapkanFotoDrive();
-  const drive = indeksFotoDrive.get("beranda")?.get("hero");
-  const url = urlFoto(nilaiKunci(profil, "foto_hero"), 1920) || (drive ? urlDrive(teksPolos(drive.id_drive), 1920) : "");
+  const url = urlFoto(nilaiKunci(profil, "foto_hero"), 1920);
   if (!url) return;
   const uji = new Image();
   uji.onload = () => {

@@ -352,31 +352,29 @@
           <p class="hasil">Datanya tetap tersimpan di sheet, hanya tidak dibaca situs.</p>
         </article>
         <article class="resep">
-          <h3>Menambah atau mengganti foto (Google Drive)</h3>
+          <h3>Memasang atau mengganti foto</h3>
           <ol>
-            <li>Buka folder foto: di spreadsheet, menu <strong>Situs → Buka folder foto</strong>.</li>
-            <li>Unggah foto ke subfolder yang sesuai, <strong>dengan nama berkas yang tepat</strong>:
-              <code>beranda/hero.jpg</code>, <code>wisata/Danau Linow.jpg</code>, <code>aparat/Lurah.jpg</code>,
-              <code>lingkungan/&lt;nama kepala/wakil&gt;.jpg</code>, <code>kkt/&lt;NIM&gt;.jpg</code>.</li>
-            <li>Mengganti: hapus berkas lama, unggah yang baru dengan nama sama. Menghapus: hapus berkasnya.</li>
-            <li>Tunggu ±10 menit, atau <strong>Situs → Sinkronkan foto sekarang</strong>. Lalu buka Cek Data.</li>
+            <li>Di spreadsheet, klik baris yang ingin diberi foto: tab <code>wisata</code>, <code>aparat</code>, <code>galeri</code>, atau baris <code>foto_hero</code> di tab <code>profil</code> (gambar besar Beranda).</li>
+            <li>Menu <strong>Situs → Pasang / ganti foto…</strong> — panel muncul di samping.</li>
+            <li><strong>Pilih foto → Simpan foto.</strong></li>
           </ol>
-          <p class="hasil">Tidak perlu menyalin tautan. Huruf besar/kecil dan ekstensi bebas. Nama berkas yang tidak cocok dengan data mana pun ditandai Cek Data beserta saran nama yang benar. Foto orang 3:4 (pas foto), hanya dengan izin yang bersangkutan.</p>
+          <p class="hasil">Tidak perlu menyalin tautan atau mengatur nama berkas: foto diperkecil, disimpan ke Drive, dibagikan, dan tautannya ditulis otomatis. Melepas foto: tombol <em>Hapus foto dari baris ini</em> di panel yang sama. Panel hanya ada di Google Sheets versi komputer. Foto orang hanya dengan izin yang bersangkutan.</p>
         </article>
         <article class="resep">
-          <h3>Menambah foto ke Galeri</h3>
+          <h3>Menambah foto kegiatan ke Galeri</h3>
           <ol>
-            <li>Unggah ke <code>galeri/&lt;kategori&gt;/</code> di folder foto, mis. <code>galeri/Kegiatan/Panen Raya.jpg</code>.</li>
+            <li>Tab <code>galeri</code> → isi baris kosong pertama: <code>judul</code> dan <code>kategori</code> (pilih atau ketik baru, mis. Kegiatan).</li>
+            <li>Tetap di baris itu → <strong>Situs → Pasang / ganti foto…</strong> → pilih foto → Simpan.</li>
           </ol>
-          <p class="hasil">Setiap foto otomatis tampil: judul = nama berkas, kategori = nama subfolder (jadi tombol penyaring). Tab <code>galeri</code> di sheet hanya perlu bila ingin mengatur judul atau menyembunyikan foto.</p>
+          <p class="hasil">Kategori baru langsung menjadi tombol penyaring di halaman Galeri, berdampingan dengan Wisata.</p>
         </article>
         <article class="resep pengembang">
-          <h3>Memasang sinkronisasi foto (sekali)</h3>
+          <h3>Memasang panel foto (sekali)</h3>
           <ol>
-            <li>Spreadsheet → Ekstensi → Apps Script. Ganti isi <code>Code.gs</code> dengan isi berkas <code>tools/sinkron-foto.gs</code>, lalu Simpan.</li>
-            <li>Pilih fungsi <code>pasang</code> → Jalankan → setujui izin akun Google.</li>
+            <li>Spreadsheet → Ekstensi → Apps Script. Ganti seluruh isi <code>Code.gs</code> dengan isi berkas <code>tools/panel-foto.gs</code>, lalu Simpan.</li>
+            <li>Pilih fungsi <code>pasang</code> → Jalankan → setujui izin akun Google. Muat ulang spreadsheet.</li>
           </ol>
-          <p class="hasil">Skrip membuat folder “Foto Situs Lahendong” beserta subfoldernya, membagikannya, mengisi tab <code>foto</code>, dan menyinkronkan otomatis tiap 10 menit. Setelah impor ulang template, jalankan Situs → Sinkronkan foto sekarang.</p>
+          <p class="hasil">Menu <strong>Situs</strong> muncul di spreadsheet. Foto tersimpan di folder “Foto Situs Lahendong” di Google Drive pemilik spreadsheet.</p>
         </article>
         <article class="resep pengembang">
           <h3>Memasang peta wilayah (PNG)</h3>
@@ -415,7 +413,7 @@
             <li><strong>Sejarah</strong> — tulisan sementara, perlu diganti dengan sejarah resmi</li>
             <li>Jam layanan, luas, ketinggian, suhu</li>
             <li>Syarat, alur, waktu &amp; biaya di tab <code>layanan</code></li>
-            <li>Foto — masih ilustrasi bawaan; ganti lewat folder foto Google Drive</li>
+            <li>Foto — masih ilustrasi bawaan; ganti lewat kolom <code>foto</code></li>
           </ul>
         </div>
         <div class="status kosong">
