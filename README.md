@@ -18,21 +18,20 @@ Kode hanya menentukan **tampilan**.
 
 | Tab sheet | Tampil di halaman | Isi |
 |---|---|---|
-| `profil` | Profil, Kontak, Layanan, Penduduk, Beranda, header & footer | Alamat, telepon, email & jam layanan; luas, ketinggian, suhu; batas wilayah; sejarah; tahun & sumber data; foto hero |
+| `profil` | Profil, Kontak, Layanan, Penduduk, Beranda, header & footer | Alamat, telepon, email & jam layanan; luas, ketinggian, suhu; batas wilayah; sejarah; tahun & sumber data |
 | `lingkungan` | Penduduk, Beranda (angka ringkas), Pemerintahan (kartu lingkungan) | Satu baris per lingkungan — **semua total dihitung dari sini** |
 | `aparat` | Pemerintahan (struktur), Beranda (pimpinan), Kontak | Satu baris per aparat |
 | `kontak` | Kontak | Nomor darurat & layanan umum selain aparat |
-| `wisata` | Wisata, detail wisata, Beranda, Galeri | Satu baris per destinasi |
+| `wisata` | Wisata, detail wisata, Beranda | Satu baris per destinasi — **daftar destinasi tetap**, hanya keterangannya yang diubah |
 | `layanan` | Layanan, Beranda (daftar surat) | Satu baris per jenis surat |
-| `galeri` | Galeri | Foto tambahan (kegiatan, alam, budaya) |
 
 Tabel yang sama, beserta arti setiap kolom, ada di tab `petunjuk` pada spreadsheet.
 
 **Tidak diatur dari spreadsheet:** judul dan kalimat pengantar tiap halaman (berkas HTML),
-ilustrasi bawaan (`img/`), peta wilayah (`img/peta-wilayah.png` — tampil otomatis bila ada), dan
+**semua foto** (lihat [Foto](#foto-statis-diatur-pengembang)), peta wilayah (`img/peta-wilayah.png` — tampil otomatis bila ada), dan
 halaman **KKT Unsrat Angkatan 149** (`kkt.html`, ditautkan dari baris bawah footer, tidak ada di menu):
 datanya ditulis di `DATA_KKT` pada awal [`assets/js/halaman/kkt.js`](assets/js/halaman/kkt.js) —
-nama, NIM, fakultas, peran (opsional), foto (nama berkas di `img/` atau tautan Drive, opsional),
+nama, NIM, fakultas, peran (opsional), foto (nama berkas di `img/`, opsional),
 serta dosen lapangan (pembimbing & pengawas), periode, dan paragraf "tentang".
 
 ## Mengelola spreadsheet
@@ -44,41 +43,39 @@ Spreadsheet dirancang agar sulit salah isi:
   "Danau Linow" → `wisata-detail.html?id=danau-linow`.
 - **Tidak ada angka yang ditulis dua kali.** Jumlah penduduk, KK, laki-laki/perempuan, jumlah jiwa per
   lingkungan, dan jumlah lingkungan dihitung dari tab `lingkungan`.
-- **Dropdown** untuk isian pilihan: `tampil`, `kategori`, dan `atasan` (aparat, diambil dari kolom jabatan).
+- **Dropdown** untuk isian pilihan: `tampil`, `kategori`, `atasan` (aparat, diambil dari kolom jabatan), dan
+  `nama` di tab `wisata` (daftar destinasi tetap).
 - **Catatan di judul kolom**: arahkan kursor ke judul kolom untuk melihat arti dan contohnya.
 - **Halaman [Cek Data](https://vercoooo.github.io/web-lahendong/cek-data.html)** memeriksa seluruh sheet
   dan menunjukkan setiap isian yang keliru: kolom salah ketik, atasan tidak ditemukan, angka tidak valid,
-  foto Drive yang belum dibagikan, nama kembar, sampai deret angka yang mirip NIK. Buka setelah mengedit.
+  destinasi wisata yang tidak terdaftar, nama kembar, sampai deret angka yang mirip NIK. Buka setelah mengedit.
 
 ### Pekerjaan sehari-hari
 
 - **Menambah**: isi baris kosong pertama di bawah data.
 - **Menghapus**: klik kanan nomor baris → **Hapus baris**.
-- **Menyembunyikan sementara**: kolom **`tampil`** = `Tidak` (tab wisata, layanan, kontak, galeri).
+- **Menyembunyikan sementara**: kolom **`tampil`** = `Tidak` (tab wisata, layanan, kontak).
 - **Mengurutkan**: urutan di situs = urutan baris di sheet. Pindahkan barisnya.
 - **Susunan kartu** menyesuaikan jumlah baris sendiri (maks. 4 per baris di desktop).
 
-### Foto (lewat panel di spreadsheet)
+### Foto (statis, diatur pengembang)
 
-Operator tidak perlu mengurus tautan, nama berkas, atau folder:
+Spreadsheet hanya berisi teks. Semua foto disimpan di folder `img/` dan didaftarkan di kode, jadi
+operator tidak pernah mengurus tautan, nama berkas, atau folder Drive. Untuk mengganti foto, kirim
+fotonya ke pengembang.
 
-1. Klik baris yang ingin diberi foto — tab `wisata`, `aparat`, `galeri`, atau baris `foto_hero` di tab `profil`.
-2. Menu **Situs → Pasang / ganti foto…**. Panel di samping menampilkan baris itu dan fotonya sekarang.
-3. **Pilih foto → Simpan foto.** Untuk melepas foto: **Hapus foto dari baris ini**.
+| Foto | Tempat | Didaftarkan di |
+|---|---|---|
+| Hero Beranda | `img/hero-lahendong.webp` | `index.html` |
+| Foto utama wisata (kartu & kop detail) | `img/wisata-*.webp` | `FOTO.wisata` di [`komponen.js`](assets/js/komponen.js) |
+| Foto tambahan per destinasi (bisa diklik untuk diperbesar) | `img/wisata/` | `FOTO_DESTINASI` di [`wisata-detail.js`](assets/js/halaman/wisata-detail.js) |
+| Aparat (opsional; tanpa foto = monogram) | `img/` | `FOTO.aparat` (menurut nama) di `komponen.js` |
+| KKT & dosen lapangan | `img/` | kolom `foto` di `DATA_KKT` |
 
-Skrip [`tools/panel-foto.gs`](tools/panel-foto.gs) memperkecil foto (sisi terpanjang 1600 px), menyimpannya
-ke folder "Foto Situs Lahendong" di Google Drive pemilik spreadsheet, membagikannya agar bisa tampil, lalu
-menulis tautannya ke kolom `foto` baris itu. Panel hanya tersedia di Google Sheets versi komputer (browser).
-
-**Memasang skrip (sekali, oleh pemilik spreadsheet):** Ekstensi → Apps Script → ganti seluruh isi
-`Code.gs` dengan isi `tools/panel-foto.gs` → Simpan → jalankan fungsi `pasang` → setujui izin →
-muat ulang spreadsheet.
-
-Kolom `foto` tetap boleh diisi manual (tautan berbagi satu foto Drive, tautan gambar `https://`, atau
-nama berkas di `img/`). Bila foto gagal dimuat, situs memakai foto cadangan (`FOTO` di
-[`komponen.js`](assets/js/komponen.js)), lalu gambar pengganti; orang tanpa foto memakai monogram.
-`foto_hero` mengganti ilustrasi Beranda dengan foto dan otomatis memberi lapisan gelap agar judul terbaca.
-Foto KKT diatur pengembang di `DATA_KKT` (kirim fotonya ke pengembang).
+**Daftar destinasi wisata tetap.** `FOTO.wisata` sekaligus daftar destinasinya: baris di tab `wisata`
+yang namanya tidak terdaftar tidak tampil (Cek Data memberi tahu). Menambah destinasi = simpan fotonya
+di `img/`, daftarkan di `FOTO.wisata`, tambahkan barisnya di `data-contoh.js`, lalu buat ulang template
+(dropdown `nama` mengikuti `data-contoh.js`).
 
 ### Tab `profil`
 
@@ -121,7 +118,7 @@ sebelum situs diumumkan:
 
 - Tab `profil`: jam layanan, luas, ketinggian, suhu, sejarah.
 - Tab `layanan`: syarat, alur, waktu, biaya, dan catatan setiap surat.
-- Masih kosong: telepon & email kantor, kepala & wakil kepala Lingkungan 7, nomor aparat, galeri.
+- Masih kosong: telepon & email kantor, kepala & wakil kepala Lingkungan 7, nomor aparat.
 
 ### Menyambungkan sheet ke situs
 
@@ -168,8 +165,7 @@ dalam bahasa biasa. Untuk detail teknis, buka konsol browser (F12 → Console); 
 │   └── halaman/         logika per halaman (index.html → beranda.js; cek-data.js = pemeriksa sheet)
 ├── img/                 gambar statis
 ├── data/                template spreadsheet
-├── tools/               buat_template.py (template xlsx), versi_aset.py (penanda versi CSS/JS),
-│                        panel-foto.gs (Apps Script: panel Pasang foto di spreadsheet)
+├── tools/               buat_template.py (template xlsx), versi_aset.py (penanda versi CSS/JS)
 └── docs/                Panduan Admin & Panduan Teknis
 ```
 

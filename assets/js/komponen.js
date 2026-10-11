@@ -8,22 +8,27 @@
 /* Foto                                                                     */
 /* ---------------------------------------------------------------------- */
 
-/* Urutan sumber foto untuk satu baris:
-   1. kolom "foto" di sheet (tautan Google Drive, tautan gambar, atau nama berkas di img/);
-   2. foto cadangan di folder img/ yang didaftarkan di FOTO, menurut kode baris
-      (kode = kolom pertama, huruf kecil, selain huruf/angka jadi "-": "Danau Linow" → "danau-linow");
-   3. gambar pengganti. Aparat tanpa foto memakai monogram inisial.
-   Bila sebuah sumber gagal dimuat (mis. foto Drive belum dibagikan), sumber berikutnya dicoba. */
+/* Semua foto situs STATIS: berkasnya di folder img/, didaftarkan di sini menurut kode baris
+   (kode = kolom pertama, huruf kecil, selain huruf/angka jadi "-": "Danau Linow" → "danau-linow").
+   Spreadsheet tidak mengatur foto. Foto tambahan per destinasi ada di FOTO_DESTINASI
+   (halaman/wisata-detail.js); foto KKT di DATA_KKT (halaman/kkt.js).
+
+   FOTO.wisata sekaligus DAFTAR DESTINASI: baris di tab wisata yang tidak terdaftar di sini tidak
+   tampil (lihat wisataTetap). Menambah destinasi = simpan fotonya di img/ lalu daftarkan di sini.
+   Urutan sumber foto: isian foto di data kode (DATA_KKT) → foto terdaftar di FOTO → gambar pengganti/monogram. */
 const FOTO = {
   wisata: {
     "danau-linow": "wisata-danau-linow.webp",
     "hutan-pinus-lahendong": "wisata-hutan-pinus.webp",
     "mah-watu": "wisata-mahwatu.webp",
-    "toulangkow-hills": "wisata-toulangkow.webp",
   },
   aparat: {}, // menurut nama orang: "reymon-stive-londok-s-t": "aparat-lurah.webp"
-  galeri: {},
 };
+
+/** Hanya destinasi yang terdaftar di FOTO.wisata — daftar wisata tidak bisa ditambah lewat sheet. */
+function wisataTetap(data) {
+  return data.filter((w) => FOTO.wisata[teksPolos(w.id)]);
+}
 
 const FOTO_PENGGANTI = "img/placeholder.webp";
 

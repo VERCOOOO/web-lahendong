@@ -58,22 +58,20 @@ SKEMA = js_ke_json(ambil_objek(open(f"{REPO}/assets/js/data.js").read(), "const 
 DATA = js_ke_json(ambil_objek(open(f"{REPO}/assets/js/data-contoh.js").read(), "const DATA_DUMMY"))
 
 PETA = {
-    "profil": ("Profil, Kontak, Layanan, Penduduk (tahun & sumber), Beranda (foto besar), header & footer",
-               "Alamat, telepon, email & jam layanan kantor; luas, ketinggian, suhu; batas wilayah; sejarah; tahun & sumber data; foto hero"),
+    "profil": ("Profil, Kontak, Layanan, Penduduk (tahun & sumber), header & footer",
+               "Alamat, telepon, email & jam layanan kantor; luas, ketinggian, suhu; batas wilayah; sejarah; tahun & sumber data"),
     "lingkungan": ("Penduduk (angka, grafik & tabel), Beranda (angka ringkas), Pemerintahan (kartu lingkungan)",
                    "Satu baris per lingkungan: kepala & wakil kepala lingkungan, KK, laki-laki, perempuan, lansia, rumah. Semua total dihitung otomatis dari tab ini"),
     "aparat": ("Pemerintahan (struktur), Beranda (pimpinan), Kontak (bila nomor diisi)",
                "Satu baris per aparat. Kolom atasan = jabatan atasannya (pilih dari daftar); kosong = pimpinan"),
     "kontak": ("Kontak", "Nomor selain aparat. kategori: darurat (polisi, damkar, ambulans) atau umum (puskesmas, dsb.)"),
-    "wisata": ("Wisata, halaman detail wisata, Beranda, Galeri", "Satu baris per destinasi"),
+    "wisata": ("Wisata, halaman detail wisata, Beranda",
+               "Satu baris per destinasi. Daftar destinasinya tetap (pilih nama dari daftar); yang bisa diubah hanya keterangannya"),
     "layanan": ("Layanan, Beranda (daftar surat)",
                 "Satu baris per jenis surat. syarat & alur: satu butir per baris dalam sel"),
-    "galeri": ("Galeri", "Foto tambahan (kegiatan, alam, budaya) selain foto wisata"),
 }
 
 TAMPIL = ("Ya = tampil di situs. Tidak = disembunyikan, data tetap tersimpan. Kosong dianggap Ya.", "Ya")
-FOTO = ("Diisi otomatis lewat menu Situs → Pasang / ganti foto (pilih barisnya dulu). "
-        "Kosong = foto bawaan situs.", "https://drive.google.com/file/d/…/view")
 
 # (tab, kolom) → (arti, contoh). Tampil sebagai catatan di judul kolom dan di tab petunjuk.
 KOLOM = {
@@ -97,7 +95,6 @@ KOLOM = {
         "nama": ("Nama lengkap dengan gelar. Kosong = \"Nama belum tersedia\".", "Reymon Stive Londok, S.T"),
         "atasan": ("Jabatan atasannya — pilih dari daftar. Kosong = pimpinan (Lurah). Atasan = Lurah → kolom tersendiri; atasan = Kasi → staf di kolom Kasi itu.", "Lurah"),
         "nomor": ("Nomor telepon. Isi hanya bila boleh tampil di halaman Kontak.", "0812-3456-7890"),
-        "foto": FOTO,
     },
     "kontak": {
         "nama": ("WAJIB. Nama layanan/kontak. Hapus baris untuk menghapus kontak.", "Puskesmas Lahendong"),
@@ -107,9 +104,9 @@ KOLOM = {
         "kategori": ("Pilih dari daftar: darurat (polisi, damkar, ambulans) atau umum.", "umum"),
     },
     "wisata": {
-        "nama": ("WAJIB. Nama destinasi. Hapus baris untuk menghapus destinasi.", "Danau Linow"),
+        "nama": ("WAJIB. Pilih nama destinasi dari daftar — jangan diketik ulang. Destinasi baru tidak bisa ditambah dari sini "
+                 "karena butuh foto; hubungi pengelola situs. Menyembunyikan: tampil = Tidak.", "Danau Linow"),
         "tampil": TAMPIL,
-        "foto": FOTO,
         "ringkas": ("Satu kalimat untuk kartu.", "Danau vulkanik dengan warna air yang berubah."),
         "deskripsi": ("Uraian lengkap. Satu paragraf per baris (Ctrl+Enter).", "(paragraf)"),
         "jam": ("Jam buka. Baris pertama tampil di kartu.", "Setiap hari, 08.00 – 18.00 WITA"),
@@ -130,12 +127,6 @@ KOLOM = {
         "biaya": ("Biaya.", "Gratis"),
         "catatan": ("Pemberitahuan tambahan (opsional).", "Bawa dokumen asli saat pengambilan."),
     },
-    "galeri": {
-        "judul": ("WAJIB. Judul foto, tampil di bawah foto.", "Pengucapan Syukur 2026"),
-        "tampil": TAMPIL,
-        "foto": ("WAJIB untuk galeri. Pilih baris ini lalu menu Situs → Pasang / ganti foto.", "https://drive.google.com/file/d/…/view"),
-        "kategori": ("Kelompok foto: pilih dari daftar atau ketik baru. Menjadi tombol penyaring di Galeri.", "Kegiatan"),
-    },
 }
 
 # Dropdown: (tab, kolom) → (pilihan, ketat). pilihan berupa daftar nilai, atau rentang sel
@@ -144,10 +135,10 @@ PILIHAN = {
     ("kontak", "tampil"): (["Ya", "Tidak"], True),
     ("wisata", "tampil"): (["Ya", "Tidak"], True),
     ("layanan", "tampil"): (["Ya", "Tidak"], True),
-    ("galeri", "tampil"): (["Ya", "Tidak"], True),
     ("kontak", "kategori"): (["darurat", "umum"], True),
     ("layanan", "kategori"): (sorted({r.get("kategori", "") for r in DATA.get("layanan", [])} - {""}) or ["Kependudukan"], False),
-    ("galeri", "kategori"): (["Kegiatan", "Alam", "Budaya"], False),
+    # Daftar destinasi tetap = destinasi di data-contoh.js (harus sama dengan FOTO.wisata di komponen.js).
+    ("wisata", "nama"): ([r["nama"] for r in DATA.get("wisata", [])], True),
     ("aparat", "atasan"): ("aparat.jabatan", True),
 }
 
@@ -164,11 +155,9 @@ CARA = [
 ]
 
 CARA_FOTO = [
-    "1. Klik baris yang ingin diberi foto (tab wisata, aparat, galeri, atau baris foto_hero di tab profil).",
-    "2. Menu Situs → Pasang / ganti foto…  (panel muncul di samping kanan).",
-    "3. Pilih foto → Simpan foto. Selesai — tautannya ditulis otomatis ke kolom foto. Muat ulang halaman situs untuk melihatnya.",
-    "• Melepas foto: buka panel yang sama → Hapus foto dari baris ini. Situs kembali memakai gambar bawaan.",
-    "• Panel hanya ada di Google Sheets versi komputer (browser). Foto orang hanya dengan izin yang bersangkutan.",
+    "• Spreadsheet ini hanya berisi teks. Semua foto (beranda, wisata, aparat, tim KKT) disimpan di berkas situs dan diganti oleh pengelola situs.",
+    "• Karena itu daftar destinasi wisata tetap: pilih nama destinasi dari daftar, lalu ubah keterangannya sesuka hati. Baris dengan nama lain tidak tampil.",
+    "• Ingin mengganti foto atau menambah destinasi? Kirim fotonya ke pengelola situs.",
 ]
 
 ATURAN = [
@@ -191,7 +180,7 @@ KUNCI_PROFIL = [
     ("suhu", "Suhu rata-rata (°C)"), ("batas_utara", "Batas utara"), ("batas_selatan", "Batas selatan"),
     ("batas_timur", "Batas timur"), ("batas_barat", "Batas barat"), ("sejarah", "Sejarah, satu paragraf per baris"),
     ("tahun_data", "Tahun data kependudukan"),
-    ("sumber_data", "Sumber data kependudukan"), ("foto_hero", "Foto besar di Beranda (tautan Google Drive, opsional)"),
+    ("sumber_data", "Sumber data kependudukan"),
 ]
 
 TIDAK_DIATUR = [
@@ -203,7 +192,7 @@ MASIH_CONTOH = [
     "Nilai yang belum ada data resminya ditandai \"CONTOH\" di kolom keterangan dan wajib diganti sebelum situs diumumkan:",
     "• Tab profil: jam_layanan, luas_wilayah, ketinggian, suhu, sejarah.",
     "• Tab layanan: syarat, alur, waktu, biaya, dan catatan setiap surat perlu dicocokkan dengan ketentuan kantor kelurahan.",
-    "• Masih kosong: telepon_kantor, email, kepala & wakil kepala Lingkungan 7, nomor aparat, galeri.",
+    "• Masih kosong: telepon_kantor, email, kepala & wakil kepala Lingkungan 7, nomor aparat.",
 ]
 
 
@@ -263,7 +252,7 @@ p = [baris(["PETUNJUK MENGELOLA DATA — Website Kelurahan Lahendong"], "judul")
      baris(["Setiap tab di spreadsheet ini mengisi bagian tertentu di situs. Ubah isi sel (tersimpan otomatis), lalu muat ulang halaman situs untuk melihat hasilnya."]),
      baris([""]),
      baris(["CARA MENAMBAH, MENGHAPUS & MENYEMBUNYIKAN DATA"], "kepala")] + [baris([c]) for c in CARA]
-p += [baris([""]), baris(["MEMASANG FOTO (menu Situs)"], "kepala")] + [baris([c]) for c in CARA_FOTO]
+p += [baris([""]), baris(["FOTO & DESTINASI WISATA"], "kepala")] + [baris([c]) for c in CARA_FOTO]
 p += [baris([""]), baris(["TAB", "TAMPIL DI HALAMAN", "ISI"], "kepala")]
 p += [baris([tab, *PETA[tab]]) for tab in SKEMA]
 p += [baris([""]), baris(["ATURAN PENGISIAN"], "kepala")] + [baris([a]) for a in ATURAN]

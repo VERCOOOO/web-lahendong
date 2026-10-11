@@ -158,7 +158,7 @@
     <h1>Situs menampilkan, spreadsheet mengisi.</h1>
     <p class="ringkas">Hampir semua yang tampil di situs — angka, nama, teks, daftar — dibaca dari satu Google Sheet setiap kali halaman dibuka. Ubah selnya, muat ulang halaman, dan situs ikut berubah.</p>
     <div class="alur" aria-label="Alur data">
-      <div class="kotak"><b>Google Sheet</b><span>7 tab data + tab <em>petunjuk</em>. Admin mengedit di sini.</span></div>
+      <div class="kotak"><b>Google Sheet</b><span>6 tab data + tab <em>petunjuk</em>. Admin mengedit di sini.</span></div>
       <div class="panah" aria-hidden="true">→</div>
       <div class="kotak"><b>Dibaca saat halaman dibuka</b><span>Tanpa commit, tanpa push. Cukup muat ulang.</span></div>
       <div class="panah" aria-hidden="true">→</div>
@@ -224,7 +224,6 @@
         <button type="button" data-tab="kontak" aria-pressed="false">kontak</button>
         <button type="button" data-tab="wisata" aria-pressed="false">wisata</button>
         <button type="button" data-tab="layanan" aria-pressed="false">layanan</button>
-        <button type="button" data-tab="galeri" aria-pressed="false">galeri</button>
         <button type="button" class="reset" data-tab="" aria-pressed="true">Tampilkan semua</button>
       </div>
 
@@ -234,7 +233,7 @@
             <tr>
               <th scope="col"></th>
               <th scope="col">Beranda</th><th scope="col">Profil</th><th scope="col">Pemerin&shy;tahan</th><th scope="col">Pendu&shy;duk</th>
-              <th scope="col">Wisata</th><th scope="col">Detail wisata</th><th scope="col">Galeri</th>
+              <th scope="col">Wisata</th><th scope="col">Detail wisata</th>
               <th scope="col">Layanan</th><th scope="col">Kontak</th><th scope="col">Header &amp; footer</th>
             </tr>
           </thead>
@@ -281,7 +280,7 @@
           <h3>Mengganti pejabat (mis. Lurah baru)</h3>
           <ol>
             <li>Buka tab <code>aparat</code>, cari baris jabatannya.</li>
-            <li>Ganti kolom <code>nama</code> (dan <code>foto</code> bila ada). Jabatan dan atasan dibiarkan.</li>
+            <li>Ganti kolom <code>nama</code>. Jabatan dan atasan dibiarkan.</li>
           </ol>
           <p class="hasil">Berubah di: struktur aparat (Pemerintahan), blok pimpinan (Beranda), dan Kontak bila nomornya diisi. Bawahannya tidak perlu diubah.</p>
         </article>
@@ -325,13 +324,12 @@
           <p class="hasil">Satu kali ubah, tampil di bilah atas, footer, halaman Kontak, dan halaman Layanan sekaligus.</p>
         </article>
         <article class="resep">
-          <h3>Menambah destinasi wisata</h3>
+          <h3>Mengubah keterangan wisata</h3>
           <ol>
-            <li>Tab <code>wisata</code> → isi baris kosong pertama. Minimal <code>nama</code>, <code>ringkas</code>, <code>deskripsi</code>.</li>
-            <li>Kolom lain boleh kosong — bagiannya tidak ditampilkan. Rute: satu langkah per baris di <code>cara_kesana</code>.</li>
-            <li>Foto: tempel tautan Google Drive di kolom <code>foto</code> (lihat “Menambah foto”).</li>
+            <li>Tab <code>wisata</code> → cari baris destinasinya. Ubah <code>ringkas</code>, <code>deskripsi</code>, <code>jam</code>, <code>tiket</code>, dan kolom lain sesuka hati.</li>
+            <li>Kolom <code>nama</code> jangan diketik ulang — pilih dari daftar. Kolom yang kosong membuat bagiannya tidak ditampilkan.</li>
           </ol>
-          <p class="hasil">Muncul di Wisata, Galeri, dan halaman detailnya (alamatnya dibuat dari nama, mis. <code>wisata-detail.html?id=danau-linow</code>). Susunan kartu menyesuaikan jumlahnya sendiri.</p>
+          <p class="hasil">Berubah di Wisata, Beranda, dan halaman detailnya. Daftar destinasinya tetap: baris dengan nama baru tidak tampil, karena setiap destinasi butuh foto yang disimpan di berkas situs.</p>
         </article>
         <article class="resep">
           <h3>Menambah atau menghapus surat</h3>
@@ -346,35 +344,18 @@
         <article class="resep">
           <h3>Menyembunyikan sementara</h3>
           <ol>
-            <li>Tab <code>wisata</code>, <code>layanan</code>, <code>kontak</code>, <code>galeri</code>: pilih <code>Tidak</code> di kolom <code>tampil</code>.</li>
+            <li>Tab <code>wisata</code>, <code>layanan</code>, <code>kontak</code>: pilih <code>Tidak</code> di kolom <code>tampil</code>.</li>
             <li>Untuk menampilkan lagi, pilih <code>Ya</code>.</li>
           </ol>
           <p class="hasil">Datanya tetap tersimpan di sheet, hanya tidak dibaca situs.</p>
         </article>
-        <article class="resep">
-          <h3>Memasang atau mengganti foto</h3>
-          <ol>
-            <li>Di spreadsheet, klik baris yang ingin diberi foto: tab <code>wisata</code>, <code>aparat</code>, <code>galeri</code>, atau baris <code>foto_hero</code> di tab <code>profil</code> (gambar besar Beranda).</li>
-            <li>Menu <strong>Situs → Pasang / ganti foto…</strong> — panel muncul di samping.</li>
-            <li><strong>Pilih foto → Simpan foto.</strong></li>
-          </ol>
-          <p class="hasil">Tidak perlu menyalin tautan atau mengatur nama berkas: foto diperkecil, disimpan ke Drive, dibagikan, dan tautannya ditulis otomatis. Melepas foto: tombol <em>Hapus foto dari baris ini</em> di panel yang sama. Panel hanya ada di Google Sheets versi komputer. Foto orang hanya dengan izin yang bersangkutan.</p>
-        </article>
-        <article class="resep">
-          <h3>Menambah foto kegiatan ke Galeri</h3>
-          <ol>
-            <li>Tab <code>galeri</code> → isi baris kosong pertama: <code>judul</code> dan <code>kategori</code> (pilih atau ketik baru, mis. Kegiatan).</li>
-            <li>Tetap di baris itu → <strong>Situs → Pasang / ganti foto…</strong> → pilih foto → Simpan.</li>
-          </ol>
-          <p class="hasil">Kategori baru langsung menjadi tombol penyaring di halaman Galeri, berdampingan dengan Wisata.</p>
-        </article>
         <article class="resep pengembang">
-          <h3>Memasang panel foto (sekali)</h3>
+          <h3>Mengganti foto atau menambah destinasi wisata</h3>
           <ol>
-            <li>Spreadsheet → Ekstensi → Apps Script. Ganti seluruh isi <code>Code.gs</code> dengan isi berkas <code>tools/panel-foto.gs</code>, lalu Simpan.</li>
-            <li>Pilih fungsi <code>pasang</code> → Jalankan → setujui izin akun Google. Muat ulang spreadsheet.</li>
+            <li>Kirim fotonya ke pengembang situs: foto beranda, foto wisata (utama dan tambahan), atau foto aparat/KKT.</li>
+            <li>Untuk destinasi baru, sertakan juga namanya; pengembang mendaftarkannya, lalu barisnya bisa diisi di tab <code>wisata</code>.</li>
           </ol>
-          <p class="hasil">Menu <strong>Situs</strong> muncul di spreadsheet. Foto tersimpan di folder “Foto Situs Lahendong” di Google Drive pemilik spreadsheet.</p>
+          <p class="hasil">Spreadsheet hanya berisi teks, jadi tidak ada tautan atau nama berkas foto yang perlu diurus operator. Foto tambahan tampil di halaman detail tiap destinasi dan bisa diklik untuk diperbesar. Foto orang hanya dengan izin yang bersangkutan.</p>
         </article>
         <article class="resep pengembang">
           <h3>Memasang peta wilayah (PNG)</h3>
@@ -413,7 +394,7 @@
             <li><strong>Sejarah</strong> — tulisan sementara, perlu diganti dengan sejarah resmi</li>
             <li>Jam layanan, luas, ketinggian, suhu</li>
             <li>Syarat, alur, waktu &amp; biaya di tab <code>layanan</code></li>
-            <li>Foto — masih ilustrasi bawaan; ganti lewat kolom <code>foto</code></li>
+            <li>Foto — masih ilustrasi bawaan; ganti lewat pengembang</li>
           </ul>
         </div>
         <div class="status kosong">
@@ -422,7 +403,7 @@
             <li>Telepon &amp; email kantor</li>
             <li>Kepala &amp; wakil kepala Lingkungan 7</li>
             <li>Nomor aparat</li>
-            <li>Foto galeri</li>
+            <li>Foto tambahan tiap destinasi wisata</li>
             <li>Peta wilayah PNG</li>
           </ul>
         </div>
@@ -457,7 +438,7 @@
             <tr><td>Satu nilai hilang padahal sel terisi</td><td>Format sel berubah dari Teks biasa</td><td>Pilih kolom → Format → Angka → Teks biasa</td></tr>
             <tr><td>Nomor telepon kehilangan angka 0 di depan</td><td>Sel diformat angka</td><td>Format Teks biasa, lalu ketik ulang nomornya</td></tr>
             <tr><td>Aparat tampil sebagai pimpinan kedua</td><td>Kolom <code>atasan</code> berisi jabatan yang tidak ada (salah ketik, atau nama jabatan diganti)</td><td>Pilih atasan dari dropdown</td></tr>
-            <tr><td>Foto tidak muncul, yang tampil gambar pengganti</td><td>Foto Drive belum dibagikan, atau yang ditempel tautan folder</td><td>Bagikan “Siapa saja yang memiliki link”; salin tautan foto, bukan folder</td></tr>
+            <tr><td>Destinasi wisata hilang dari situs</td><td>Kolom <code>nama</code> diketik ulang atau diubah, jadi tidak cocok lagi dengan daftar destinasi</td><td>Pilih kembali namanya dari dropdown; Cek Data menunjukkan barisnya</td></tr>
             <tr><td>Orang yang sama muncul dua kali di Kontak</td><td>Ditulis di tab <code>aparat</code> dan <code>kontak</code></td><td>Hapus barisnya dari tab <code>kontak</code></td></tr>
           </tbody>
         </table>
@@ -503,12 +484,11 @@ tools/buat_template.py  membuat ulang template (python3 tools/buat_template.py)<
   const HALAMAN = [
     { nama: "Beranda", berkas: "index.html", bagian: [
       { isi: "Judul besar & kalimat pengantar", tetap: true },
-      { isi: "Gambar besar (hero)", tab: ["profil"], kolom: "profil: foto_hero (opsional; kosong = ilustrasi bawaan)" },
+      { isi: "Gambar besar (hero)", tetap: true, kolom: "foto di berkas situs (img/hero-lahendong.webp)" },
       { isi: "Angka ringkas", tab: ["lingkungan", "profil"], kolom: "dihitung dari lingkungan (penduduk, KK, jumlah lingkungan) · profil: luas_wilayah" },
       { isi: "Sambutan", tetap: true },
       { isi: "Pimpinan kelurahan", tab: ["aparat"], kolom: "aparat yang kolom atasannya kosong (Lurah)" },
-      { isi: "Layanan surat (6 teratas)", tab: ["layanan"], kolom: "nama_surat, waktu, biaya" },
-      { isi: "Destinasi wisata (4 pertama)", tab: ["wisata"], kolom: "nama, foto, ringkas, baris pertama tiket & jam" },
+      { isi: "Destinasi wisata (4 pertama)", tab: ["wisata"], kolom: "nama, ringkas, baris pertama tiket & jam (foto: berkas situs)" },
       { isi: "Layanan surat (6 teratas)", tab: ["layanan", "profil"], kolom: "layanan: nama_surat, waktu, biaya · profil: jam_layanan" },
     ]},
     { nama: "Profil", berkas: "profil.html", bagian: [
@@ -519,24 +499,22 @@ tools/buat_template.py  membuat ulang template (python3 tools/buat_template.py)<
       { isi: "Peta interaktif Google", tetap: true },
     ]},
     { nama: "Pemerintahan", berkas: "pemerintahan.html", bagian: [
-      { isi: "Struktur aparat (pimpinan, kolom bawahan, staf)", tab: ["aparat"], kolom: "jabatan, nama, atasan, foto; urutan = urutan baris" },
+      { isi: "Struktur aparat (pimpinan, kolom bawahan, staf)", tab: ["aparat"], kolom: "jabatan, nama, atasan; urutan = urutan baris" },
       { isi: "Kartu lingkungan", tab: ["lingkungan"], kolom: "nama, kepala, wakil_kepala, jiwa (laki + perempuan), jumlah_kk" },
     ]},
     { nama: "Penduduk", berkas: "penduduk.html", bagian: [
       { isi: "Tahun & sumber data", tab: ["profil"], kolom: "profil: tahun_data, sumber_data" },
       { isi: "Angka ringkas", tab: ["lingkungan"], kolom: "dihitung: total jiwa, KK, laki-laki, perempuan" },
       { isi: "Grafik & tabel laki-laki/perempuan", tab: ["lingkungan"], kolom: "dihitung dari laki & perempuan tiap lingkungan" },
-      { isi: "Grafik & tabel per lingkungan + total", tab: ["lingkungan"], kolom: "jumlah_kk, jumlah_jiwa, laki, perempuan, jumlah_lansia, jumlah_rumah" },
+      { isi: "Grafik & tabel per lingkungan + total", tab: ["lingkungan"], kolom: "jumlah_kk, jiwa (laki + perempuan), laki, perempuan, jumlah_lansia, jumlah_rumah" },
     ]},
     { nama: "Wisata", berkas: "wisata.html", bagian: [
-      { isi: "Kartu semua destinasi (kolom menyesuaikan jumlah)", tab: ["wisata"], kolom: "nama, foto, ringkas, baris pertama tiket & jam" },
+      { isi: "Kartu semua destinasi (kolom menyesuaikan jumlah)", tab: ["wisata"], kolom: "nama, ringkas, baris pertama tiket & jam (foto: berkas situs)" },
     ]},
     { nama: "Detail wisata", berkas: "wisata-detail.html?id=danau-linow", bagian: [
       { isi: "Tentang, rute, pengelola", tab: ["wisata"], kolom: "deskripsi, cara_kesana, pengelola, maps_link" },
       { isi: "Informasi kunjungan", tab: ["wisata"], kolom: "jam, tiket, fasilitas, waktu_terbaik" },
-    ]},
-    { nama: "Galeri", berkas: "galeri.html", bagian: [
-      { isi: "Foto + penyaring kategori", tab: ["galeri", "wisata"], kolom: "galeri: judul, foto, kategori · wisata yang punya foto" },
+      { isi: "Foto destinasi (klik untuk memperbesar)", tetap: true, kolom: "foto di berkas situs; bagian ini tampil bila fotonya ada" },
     ]},
     { nama: "Layanan", berkas: "layanan.html", bagian: [
       { isi: "Daftar surat: kelompok, pencarian, buka-tutup", tab: ["layanan"], kolom: "nama_surat, kategori, syarat, alur, waktu, biaya, catatan" },
@@ -561,7 +539,7 @@ tools/buat_template.py  membuat ulang template (python3 tools/buat_template.py)<
         ["nilai", "Isinya", "Senin – Jumat, 08.00 – 15.00 WITA"],
         ["keterangan", "Catatan untuk admin, tidak tampil di situs", "CONTOH — ganti…"],
       ],
-      catatan: "Kunci yang dikenal: alamat_kantor, telepon_kantor, email, jam_layanan, luas_wilayah (angka, km²), ketinggian (mdpl), suhu (°C), batas_utara, batas_selatan, batas_timur, batas_barat, sejarah ↵, tahun_data, sumber_data, foto_hero (tautan Drive). Kunci salah ketik ditandai Cek Data." },
+      catatan: "Kunci yang dikenal: alamat_kantor, telepon_kantor, email, jam_layanan, luas_wilayah (angka, km²), ketinggian (mdpl), suhu (°C), batas_utara, batas_selatan, batas_timur, batas_barat, sejarah ↵, tahun_data, sumber_data. Kunci salah ketik ditandai Cek Data." },
     { nama: "lingkungan", isi: "Satu baris per lingkungan. Jumlah jiwa (laki + perempuan) dan semua total dihitung otomatis — tidak ada kolom jumlah jiwa.",
       kolom: [
         ["nama", "Wajib. Nama lingkungan", "Lingkungan 1"], ["kepala", "Kepala lingkungan; kosong = \"Belum tersedia\"", "Julius Joni Rondonuwu"],
@@ -573,16 +551,16 @@ tools/buat_template.py  membuat ulang template (python3 tools/buat_template.py)<
       kolom: [
         ["jabatan", "Wajib. Nama jabatan", "Kepala Seksi Pemerintahan"], ["nama", "Nama lengkap dengan gelar", "Marthen J. Mende, ST"],
         ["atasan", "Jabatan atasannya (dropdown); kosong = pimpinan", "Lurah"],
-        ["nomor", "Diisi bila boleh tampil di halaman Kontak", "0812-3456-7890"], ["foto", "Tautan Google Drive (opsional); kosong = monogram", "https://drive.google.com/file/d/…"],
+        ["nomor", "Diisi bila boleh tampil di halaman Kontak", "0812-3456-7890"]
       ] },
     { nama: "kontak", isi: "Nomor penting selain aparat.",
       kolom: [
         ["nama", "Wajib. Nama layanan", "Polisi"], ["tampil", "Ya / Tidak (dropdown)", "Ya"], ["peran", "Keterangan singkat", "Kepolisian"],
         ["nomor", "Nomor telepon", "110"], ["kategori", "darurat atau umum (dropdown)", "darurat"],
       ] },
-    { nama: "wisata", isi: "Satu baris per destinasi. Alamat halaman detail dibuat dari nama (wisata-detail.html?id=danau-linow).",
+    { nama: "wisata", isi: "Satu baris per destinasi. Daftar destinasinya tetap (Danau Linow, Hutan Pinus Lahendong, Mah’Watu) karena fotonya disimpan di berkas situs; yang diubah di sini hanya keterangannya.",
       kolom: [
-        ["nama", "Wajib. Nama destinasi", "Danau Linow"], ["tampil", "Ya / Tidak (dropdown)", "Ya"], ["foto", "Tautan Google Drive (opsional)", "https://drive.google.com/file/d/…"], ["ringkas", "Satu kalimat untuk kartu", "Danau vulkanik dengan warna air…"],
+        ["nama", "Wajib. Pilih dari dropdown — jangan diketik ulang", "Danau Linow"], ["tampil", "Ya / Tidak (dropdown)", "Ya"], ["ringkas", "Satu kalimat untuk kartu", "Danau vulkanik dengan warna air…"],
         ["deskripsi", "Uraian lengkap ↵", "(paragraf)"], ["jam", "Jam operasional ↵", "Setiap hari, 10.00 – 20.00 WITA"], ["tiket", "Harga tiket ↵", "Rp40.000 per orang"],
         ["fasilitas", "Dipisah koma", "Kafe, area parkir, toilet"], ["waktu_terbaik", "Waktu berkunjung ↵", "Pagi hari atau sore…"],
         ["cara_kesana", "Rute, satu langkah per baris ↵", "(langkah)"], ["pengelola", "Pengelola ↵", "PT Karyadeka Alam Asri"], ["maps_link", "Tautan Google Maps (https://)", "https://maps.google.com/?q=…"],
@@ -592,8 +570,6 @@ tools/buat_template.py  membuat ulang template (python3 tools/buat_template.py)<
         ["syarat", "Satu berkas per baris ↵", "Fotokopi KTP ↵ Fotokopi KK"], ["alur", "Satu langkah per baris ↵", "Bawa berkas ke kantor ↵ …"], ["waktu", "Lama proses", "1 hari kerja"], ["biaya", "Biaya", "Gratis"],
         ["catatan", "Pemberitahuan tambahan (opsional) ↵", "Sebutkan keperluan SKTM…"]],
       catatan: "Surat tanpa kategori masuk kelompok \"Lainnya\". Kotak pencarian muncul otomatis bila surat berjumlah 5 atau lebih." },
-    { nama: "galeri", isi: "Foto tambahan untuk halaman Galeri (kegiatan, alam, budaya). Baris tanpa foto tidak ditampilkan.",
-      kolom: [["judul", "Wajib. Judul foto", "Pengucapan Syukur 2026"], ["tampil", "Ya / Tidak (dropdown)", "Ya"], ["foto", "Wajib. Tautan Google Drive satu foto", "https://drive.google.com/file/d/…"], ["kategori", "Kelompok foto (dropdown, boleh ketik baru)", "Kegiatan"]] },
   ];
 
   const tabDipakai = (h, tab) => h.bagian.some((b) => (b.tab || []).includes(tab));

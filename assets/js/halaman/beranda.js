@@ -21,13 +21,11 @@ document.addEventListener("DOMContentLoaded", () => {
       .join("");
   });
 
-  pasangFotoHero();
-
   // Pelengkap: bila gagal atau kosong, bloknya cukup tidak ditampilkan.
   isiDariData(document.getElementById("pimpinan"), "aparat", renderPimpinan, { kosong: null, gagal: null });
 
   isiDariData(document.getElementById("grid-wisata"), "wisata",
-    (data) => data.slice(0, 4).map((item) => kartuWisata(item)).join(""),
+    (data) => wisataTetap(data).slice(0, 4).map((item) => kartuWisata(item)).join(""),
     { gagal: "Daftar destinasi belum bisa dimuat saat ini." }
   );
 
@@ -35,29 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
     { kosong: "Daftar layanan surat sedang disiapkan.", gagal: "Daftar layanan belum bisa dimuat saat ini." }
   );
 });
-
-/**
- * Kunci foto_hero di tab profil mengganti ilustrasi hero dengan foto. Foto asli butuh lapisan
- * gelap agar judul tetap terbaca, jadi hero diberi kelas .hero-foto setelah fotonya termuat.
- * Bila foto gagal dimuat, ilustrasi bawaan tetap dipakai.
- */
-async function pasangFotoHero() {
-  let profil = [];
-  try {
-    profil = await ambilData("profil");
-  } catch (err) {
-    return;
-  }
-  const url = urlFoto(nilaiKunci(profil, "foto_hero"), 1920);
-  if (!url) return;
-  const uji = new Image();
-  uji.onload = () => {
-    const hero = document.getElementById("hero");
-    hero.querySelector(".hero-gambar").src = url;
-    hero.classList.add("hero-foto");
-  };
-  uji.src = url;
-}
 
 function renderPimpinan(aparat) {
   // Pimpinan = aparat pertama yang kolom atasannya kosong.

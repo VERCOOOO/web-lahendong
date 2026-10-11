@@ -35,8 +35,7 @@ Semua warna didefinisikan di `:root`. Warna di luar daftar ini ditolak.
 Aturan:
 - `--accent` tidak pernah dipakai untuk teks di latar terang (kontrasnya 2:1). Untuk teks pakai `--accent-ink`.
 - Bidang gelap hanya: kop halaman, satu seksi/panel sorotan per halaman (layanan di Beranda, pimpinan di Pemerintahan), footer.
-- Tanpa gradien warna, tanpa overlay di atas ilustrasi. Pengecualian: hero berfoto (`foto_hero`) memakai
-  gradien `--deep-2` dari kiri agar judul putih terbaca di atas foto asli.
+- Tanpa gradien warna, tanpa overlay di atas ilustrasi.
 - Kontras teks minimal 4,5:1 (semua pasangan di atas sudah diperiksa).
 
 ## 3. TIPOGRAFI
@@ -67,7 +66,6 @@ Lebar konten: maks 1160px. Padding tepi layar: 24px desktop · 16px HP.
 Bilah resmi : `--deep-2`, 36px, teks kecil; jam layanan & tautan kontak (desktop).
 Header      : 72px, `--surface`, menempel saat digulir. Nav aktif = garis belerang 3px di bawah.
 Hero beranda: ilustrasi poster penuh; judul di bidang langit kiri atas, teks `--ink` (tanpa overlay).
-              Bila `foto_hero` diisi: foto asli + gradien gelap, judul putih (`.hero-foto`).
               Dua tombol: Jelajahi wisata (utama) & Layanan surat (sekunder).
 Papan info  : panel putih bergaris atas belerang yang menumpang 88px di tepi bawah hero; berisi angka ringkas.
 Kop halaman : bidang `--deep` + garis kontur samar di kanan; tepi bawah berupa siluet punggungan gunung
@@ -91,11 +89,13 @@ Lingkungan  : nomor lingkungan sebagai angka besar `--primary`, batang porsi jiw
 Bagan KKT   : pengurus inti di puncak (ketua di tengah, bergaris belerang, diapit sekretaris & bendahara),
               garis turun ke kolom bidang (kepala `--deep` berikon, koordinator berlatar `--toska-muda`,
               anggota dalam daftar ringkas). Panel dosen lapangan memakai bidang `--deep`.
+Foto wisata : di halaman detail, grid foto 3:2 (2 kolom HP, 3 kolom desktop), klik = diperbesar di
+              `<dialog>` berlatar `--deep-2` 92%, tombol bulat tembus pandang, panah kiri/kanan & Esc.
 Cek Data    : satu kartu per tab; temuan bergaris kiri `--danger` (perlu diperbaiki), `--accent` (periksa),
               `--toska` (info). Alat admin, tidak ada di menu.
 
 ## 6. GRID ADAPTIF
-Kartu yang jumlahnya ditentukan admin (wisata, galeri, kolom struktur aparat, lingkungan, kontak) memakai
+Kartu yang jumlahnya ditentukan admin (wisata, kolom struktur aparat, lingkungan, kontak) memakai
 `.grid-adaptif`. `aturKolom()` di `komponen.js` menghitung:
 
     baris = ceil(n / maks)      kolom = ceil(n / baris)      (maks bawaan 4, atribut data-maks)
@@ -110,8 +110,8 @@ Satu kartu dibatasi lebar 560px agar tidak melebar sepanjang layar.
 
 ## 7. IKON & GAMBAR
 - Ikon garis Lucide. DILARANG emoji sebagai ikon UI.
-- Ilustrasi bawaan bergaya poster (bidang datar, palet di atas). Foto asli diisi lewat kolom `foto` di sheet
-  (tautan Google Drive); ilustrasi menjadi cadangan bila foto gagal dimuat. Wajib alt.
+- Ilustrasi bawaan bergaya poster (bidang datar, palet di atas). Semua foto statis di `img/`, didaftarkan
+  di kode (lihat README › Foto); spreadsheet tidak mengatur foto. Wajib alt.
 - Rasio: kartu 3:2, hero penuh layar. Foto gagal dimuat → `img/placeholder.webp`.
 
 ## 8. GERAK
@@ -124,4 +124,4 @@ Satu kartu dibatasi lebar 560px agar tidak melebar sepanjang layar.
 2. Mobile first. Uji di lebar 360px; tanpa gulir horizontal.
 3. Tanpa glassmorphism, blur, neon, efek 3D, gradien warna-warni.
 4. Warna di luar palet = ditolak. Kontras teks minimal 4,5:1.
-5. Tidak ada data di HTML — semua isi dari spreadsheet (lihat README).
+5. Tidak ada data di HTML — semua isi teks dari spreadsheet, foto dari `img/` (lihat README).

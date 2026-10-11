@@ -31,7 +31,6 @@ const DATA_DUMMY = {
     },
     { kunci: "tahun_data", nilai: "2026", keterangan: "Tahun data kependudukan (tab lingkungan). Halaman Penduduk." },
     { kunci: "sumber_data", nilai: "Kelurahan Lahendong", keterangan: "Sumber data kependudukan. Halaman Penduduk." },
-    { kunci: "foto_hero", nilai: "", keterangan: "Opsional. Tautan Google Drive foto lanskap untuk gambar besar di Beranda. Kosong = ilustrasi bawaan." },
   ],
 
   // Sumber: Kelurahan Lahendong, 2026. Kepala & wakil kepala lingkungan dari daftar kelurahan;
@@ -50,9 +49,9 @@ const DATA_DUMMY = {
 
   // Struktur belum final. "atasan" = jabatan atasannya; kosong = pimpinan. Urutan = urutan baris.
   aparat: [
-    { jabatan: "Lurah", nama: "Reymon Stive Londok, S.T", atasan: "", nomor: "", foto: "" },
-    { jabatan: "Sekretaris Kelurahan", nama: "Cicilia M. Karamoy, S.ST, M.Kes", atasan: "Lurah", nomor: "", foto: "" },
-    { jabatan: "Kepala Seksi Pemerintahan", nama: "Marthen J. Mende, ST", atasan: "Lurah", nomor: "", foto: "" },
+    { jabatan: "Lurah", nama: "Reymon Stive Londok, S.T", atasan: "", nomor: "" },
+    { jabatan: "Sekretaris Kelurahan", nama: "Cicilia M. Karamoy, S.ST, M.Kes", atasan: "Lurah", nomor: "" },
+    { jabatan: "Kepala Seksi Pemerintahan", nama: "Marthen J. Mende, ST", atasan: "Lurah", nomor: "" },
   ],
 
   // Nomor darurat nasional. Tambahkan narahubung umum (puskesmas, polsek, dsb.) dengan kategori "umum".
@@ -66,7 +65,6 @@ const DATA_DUMMY = {
     {
       nama: "Danau Linow",
       tampil: "Ya",
-      foto: "",
       ringkas: "Danau vulkanik dengan warna air yang dapat berubah — hijau, biru, hingga kekuningan.",
       deskripsi:
         "Danau Linow Lahendong merupakan danau vulkanik yang berada di wilayah Lahendong, Kota Tomohon, Sulawesi Utara. Danau ini terbentuk dari aktivitas vulkanik dan memiliki kandungan belerang serta aktivitas panas bumi di kawasan sekitarnya. Lingkungan danau dikelilingi vegetasi hijau dan perbukitan, sehingga memiliki kondisi alam yang sejuk dan asri. Selain sebagai kawasan wisata, Danau Linow juga memiliki nilai ekologis dan geologis yang berkaitan dengan karakteristik kawasan vulkanik Lahendong.\n" +
@@ -86,7 +84,6 @@ const DATA_DUMMY = {
     {
       nama: "Hutan Pinus Lahendong",
       tampil: "Ya",
-      foto: "",
       ringkas: "Hutan pinus sejuk yang berpadu dengan kolam sulfur beruap dan pemandian air panas alami.",
       deskripsi:
         "Hutan Pinus Lahendong adalah destinasi wisata alam unik di Tomohon yang memadukan keindahan hutan pinus hijau nan rimbun dengan fenomena geotermal berupa kolam sulfur beruap putih dan pemandian air panas alami yang kaya khasiat bagi kulit. Perpaduan uap panas bumi yang mengepul di antara deretan pepohonan pinus yang menjulang tinggi menciptakan suasana yang sejuk dan menenangkan, menjadikannya tempat ideal untuk menyegarkan pikiran, berburu spot foto, serta bersantai menikmati kedamaian alam Tomohon jauh dari hiruk-pikuk perkotaan.",
@@ -109,7 +106,6 @@ const DATA_DUMMY = {
     {
       nama: "Mah’Watu",
       tampil: "Ya",
-      foto: "",
       ringkas: "Wisata alam asri dengan kafe terbuka, gazebo, dan aliran air belerang berwarna hijau toska.",
       deskripsi:
         "Mah’Watu merupakan salah satu destinasi wisata alam yang berada di Kota Tomohon, Sulawesi Utara. Tempat wisata ini menawarkan suasana yang asri dan sejuk dengan pemandangan alam yang indah, sehingga cocok dijadikan tempat untuk bersantai dan melepas penat. Keindahan lingkungan sekitar yang masih alami menjadi daya tarik tersendiri bagi pengunjung. Selain menikmati pemandangan, wisatawan juga dapat menghabiskan waktu bersama keluarga maupun teman sambil menikmati suasana yang tenang dan udara yang segar.",
@@ -124,9 +120,6 @@ const DATA_DUMMY = {
       maps_link: "https://maps.google.com/?q=Mahwatu+Tomohon",
     },
   ],
-
-  // Foto tambahan untuk Galeri (kegiatan, alam, budaya). Belum ada.
-  galeri: [],
 
   // CONTOH — syarat, alur, waktu, dan biaya perlu dicocokkan dengan ketentuan kantor kelurahan.
   // Satu syarat / satu langkah per baris di dalam sel. Tambah atau hapus baris surat sesuka hati.

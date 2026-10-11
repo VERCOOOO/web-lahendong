@@ -356,22 +356,6 @@ img { max-width: 100%; }
   .hero-lead { font-size: 20px; }
 }
 
-/* Hero berfoto (kunci foto_hero di tab profil): lapisan gelap dari kiri agar judul terbaca */
-.hero-foto::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: linear-gradient(100deg, rgba(10, 34, 30, 0.86) 0%, rgba(10, 34, 30, 0.55) 45%, rgba(10, 34, 30, 0.1) 80%);
-}
-.hero-foto .hero-gambar { object-position: center; }
-.hero-foto .hero-isi { z-index: 2; }
-.hero-foto .judul-hero { color: #fff; }
-.hero-foto .eyebrow { color: var(--toska); }
-.hero-foto .hero-lead { color: var(--on-deep); }
-.hero-foto .tombol-sekunder { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.7); }
-.hero-foto .tombol-sekunder:hover { background: #fff; color: var(--primary-d); }
-
 /* Papan informasi: panel angka yang menumpang di tepi bawah hero */
 .papan-info {
   position: relative;
@@ -1440,6 +1424,85 @@ details[open] { border-color: var(--primary); }
 @media (min-width: 1024px) {
   .struktur-kkt .cabang-struktur { --sela: 64px; }
 }
+
+/* --- Foto destinasi (halaman detail wisata) ---------------------------- */
+
+.galeri-destinasi {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media (min-width: 768px) {
+  .galeri-destinasi { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+}
+
+.foto-destinasi {
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  aspect-ratio: 3 / 2;
+  background: var(--toska-muda);
+  cursor: zoom-in;
+}
+
+.foto-destinasi img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 400ms ease-out;
+}
+
+.foto-destinasi:hover img { transform: scale(1.04); }
+
+/* Pembesar foto: <dialog> bawaan browser, latar gelap */
+.pembesar-foto {
+  width: 100vw;
+  max-width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+}
+
+.pembesar-foto[open] { display: flex; align-items: center; justify-content: center; }
+.pembesar-foto::backdrop { background: rgba(10, 34, 30, 0.92); }
+
+.pembesar-foto figure { margin: 0; max-width: min(1200px, 88vw); text-align: center; }
+
+.pembesar-foto img {
+  max-width: 100%;
+  max-height: 80vh;
+  border-radius: var(--radius);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+.pembesar-foto figcaption { margin-top: 12px; font-size: 14px; color: var(--on-deep-muted); }
+
+.pembesar-foto .tutup,
+.pembesar-foto .geser {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  cursor: pointer;
+}
+
+.pembesar-foto .tutup { top: 16px; right: 16px; }
+.pembesar-foto .sebelumnya { left: 12px; top: 50%; transform: translateY(-50%); }
+.pembesar-foto .berikutnya { right: 12px; top: 50%; transform: translateY(-50%); }
+.pembesar-foto .tutup:hover,
+.pembesar-foto .geser:hover { background: rgba(255, 255, 255, 0.24); }
 
 /* --- Kartu lingkungan --------------------------------------------------- */
 

@@ -13,8 +13,6 @@ const TINGKAT = {
   info: { label: "Info", ikon: "info" },
 };
 
-const BATAS_UJI_FOTO_MS = 12000;
-
 document.addEventListener("DOMContentLoaded", () => {
   const tautan = document.getElementById("tautan-sheet");
   if (PAKAI_DUMMY) tautan.remove();
@@ -49,13 +47,6 @@ async function jalankanCek() {
   const temuan = [];
   Object.keys(SKEMA).forEach((nama) => periksaTab(nama, tab, temuan));
   tampilkanHasil(tab, temuan);
-
-  // Foto diuji terakhir karena butuh waktu (setiap foto benar-benar dicoba dibuka).
-  const fotoGagal = await ujiSemuaFoto(tab);
-  if (fotoGagal.length) {
-    temuan.push(...fotoGagal);
-    tampilkanHasil(tab, temuan);
-  }
   document.getElementById("waktu-cek").textContent = "Diperiksa " +
     new Date().toLocaleString("id-ID", { dateStyle: "long", timeStyle: "short" }) +
     (PAKAI_DUMMY ? " · mode data contoh (PAKAI_DUMMY = true)" : " · langsung dari Google Sheet");
@@ -110,9 +101,6 @@ function periksaTab(nama, semua, temuan) {
       lapor("info", b, "tampil", `"${teksPolos(b[kunci])}" disembunyikan (tampil = Tidak).`);
     }
 
-    // Kolom foto
-    if ("foto" in b && b.foto) periksaFoto(b.foto, (pesan, saran) => lapor("salah", b, "foto", pesan, saran));
-
     // Data pribadi: deret 16 angka seperti NIK
     skema.forEach((k) => {
       if (/(^|\D)\d{16}(\D|$)/.test(teksPolos(b[k]).replace(/[\s.-]/g, ""))) {
@@ -149,8 +137,6 @@ const ATURAN_TAB = {
       const b = baris.find((x) => x.kunci === "luas_wilayah");
       lapor("periksa", b, "nilai", `Luas wilayah "${teksPolos(nilai("luas_wilayah"))}" bukan angka.`, "Tulis angkanya saja, mis. 7,85 (satuan km² ditambahkan situs).");
     }
-    const hero = baris.find((b) => b.kunci === "foto_hero");
-    if (hero?.nilai) periksaFoto(hero.nilai, (pesan, saran) => lapor("salah", hero, "nilai", pesan, saran));
     ["alamat_kantor", "jam_layanan", "tahun_data", "sumber_data"].filter((k) => !nilai(k)).forEach((k) =>
       lapor("info", null, k, `Kunci "${k}" belum diisi; bagiannya disembunyikan di situs.`));
   },
@@ -231,12 +217,28 @@ const ATURAN_TAB = {
   },
 
   wisata(baris, lapor) {
+    // Daftar destinasi tetap (FOTO.wisata di komponen.js): baris lain tidak tampil.
+    // Nama resminya = nama di data contoh, sama dengan pilihan dropdown di template.
+    const terdaftar = Object.keys(FOTO.wisata);
+    const namaResmi = (k) => DATA_DUMMY.wisata.find((w) => kodeDari(w.nama) === k)?.nama || k.replace(/-/g, " ");
+    const namaTerdaftar = terdaftar.map(namaResmi);
     baris.forEach((b) => {
+      if (!terdaftar.includes(kodeDari(b.nama))) {
+        const mirip = palingMirip(b.nama, namaTerdaftar);
+        lapor("periksa", b, "nama", `"${teksPolos(b.nama)}" tidak termasuk daftar destinasi situs, jadi baris ini tidak tampil.`,
+          mirip ? `Bila maksudnya destinasi yang sudah ada, kembalikan namanya seperti semula ("${mirip}"). Destinasi baru hanya bisa ditambahkan pengembang situs karena butuh foto.`
+                : "Destinasi baru hanya bisa ditambahkan pengembang situs karena butuh foto. Hubungi pengelola situs.");
+        return;
+      }
       if (!b.ringkas) lapor("periksa", b, "ringkas", `${teksPolos(b.nama)} belum punya kalimat ringkas; kartunya hanya berisi nama.`, "Isi satu kalimat pendek tentang destinasi ini.");
       if (b.maps_link && !urlAman(teksPolos(b.maps_link))) {
         lapor("salah", b, "maps_link", "Tautan peta tidak diawali https://, jadi tombol Google Maps tidak muncul.", "Salin tautan lengkap dari Google Maps (Bagikan → Salin link).");
       }
     });
+    const adaDiSheet = baris.map((b) => kodeDari(b.nama));
+    terdaftar.filter((k) => !adaDiSheet.includes(k)).forEach((k) =>
+      lapor("info", null, "nama", `Destinasi "${namaResmi(k)}" tidak ada di tab ini, jadi tidak tampil di situs.`,
+        "Bila tidak sengaja terhapus atau namanya berubah, pilih lagi namanya dari daftar di kolom nama."));
   },
 
   layanan(baris, lapor) {
@@ -244,55 +246,7 @@ const ATURAN_TAB = {
       if (!b.syarat && !b.alur) lapor("info", b, "syarat", `${teksPolos(b.nama_surat)} belum punya syarat maupun alur; pengunjung diminta bertanya ke kantor.`);
     });
   },
-
-  galeri(baris, lapor) {
-    baris.filter((b) => !b.foto).forEach((b) =>
-      lapor("salah", b, "foto", `"${teksPolos(b.judul)}" tidak punya foto, jadi tidak tampil di Galeri.`, "Tempel tautan foto Google Drive di kolom foto."));
-  },
 };
-
-/** Memeriksa bentuk isian foto (bukan apakah fotonya bisa dibuka — itu di ujiSemuaFoto). */
-function periksaFoto(nilai, lapor) {
-  const teks = teksPolos(nilai).trim();
-  if (/drive\.google\.com\/drive\/(u\/\d+\/)?folders\//i.test(teks)) {
-    lapor("Ini tautan folder Google Drive, bukan tautan satu foto.", "Buka fotonya di Drive → Bagikan → Salin link, lalu tempel tautan itu.");
-  } else if (!urlFoto(teks)) {
-    lapor(`Isian foto "${teks.slice(0, 60)}" tidak dikenali.`, "Tempel tautan berbagi Google Drive (diawali https://drive.google.com/…), tautan gambar https, atau nama berkas di folder img/.");
-  }
-}
-
-/* ---------------------------------------------------------------------- */
-/* Uji foto: setiap foto benar-benar dicoba dibuka                         */
-/* ---------------------------------------------------------------------- */
-
-async function ujiSemuaFoto(semua) {
-  const daftar = [];
-  Object.entries(semua).forEach(([nama, { baris = [] }]) => {
-    baris.forEach((b) => {
-      const isian = nama === "profil" ? (b.kunci === "foto_hero" ? b.nilai : "") : b.foto;
-      const url = isian && urlFoto(isian, 200);
-      if (url) daftar.push({ nama, b, url, kolom: nama === "profil" ? "nilai" : "foto" });
-    });
-  });
-  const hasil = await Promise.all(daftar.map(async (d) => ({ ...d, bisa: await bisaDibuka(d.url) })));
-  return hasil.filter((h) => !h.bisa).map(({ nama, b, kolom, url }) => ({
-    tab: nama, tingkat: "salah", baris: b._baris, kolom,
-    pesan: "Foto tidak bisa dibuka, jadi situs memakai gambar cadangan.",
-    saran: /drive\.google\.com/.test(url)
-      ? "Di Google Drive: klik kanan foto → Bagikan → Akses umum: \"Siapa saja yang memiliki link\" (Pelihat). Pastikan berkasnya foto (JPG/PNG), bukan PDF atau folder."
-      : "Periksa tautannya di browser; tautan harus langsung menuju gambar.",
-  }));
-}
-
-function bisaDibuka(url) {
-  return new Promise((selesai) => {
-    const img = new Image();
-    const batas = setTimeout(() => selesai(false), BATAS_UJI_FOTO_MS);
-    img.onload = () => { clearTimeout(batas); selesai(img.naturalWidth > 1); };
-    img.onerror = () => { clearTimeout(batas); selesai(false); };
-    img.src = url;
-  });
-}
 
 /* ---------------------------------------------------------------------- */
 /* Tampilan hasil                                                          */

@@ -27,34 +27,35 @@ const ID_SPREADSHEET = "11f8D-qzWt1rdkin7uBMmrbrEkZmc4dih39ruUwTh1gQ";
    - Tidak ada angka yang ditulis dua kali. Total penduduk, KK, dan jiwa per lingkungan
      dihitung dari tab lingkungan (lihat ringkasPenduduk di komponen.js).
    - Kolom "tampil" (Ya/Tidak): "Tidak" menyembunyikan baris tanpa menghapusnya; kosong = Ya.
-   - Kolom "foto": tautan berbagi Google Drive, tautan gambar https, atau nama berkas di img/.
+   - Tidak ada kolom foto: semua foto statis di folder img/, didaftarkan di FOTO (komponen.js).
+   - Daftar destinasi wisata tetap (yang punya foto di FOTO.wisata); sheet hanya mengubah teksnya.
    - Kolom "keterangan" (tab profil) hanya catatan untuk admin dan tidak dibaca situs.
    Peta tab → halaman ada di tab "petunjuk" pada sheet dan di README.md.
    Halaman cek-data.html memeriksa semua aturan ini dan melaporkan kesalahan isian. */
 const SKEMA = {
-  // Informasi umum: kantor, wilayah, sejarah, tahun & sumber data penduduk, foto hero.
+  // Informasi umum: kantor, wilayah, sejarah, tahun & sumber data penduduk.
   profil: ["kunci", "nilai", "keterangan"],
   // Satu baris per lingkungan. Jabatan ditentukan kolomnya (kepala / wakil_kepala), jadi tidak bisa tertukar;
   // sel kosong tampil "Belum tersedia". Jiwa = laki + perempuan; semua total dihitung dari tab ini.
   lingkungan: ["nama", "kepala", "wakil_kepala", "jumlah_kk", "laki", "perempuan", "jumlah_lansia", "jumlah_rumah"],
   // Sumber tunggal identitas aparat. "atasan" berisi jabatan atasannya; kosong = pimpinan.
   // Urutan tampil = urutan baris. Aparat yang nomornya diisi tampil di halaman Kontak.
-  aparat: ["jabatan", "nama", "atasan", "nomor", "foto"],
+  aparat: ["jabatan", "nama", "atasan", "nomor"],
   // Narahubung non-aparat. kategori: "darurat" atau "umum".
   kontak: ["nama", "tampil", "peran", "nomor", "kategori"],
-  wisata: ["nama", "tampil", "foto", "ringkas", "deskripsi", "jam", "tiket", "fasilitas", "waktu_terbaik", "cara_kesana", "pengelola", "maps_link"],
+  // Daftar destinasi TETAP: hanya baris yang namanya terdaftar di FOTO.wisata (komponen.js) yang tampil,
+  // karena tiap destinasi butuh foto. Menambah destinasi = pekerjaan pengembang (foto + daftar).
+  wisata: ["nama", "tampil", "ringkas", "deskripsi", "jam", "tiket", "fasilitas", "waktu_terbaik", "cara_kesana", "pengelola", "maps_link"],
   // Satu baris per jenis surat. syarat & alur: satu butir per baris di dalam sel.
   // kategori (opsional) mengelompokkan surat; catatan (opsional) tampil sebagai pemberitahuan.
   layanan: ["nama_surat", "tampil", "kategori", "syarat", "alur", "waktu", "biaya", "catatan"],
-  // Foto tambahan untuk halaman Galeri (selain foto wisata).
-  galeri: ["judul", "tampil", "foto", "kategori"],
 };
 
 /* Kunci yang dikenal di tab profil — dipakai halaman Cek Data untuk menangkap salah ketik. */
 const KUNCI_PROFIL = [
   "alamat_kantor", "telepon_kantor", "email", "jam_layanan",
   "luas_wilayah", "ketinggian", "suhu", "batas_utara", "batas_selatan", "batas_timur", "batas_barat",
-  "sejarah", "tahun_data", "sumber_data", "foto_hero",
+  "sejarah", "tahun_data", "sumber_data",
 ];
 
 /** URL CSV satu tab, dicari berdasarkan nama tab. */
@@ -246,7 +247,7 @@ function kodeDari(teks) {
  * - tautan berbagi Google Drive (…/file/d/ID/view, open?id=ID, uc?id=ID) → gambar Drive
  *   berukuran `lebar` piksel (file harus dibagikan "Siapa saja yang memiliki link");
  * - tautan gambar https lain, dipakai apa adanya;
- * - nama berkas di folder img/ situs, mis. "galeri-panen.webp".
+ * - nama berkas di folder img/ situs, mis. "kkt-vergino.webp".
  */
 function urlFoto(nilai, lebar = 1200) {
   const teks = teksPolos(nilai).trim();
