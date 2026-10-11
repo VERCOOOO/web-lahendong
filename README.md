@@ -67,10 +67,19 @@ fotonya ke pengembang.
 | Foto | Tempat | Didaftarkan di |
 |---|---|---|
 | Hero Beranda | `img/hero-lahendong.webp` | `index.html` |
-| Foto utama wisata (kartu & kop detail) | `img/wisata-*.webp` | `FOTO.wisata` di [`komponen.js`](assets/js/komponen.js) |
-| Foto tambahan per destinasi (bisa diklik untuk diperbesar) | `img/wisata/` | `FOTO_DESTINASI` di [`wisata-detail.js`](assets/js/halaman/wisata-detail.js) |
+| Foto kartu wisata (halaman Wisata & Beranda) | `img/wisata-*.webp` | `FOTO.wisata` di [`komponen.js`](assets/js/komponen.js) |
+| Latar kop detail wisata — **foto atau video** berulang | `img/wisata/<kode>/latar.*` | `MEDIA_DESTINASI` di [`wisata-detail.js`](assets/js/halaman/wisata-detail.js) |
+| Foto & video "Suasana …" per destinasi (diklik untuk diperbesar/diputar) | `img/wisata/<kode>/` | `MEDIA_DESTINASI` |
 | Aparat (opsional; tanpa foto = monogram) | `img/` | `FOTO.aparat` (menurut nama) di `komponen.js` |
 | KKT & dosen lapangan | `img/` | kolom `foto` di `DATA_KKT` |
+
+Setiap destinasi sudah punya media contoh bertanda "FOTO/VIDEO CONTOH" di `img/wisata/<kode>/`
+(`latar.webp`, `foto-1…4.webp`, `video-1.mp4` + posternya `video-1.webp`). Cara termudah menggantinya:
+**timpa berkasnya dengan nama yang sama.** Jenis media dikenali dari akhirannya (`.mp4`/`.webm` = video).
+Latar video: ubah `latar` menjadi `{ berkas: "latar.mp4", poster: "latar.webp" }` — diputar tanpa suara,
+berulang, dengan tombol Jeda; pengunjung yang memilih "kurangi gerak" atau hemat data melihat posternya saja.
+Saran video: MP4 (H.264) 720p–1080p, tanpa suara, kamera diam, 10–30 detik yang menyambung saat berulang,
+di bawah ±8 MB (video beberapa menit terlalu berat untuk pengunjung ber-HP).
 
 **Daftar destinasi wisata tetap.** `FOTO.wisata` sekaligus daftar destinasinya: baris di tab `wisata`
 yang namanya tidak terdaftar tidak tampil (Cek Data memberi tahu). Menambah destinasi = simpan fotonya

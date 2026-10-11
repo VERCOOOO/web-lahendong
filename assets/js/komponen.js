@@ -10,7 +10,7 @@
 
 /* Semua foto situs STATIS: berkasnya di folder img/, didaftarkan di sini menurut kode baris
    (kode = kolom pertama, huruf kecil, selain huruf/angka jadi "-": "Danau Linow" → "danau-linow").
-   Spreadsheet tidak mengatur foto. Foto tambahan per destinasi ada di FOTO_DESTINASI
+   Spreadsheet tidak mengatur foto. Latar kop & foto/video per destinasi ada di MEDIA_DESTINASI
    (halaman/wisata-detail.js); foto KKT di DATA_KKT (halaman/kkt.js).
 
    FOTO.wisata sekaligus DAFTAR DESTINASI: baris di tab wisata yang tidak terdaftar di sini tidak

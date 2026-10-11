@@ -35,7 +35,8 @@ Semua warna didefinisikan di `:root`. Warna di luar daftar ini ditolak.
 Aturan:
 - `--accent` tidak pernah dipakai untuk teks di latar terang (kontrasnya 2:1). Untuk teks pakai `--accent-ink`.
 - Bidang gelap hanya: kop halaman, satu seksi/panel sorotan per halaman (layanan di Beranda, pimpinan di Pemerintahan), footer.
-- Tanpa gradien warna, tanpa overlay di atas ilustrasi.
+- Tanpa gradien warna, tanpa overlay di atas ilustrasi. Pengecualian: kop detail wisata (foto/video asli)
+  memakai gradien `--deep-2` dari bawah & kiri agar judul putih terbaca.
 - Kontras teks minimal 4,5:1 (semua pasangan di atas sudah diperiksa).
 
 ## 3. TIPOGRAFI
@@ -89,8 +90,12 @@ Lingkungan  : nomor lingkungan sebagai angka besar `--primary`, batang porsi jiw
 Bagan KKT   : pengurus inti di puncak (ketua di tengah, bergaris belerang, diapit sekretaris & bendahara),
               garis turun ke kolom bidang (kepala `--deep` berikon, koordinator berlatar `--toska-muda`,
               anggota dalam daftar ringkas). Panel dosen lapangan memakai bidang `--deep`.
-Foto wisata : di halaman detail, grid foto 3:2 (2 kolom HP, 3 kolom desktop), klik = diperbesar di
-              `<dialog>` berlatar `--deep-2` 92%, tombol bulat tembus pandang, panah kiri/kanan & Esc.
+Kop wisata  : latar foto atau video (berulang, tanpa suara) selebar layar, tinggi 72vh (440–760px), judul di
+              kiri bawah + jam & tiket berikon belerang. Video: tombol Jeda/Putar bulat di kanan bawah;
+              "kurangi gerak"/hemat data = poster saja. Tepi bawah tetap siluet punggungan.
+Media wisata: mosaik 3:2 — HP 2 kolom (kotak pertama selebar penuh), desktop 4 kolom dengan kotak pertama 2×2
+              bila ≥ 5 media. Video bertanda lingkaran putar di tengah. Klik = diperbesar di `<dialog>`
+              berlatar `--deep-2` 92% (video diputar dengan kendali), panah kiri/kanan & Esc.
 Cek Data    : satu kartu per tab; temuan bergaris kiri `--danger` (perlu diperbaiki), `--accent` (periksa),
               `--toska` (info). Alat admin, tidak ada di menu.
 

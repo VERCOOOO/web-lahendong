@@ -352,10 +352,10 @@
         <article class="resep pengembang">
           <h3>Mengganti foto atau menambah destinasi wisata</h3>
           <ol>
-            <li>Kirim fotonya ke pengembang situs: foto beranda, foto wisata (utama dan tambahan), atau foto aparat/KKT.</li>
+            <li>Kirim fotonya ke pengembang situs: foto beranda, foto/video wisata (latar halaman dan bagian “Suasana”), atau foto aparat/KKT.</li>
             <li>Untuk destinasi baru, sertakan juga namanya; pengembang mendaftarkannya, lalu barisnya bisa diisi di tab <code>wisata</code>.</li>
           </ol>
-          <p class="hasil">Spreadsheet hanya berisi teks, jadi tidak ada tautan atau nama berkas foto yang perlu diurus operator. Foto tambahan tampil di halaman detail tiap destinasi dan bisa diklik untuk diperbesar. Foto orang hanya dengan izin yang bersangkutan.</p>
+          <p class="hasil">Spreadsheet hanya berisi teks, jadi tidak ada tautan atau nama berkas foto yang perlu diurus operator. Foto dan video tampil di halaman detail tiap destinasi: sebagai latar di bagian atas, dan di bagian “Suasana” yang bisa diklik untuk diperbesar atau diputar. Video sebaiknya beberapa detik, tanpa suara, direkam dengan kamera diam. Foto orang hanya dengan izin yang bersangkutan.</p>
         </article>
         <article class="resep pengembang">
           <h3>Memasang peta wilayah (PNG)</h3>
@@ -403,7 +403,7 @@
             <li>Telepon &amp; email kantor</li>
             <li>Kepala &amp; wakil kepala Lingkungan 7</li>
             <li>Nomor aparat</li>
-            <li>Foto tambahan tiap destinasi wisata</li>
+            <li>Foto &amp; video asli tiap destinasi (sekarang media contoh)</li>
             <li>Peta wilayah PNG</li>
           </ul>
         </div>
@@ -514,7 +514,8 @@ tools/buat_template.py  membuat ulang template (python3 tools/buat_template.py)<
     { nama: "Detail wisata", berkas: "wisata-detail.html?id=danau-linow", bagian: [
       { isi: "Tentang, rute, pengelola", tab: ["wisata"], kolom: "deskripsi, cara_kesana, pengelola, maps_link" },
       { isi: "Informasi kunjungan", tab: ["wisata"], kolom: "jam, tiket, fasilitas, waktu_terbaik" },
-      { isi: "Foto destinasi (klik untuk memperbesar)", tetap: true, kolom: "foto di berkas situs; bagian ini tampil bila fotonya ada" },
+      { isi: "Latar atas (foto atau video)", tetap: true, kolom: "berkas situs img/wisata/<kode>/" },
+      { isi: "Suasana: foto & video (klik untuk memperbesar/memutar)", tetap: true, kolom: "berkas situs img/wisata/<kode>/" },
     ]},
     { nama: "Layanan", berkas: "layanan.html", bagian: [
       { isi: "Daftar surat: kelompok, pencarian, buka-tutup", tab: ["layanan"], kolom: "nama_surat, kategori, syarat, alur, waktu, biaya, catatan" },
