@@ -217,9 +217,9 @@ const ATURAN_TAB = {
   },
 
   wisata(baris, lapor) {
-    // Daftar destinasi tetap (FOTO.wisata di komponen.js): baris lain tidak tampil.
+    // Daftar destinasi tetap (DESTINASI di komponen.js): baris lain tidak tampil.
     // Nama resminya = nama di data contoh, sama dengan pilihan dropdown di template.
-    const terdaftar = Object.keys(FOTO.wisata);
+    const terdaftar = Object.keys(DESTINASI);
     const namaResmi = (k) => DATA_DUMMY.wisata.find((w) => kodeDari(w.nama) === k)?.nama || k.replace(/-/g, " ");
     const namaTerdaftar = terdaftar.map(namaResmi);
     baris.forEach((b) => {

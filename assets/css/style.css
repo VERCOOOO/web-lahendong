@@ -113,11 +113,6 @@ img { max-width: 100%; }
 
 .grid-adaptif > * { flex: 0 0 100%; min-width: 0; }
 
-/* data-hp="2": kartu kecil (aparat, lingkungan) tetap 2 kolom di HP */
-/* :where() menjaga spesifisitas tetap rendah agar aturan tablet/desktop di bawah tetap berlaku */
-.grid-adaptif:where([data-hp="2"]) { --jarak: 12px; }
-.grid-adaptif:where([data-hp="2"]) > * { flex-basis: calc((100% - var(--jarak)) / 2); }
-
 @media (min-width: 640px) {
   .grid-adaptif > * { flex-basis: calc((100% - var(--jarak)) / 2); }
   .grid-adaptif[data-kolom="1"] > * { flex-basis: min(100%, 520px); }
@@ -130,14 +125,16 @@ img { max-width: 100%; }
   .grid-adaptif[data-kolom="2"] > * { flex-basis: min(calc((100% - var(--jarak)) / 2), 520px); }
 }
 
-/* rata-kiri: untuk grid di kolom sempit yang judulnya rata kiri (Kontak) */
-.grid-adaptif.rata-kiri { justify-content: flex-start; }
-
 /* Pesan status (memuat/kosong/gagal) selalu selebar wadah */
 .grid-adaptif > .col-span-full { flex-basis: 100% !important; }
 
+/* Grid kontak: 1 kolom di HP, 2 kolom mulai tablet. Bila jumlahnya ganjil, kartu pertama
+   (mis. Lurah) mengisi satu baris sendiri, jadi tidak pernah ada sel kosong. */
+.grid-kontak { display: grid; gap: 16px; }
+
 @media (min-width: 640px) {
-  .grid-adaptif:where([data-hp="2"]) { --jarak: 20px; }
+  .grid-kontak { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .grid-kontak > :first-child:nth-last-child(odd) { grid-column: 1 / -1; }
 }
 
 /* Label kecil huruf besar */
@@ -210,7 +207,6 @@ img { max-width: 100%; }
   flex: none;
 }
 
-.eyebrow-terang { color: var(--toska); }
 
 /* Salam dalam bahasa Tombulu di bagian sambutan */
 .salam {
@@ -436,6 +432,15 @@ img { max-width: 100%; }
   .kop-isi { padding-block: 64px 112px; }
   .kop-ringkas { font-size: 19px; }
 }
+
+/* Jam layanan per kelompok hari (jadwalHtml di ui.js): hari tebal di kiri, jam di kanan */
+.jadwal {
+  display: inline-grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 14px;
+}
+
+.jadwal .hari { font-weight: 600; }
 
 /* Breadcrumb */
 .remah {
@@ -1501,39 +1506,28 @@ details[open] { border-color: var(--primary); }
   .kendali-video { right: 24px; bottom: 72px; }
 }
 
-/* --- Foto & video destinasi (halaman detail wisata) -------------------- */
+/* --- Galeri foto & video (halaman detail wisata) ---------------------- */
 
-/* Mosaik: kotak pertama besar. HP 2 kolom (pertama selebar penuh); desktop 4 kolom (pertama 2 × 2)
-   bila ada 5 atau lebih, selain itu sebaris rata. */
-.media-destinasi {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.media-destinasi[data-jumlah="1"] { grid-template-columns: minmax(0, 1fr); max-width: 900px; }
-.media-destinasi > :first-child:not(:only-child) { grid-column: span 2; }
+/* Baris disusun susunGaleri(): lebar tiap kotak sebanding rasionya, jadi satu baris setinggi rata
+   dan selebar penuh tanpa memotong foto potret maupun lanskap. */
+.galeri-media { display: grid; gap: 10px; }
+.baris-media { display: flex; gap: 10px; }
 
 @media (min-width: 768px) {
-  .media-destinasi { gap: 16px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .media-destinasi[data-jumlah="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .media-destinasi[data-jumlah="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .media-destinasi > :first-child:not(:only-child) { grid-column: auto; }
-  .media-destinasi:not([data-jumlah="1"]):not([data-jumlah="2"]):not([data-jumlah="3"]):not([data-jumlah="4"]) > :first-child {
-    grid-column: span 2;
-    grid-row: span 2;
-    aspect-ratio: auto;
-  }
+  .galeri-media,
+  .baris-media { gap: 16px; }
 }
 
 .kotak-media {
+  --rasio: 1.5;
   position: relative;
-  display: block;
+  flex: var(--rasio) 1 0;
+  min-width: 0;
   padding: 0;
   border: 0;
   border-radius: var(--radius);
   overflow: hidden;
-  aspect-ratio: 3 / 2;
+  aspect-ratio: var(--rasio);
   background: var(--toska-muda);
   cursor: zoom-in;
 }

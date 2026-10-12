@@ -146,7 +146,7 @@ function kartuLingkungan(item, terbesar) {
 function barisPengurus(jabatan, nama, utama) {
   return `
     <li class="${nama ? "" : "kosong"}">
-      ${visualOrang({ nama }, "avatar-pengurus", "lingkungan")}
+      ${visualOrang({ nama }, "avatar-pengurus")}
       <div class="min-w-0">
         <p class="label-kecil ${utama ? "jabatan-utama" : ""}">${jabatan}</p>
         <p class="nama-pengurus">${nama || BELUM_TERSEDIA}</p>

@@ -86,7 +86,7 @@ function renderHeader() {
           <span class="truncate">Situs resmi Kelurahan Lahendong, Kota Tomohon</span>
         </p>
         <div class="hidden md:flex items-center gap-5 shrink-0">
-          <span class="flex items-center gap-1.5" data-wadah-profil><i data-lucide="clock" class="w-3.5 h-3.5 text-white/60"></i><span data-profil="jam_layanan"></span></span>
+          <span class="flex items-center gap-1.5" data-wadah-profil><i data-lucide="clock" class="w-3.5 h-3.5 text-white/60"></i><span data-profil="jam_layanan" data-profil-format="hari-ini"></span></span>
           <a href="kontak.html" class="flex items-center gap-1.5 hover:text-white"><i data-lucide="phone" class="w-3.5 h-3.5 text-white/60"></i>Hubungi kami</a>
         </div>
       </div>
@@ -192,9 +192,9 @@ function renderFooter() {
                 <i data-lucide="phone" class="w-4 h-4 shrink-0 text-white/60"></i>
                 <a data-profil="telepon_kantor" data-profil-tautan="tel" class="hover:text-white"></a>
               </li>
-              <li class="flex items-center gap-3" data-wadah-profil>
-                <i data-lucide="clock" class="w-4 h-4 shrink-0 text-white/60"></i>
-                <span data-profil="jam_layanan"></span>
+              <li class="flex items-start gap-3" data-wadah-profil>
+                <i data-lucide="clock" class="w-4 h-4 mt-1 shrink-0 text-white/60"></i>
+                <span data-profil="jam_layanan" data-profil-format="jadwal"></span>
               </li>
             </ul>
           </div>
@@ -224,6 +224,7 @@ function renderFooter() {
  * dari tab profil. Bila nilainya kosong (atau tab gagal dimuat), wadah terdekat
  * [data-wadah-profil] disembunyikan — tidak pernah menampilkan isian karangan.
  * data-profil-tautan="tel" / "mailto" menjadikan elemen <a> tautan telepon/email.
+ * data-profil-format="jadwal" / "hari-ini" menampilkan jam layanan sebagai daftar / jam hari ini.
  */
 async function isiInfoKantor() {
   const elemen = document.querySelectorAll("[data-profil]");
@@ -242,10 +243,49 @@ async function isiInfoKantor() {
       (el.closest("[data-wadah-profil]") || el).remove();
       return;
     }
-    el.innerHTML = nilai;
+    const format = { jadwal: jadwalHtml, "hari-ini": jamHariIni }[el.dataset.profilFormat];
+    el.innerHTML = format ? format(nilai) : nilai;
     if (el.dataset.profilTautan === "tel") el.href = hrefTelepon(nilai);
     if (el.dataset.profilTautan === "mailto") el.href = "mailto:" + teksPolos(nilai);
   });
+}
+
+/* Jam layanan ditulis per kelompok hari, dipisah "/" atau baris baru:
+   "Senin – Kamis, 08.00 – 16.30 WITA / Jumat, 08.00 – 13.30 WITA / Sabtu – Minggu, Hanya keadaan mendesak".
+   Nama hari ada sebelum koma (atau titik dua) pertama; isian tanpa nama hari tampil apa adanya. */
+const NAMA_HARI = ["minggu", "senin", "selasa", "rabu", "kamis", "jumat", "sabtu"];
+
+/** Isi jam_layanan (sudah di-escape) → [{ hari, jam }]. */
+function jadwalDari(teks) {
+  return teks.split(/\s*\/\s*|\n+/).map((b) => b.trim()).filter(Boolean).map((b) => {
+    const [, hari = "", jam = b] = b.match(/^([^,:\d]+?)\s*[,:]\s*(.+)$/) || [];
+    return { hari, jam };
+  });
+}
+
+function jadwalHtml(teks) {
+  return `<span class="jadwal">${jadwalDari(teks).map(({ hari, jam }) =>
+    `<span class="hari">${hari}</span><span>${jam}</span>`).join("")}</span>`;
+}
+
+/** Nomor hari (0 = Minggu) yang dicakup label seperti "Senin – Kamis", "Jumat", "Sabtu – Minggu". */
+function hariDalam(label) {
+  const teks = teksPolos(label).toLowerCase().replace(/['’]/g, "");
+  const hari = [...teks.matchAll(new RegExp(NAMA_HARI.join("|"), "g"))].map((m) => NAMA_HARI.indexOf(m[0]));
+  if (hari.length !== 2 || !/[–—-]|s\.?\s?d|sampai/.test(teks)) return hari;
+  const cakup = [hari[0]];
+  for (let h = hari[0]; h !== hari[1]; ) cakup.push((h = (h + 1) % 7));
+  return cakup;
+}
+
+/** Bilah atas: jam hari ini menurut waktu Lahendong (WITA); bila hari ini tidak tercantum, baris pertama. */
+function jamHariIni(teks) {
+  const jadwal = jadwalDari(teks);
+  const namaHariIni = new Intl.DateTimeFormat("id-ID", { weekday: "long", timeZone: "Asia/Makassar" })
+    .format(new Date()).toLowerCase().replace(/['’]/g, "");
+  const hariIni = jadwal.find(({ hari }) => hariDalam(hari).includes(NAMA_HARI.indexOf(namaHariIni)));
+  if (hariIni) return `Hari ini: ${hariIni.jam}`;
+  return [jadwal[0].hari, jadwal[0].jam].filter(Boolean).join(", ");
 }
 
 /* ---------------------------------------------------------------------- */
@@ -301,21 +341,20 @@ function tampilkanMemuat(wadah, pesan = "Memuat data…") {
 }
 
 function tampilkanGagal(wadah, pesan = "Data belum bisa dimuat saat ini. Silakan coba lagi nanti.") {
-  isiStatus(wadah, `
-    <div class="flex flex-col items-center justify-center gap-3 py-16 text-center font-normal">
-      <i data-lucide="triangle-alert" class="w-5 h-5 text-[var(--danger)]"></i>
-      <p class="text-[var(--muted)] text-sm max-w-[320px]">${pesan}</p>
-    </div>
-  `);
+  isiStatus(wadah, pesanBerikon("triangle-alert", "text-[var(--danger)]", pesan));
 }
 
 function tampilkanKosong(wadah, pesan = "Belum ada data untuk ditampilkan.") {
-  isiStatus(wadah, `
+  isiStatus(wadah, pesanBerikon("inbox", "text-[var(--muted)]", pesan));
+}
+
+function pesanBerikon(ikon, warnaIkon, pesan) {
+  return `
     <div class="flex flex-col items-center justify-center gap-3 py-16 text-center font-normal">
-      <i data-lucide="inbox" class="w-5 h-5 text-[var(--muted)]"></i>
+      <i data-lucide="${ikon}" class="w-5 h-5 ${warnaIkon}"></i>
       <p class="text-[var(--muted)] text-sm max-w-[320px]">${pesan}</p>
     </div>
-  `);
+  `;
 }
 
 /** Menyisipkan pesan status; di dalam <tbody> pesan dibungkus satu baris selebar tabel. */

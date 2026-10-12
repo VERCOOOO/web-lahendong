@@ -13,7 +13,7 @@ const DATA_DUMMY = {
     { kunci: "alamat_kantor", nilai: "Kelurahan Lahendong, Kecamatan Tomohon Selatan, Kota Tomohon, Sulawesi Utara", keterangan: "Footer dan halaman Kontak." },
     { kunci: "telepon_kantor", nilai: "", keterangan: "Header, footer, dan halaman Kontak. Kosong = tidak ditampilkan." },
     { kunci: "email", nilai: "", keterangan: "Halaman Kontak. Kosong = tidak ditampilkan." },
-    { kunci: "jam_layanan", nilai: "Senin – Jumat, 08.00 – 15.00 WITA", keterangan: "CONTOH — ganti. Header, footer, halaman Kontak dan Layanan." },
+    { kunci: "jam_layanan", nilai: "Senin – Kamis, 08.00 – 16.30 WITA / Jumat, 08.00 – 13.30 WITA / Sabtu – Minggu, Hanya keadaan mendesak", keterangan: "CONTOH — ganti. Header, footer, halaman Kontak dan Layanan." },
     { kunci: "luas_wilayah", nilai: "7,85", keterangan: "CONTOH — ganti. Angka saja, satuan km². Beranda dan Profil." },
     { kunci: "ketinggian", nilai: "800–950", keterangan: "CONTOH — ganti. Satuan mdpl. Profil." },
     { kunci: "suhu", nilai: "22–26", keterangan: "CONTOH — ganti. Satuan °C. Profil." },

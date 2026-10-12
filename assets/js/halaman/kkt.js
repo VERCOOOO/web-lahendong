@@ -21,7 +21,7 @@ const DATA_KKT = {
        bidang lain tampil sebagai kolom di bawahnya. Tulis nama bidang sama persis untuk satu bidang.
      - peran: "Koordinator…" ditonjolkan di kepala kolom bidang; "Anggota" tampil di daftar bawahnya.
      - fakultas: tampil di kartu; dihitung untuk angka "Fakultas asal".
-     - foto (opsional): nama berkas di folder img/ (mis. "kkt-fidelia.webp") atau tautan Google Drive.
+     - foto (opsional): alamat berkas di dalam folder img/, mis. "kkt/fidelia.webp".
        Kosong = monogram inisial. Semua tempat foto berasio 3:4 (pas foto), mis. 600 × 800 piksel,
        wajah di sepertiga atas; foto dengan rasio lain dipotong otomatis dari tengah-atas. */
   anggota: [
@@ -147,7 +147,7 @@ function renderStruktur(anggota) {
 function kartuPengurus(m, ketua = false) {
   return `
     <article class="kartu kartu-pengurus${ketua ? " ketua" : ""}">
-      ${visualOrang(m, "foto-pengurus", "kkt")}
+      ${visualOrang(m, "foto-pengurus")}
       <p class="label-kecil peran">${m.peran}</p>
       <h3 class="nama-pengurus-kkt">${m.nama}</h3>
       ${m.nim ? `<p class="nim">NIM ${m.nim}</p>` : ""}
@@ -170,7 +170,7 @@ function kolomBidang({ nama, anggota }) {
           <span class="jumlah-bidang">${anggota.length}</span>
         </header>
         <div class="koordinator-bidang">
-          ${visualOrang(koordinator, "foto-koordinator", "kkt")}
+          ${visualOrang(koordinator, "foto-koordinator")}
           <div class="min-w-0">
             <p class="label-kecil peran">${koordinator.peran || "Koordinator"}</p>
             <p class="nama">${koordinator.nama}</p>
@@ -181,7 +181,7 @@ function kolomBidang({ nama, anggota }) {
           <ul class="anggota-bidang">
             ${lainnya.map((m) => `
               <li>
-                ${visualOrang(m, "foto-anggota", "kkt")}
+                ${visualOrang(m, "foto-anggota")}
                 <div class="min-w-0">
                   <p class="nama">${m.nama}</p>
                   ${detailMahasiswa(m)}
@@ -204,7 +204,7 @@ function detailMahasiswa(m) {
 function kartuDosen(d) {
   return `
     <article class="dosen">
-      ${visualOrang(d, "foto-dosen", "kkt")}
+      ${visualOrang(d, "foto-dosen")}
       <div class="min-w-0">
         <p class="label-kecil">${d.peran}</p>
         <h3 class="nama-dosen">${d.nama}</h3>

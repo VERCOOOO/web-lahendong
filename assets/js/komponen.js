@@ -5,59 +5,81 @@
    ========================================================================== */
 
 /* ---------------------------------------------------------------------- */
-/* Foto                                                                     */
+/* Foto & video — semuanya statis di folder img/, spreadsheet tidak mengatur foto */
 /* ---------------------------------------------------------------------- */
 
-/* Semua foto situs STATIS: berkasnya di folder img/, didaftarkan di sini menurut kode baris
-   (kode = kolom pertama, huruf kecil, selain huruf/angka jadi "-": "Danau Linow" → "danau-linow").
-   Spreadsheet tidak mengatur foto. Latar kop & foto/video per destinasi ada di MEDIA_DESTINASI
-   (halaman/wisata-detail.js); foto KKT di DATA_KKT (halaman/kkt.js).
+/* DESTINASI = daftar destinasi wisata yang TETAP: baris tab wisata yang kodenya tidak ada di sini
+   tidak tampil (lihat wisataTetap). Kode = nama destinasi, huruf kecil, selain huruf/angka jadi "-"
+   ("Danau Linow" → "danau-linow"). Berkas tiap destinasi ada di img/wisata/<kode>/; cara termudah
+   mengganti: timpa berkasnya dengan berkas baru bernama sama.
 
-   FOTO.wisata sekaligus DAFTAR DESTINASI: baris di tab wisata yang tidak terdaftar di sini tidak
-   tampil (lihat wisataTetap). Menambah destinasi = simpan fotonya di img/ lalu daftarkan di sini.
-   Urutan sumber foto: isian foto di data kode (DATA_KKT) → foto terdaftar di FOTO → gambar pengganti/monogram. */
-const FOTO = {
-  wisata: {
-    "danau-linow": "wisata-danau-linow.webp",
-    "hutan-pinus-lahendong": "wisata-hutan-pinus.webp",
-    "mah-watu": "wisata-mahwatu.webp",
+   kartu : foto kartu di halaman Wisata & Beranda, 3:2 (mis. 1200 × 800 px).
+   latar : latar kop halaman detail — foto 16:9 (mis. 1920 × 1080 px), atau video yang diputar
+           berulang tanpa suara: { berkas: "latar.mp4", poster: "latar.webp" }. Poster tampil selagi
+           video dimuat dan menggantikannya bila pengunjung memilih "kurangi gerak" atau hemat data.
+   media : foto & video bagian galeri halaman detail, berurutan. Rasio bebas (lanskap maupun potret).
+           Video sebaiknya diberi poster. keterangan (opsional) tampil saat media diperbesar.
+   Jenis media dikenali dari akhiran: .mp4 / .webm = video, selain itu foto.
+   Saran video: MP4 (H.264) 720p–1080p, tanpa suara, kamera diam, 10–30 detik, di bawah ±8 MB.
+   Menambah destinasi: buat foldernya, daftarkan di sini, tambahkan barisnya di data-contoh.js,
+   lalu buat ulang template (python3 tools/buat_template.py) agar muncul di dropdown nama. */
+const DESTINASI = {
+  "danau-linow": {
+    kartu: "kartu.webp",
+    latar: "latar.webp",
+    media: [
+      { berkas: "foto-1.webp" },
+      { berkas: "foto-2.webp" },
+      { berkas: "video-1.mp4", poster: "video-1.webp" },
+      { berkas: "foto-3.webp" },
+      { berkas: "foto-4.webp" },
+    ],
   },
-  aparat: {}, // menurut nama orang: "reymon-stive-londok-s-t": "aparat-lurah.webp"
+  "hutan-pinus-lahendong": {
+    kartu: "kartu.webp",
+    latar: "latar.webp",
+    media: [
+      { berkas: "foto-1.webp" },
+      { berkas: "foto-2.webp" },
+      { berkas: "video-1.mp4", poster: "video-1.webp" },
+      { berkas: "foto-3.webp" },
+      { berkas: "foto-4.webp" },
+    ],
+  },
+  "mah-watu": {
+    kartu: "kartu.webp",
+    latar: "latar.webp",
+    media: [
+      { berkas: "foto-1.webp" },
+      { berkas: "foto-2.webp" },
+      { berkas: "video-1.mp4", poster: "video-1.webp" },
+      { berkas: "foto-3.webp" },
+      { berkas: "foto-4.webp" },
+    ],
+  },
 };
 
-/** Hanya destinasi yang terdaftar di FOTO.wisata — daftar wisata tidak bisa ditambah lewat sheet. */
-function wisataTetap(data) {
-  return data.filter((w) => FOTO.wisata[teksPolos(w.id)]);
-}
+/* Foto orang menurut kode nama (alamat berkas di dalam img/); dipakai di struktur aparat, Kontak,
+   Beranda, dan kartu lingkungan. Contoh: "reymon-stive-londok-s-t": "orang/reymon-londok.webp".
+   Foto KKT diisi langsung di DATA_KKT (halaman/kkt.js). Tanpa foto = monogram inisial. */
+const FOTO_ORANG = {};
 
 const FOTO_PENGGANTI = "img/placeholder.webp";
 
-/** Daftar alamat foto yang dicoba berurutan untuk satu baris. */
-function sumberFoto(tab, item, lebar = 1200) {
-  const kode = tab === "aparat" ? kodeDari(item.nama) : teksPolos(item.id);
-  const cadangan = FOTO[tab]?.[kode];
-  return [urlFoto(item.foto, lebar), cadangan ? "img/" + cadangan : ""].filter(Boolean);
+/** Hanya destinasi yang terdaftar di DESTINASI — daftar wisata tidak bisa ditambah lewat sheet. */
+function wisataTetap(data) {
+  return data.filter((w) => DESTINASI[teksPolos(w.id)]);
 }
 
-/** Dipanggil onerror <img>: coba sumber berikutnya, lalu gambar pengganti. */
-function fotoBerikutnya(img) {
-  const sisa = (img.dataset.cadangan || "").split(" ").filter(Boolean);
-  const berikut = sisa.shift();
-  img.dataset.cadangan = sisa.join(" ");
-  if (berikut) {
-    img.src = berikut;
-  } else if (img.dataset.tanpaPengganti !== undefined) {
-    img.remove(); // monogram di belakangnya yang tampil
-  } else {
-    img.onerror = null;
-    img.src = FOTO_PENGGANTI;
-  }
+/** Alamat satu berkas milik destinasi, mis. img/wisata/danau-linow/kartu.webp; "" bila kosong. */
+function berkasDestinasi(item, berkas) {
+  return berkas ? `img/wisata/${teksPolos(item.id)}/${berkas}` : "";
 }
 
-/** <img> untuk satu baris; bila semua sumber gagal, memakai gambar pengganti. */
-function gambar(tab, item, kelas = "", lebar = 1200) {
-  const [utama = FOTO_PENGGANTI, ...cadangan] = sumberFoto(tab, item, lebar);
-  return `<img src="${escapeHtml(utama)}" data-cadangan="${escapeHtml(cadangan.join(" "))}" alt="${item.nama || item.judul || ""}" class="${kelas}" loading="lazy" onerror="fotoBerikutnya(this)" />`;
+/** Foto kartu destinasi; gambar pengganti bila berkasnya tidak ada atau gagal dimuat. */
+function fotoKartuWisata(item) {
+  const src = berkasDestinasi(item, DESTINASI[teksPolos(item.id)]?.kartu) || FOTO_PENGGANTI;
+  return `<img src="${src}" alt="${item.nama}" loading="lazy" onerror="this.onerror=null; this.src='${FOTO_PENGGANTI}'" />`;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -74,18 +96,16 @@ function gambar(tab, item, kelas = "", lebar = 1200) {
  * @param {string|null} [opsi.kosong]  pesan bila render kosong; null = hapus wadah
  * @param {string|null} [opsi.gagal]   pesan bila gagal dimuat; null = hapus wadah
  * @param {(data) => void} [opsi.setelah]  dijalankan setelah HTML terpasang (mis. menggambar grafik)
- * @param {string[]} [opsi.opsional]  tab yang boleh gagal/tidak ada; isinya dianggap kosong
  * @returns {Promise<any|null>} data yang diambil, atau null bila gagal
  */
 async function isiDariData(wadah, tab, render, opsi = {}) {
   if (!wadah) return null;
-  const { kosong = "Belum ada data untuk ditampilkan.", gagal = "Data belum bisa dimuat saat ini.", setelah, opsional = [] } = opsi;
-  const ambil = (nama) => (opsional.includes(nama) ? ambilData(nama).catch(() => []) : ambilData(nama));
+  const { kosong = "Belum ada data untuk ditampilkan.", gagal = "Data belum bisa dimuat saat ini.", setelah } = opsi;
 
   tampilkanMemuat(wadah);
   let data;
   try {
-    data = Array.isArray(tab) ? await Promise.all(tab.map(ambil)) : await ambil(tab);
+    data = Array.isArray(tab) ? await Promise.all(tab.map(ambilData)) : await ambilData(tab);
   } catch (err) {
     gagal === null ? wadah.remove() : tampilkanGagal(wadah, gagal);
     return null;
@@ -120,8 +140,7 @@ function hitungKolom(n, maks = 4) {
 
 /** Atur --kolom sebuah .grid-adaptif / .deret-statistik menurut jumlah anak yang tampil. */
 function aturKolom(wadah) {
-  const item = [...wadah.children].filter((el) =>
-    !el.hidden && !el.classList.contains("hidden") && !el.classList.contains("col-span-full"));
+  const item = [...wadah.children].filter((el) => !el.classList.contains("col-span-full")); // tanpa pesan status
   const kolom = hitungKolom(item.length, Number(wadah.dataset.maks) || 4);
   wadah.style.setProperty("--kolom", kolom);
   wadah.dataset.kolom = kolom;
@@ -209,13 +228,6 @@ function daftarAtauTeks(teks) {
   return `<ul class="daftar-baris">${baris.map((b) => `<li>${b}</li>`).join("")}</ul>`;
 }
 
-/** Kalimat pertama sebuah teks, untuk ringkasan. */
-function kalimatPertama(teks) {
-  const t = barisDari(teks)[0] || "";
-  const akhir = t.search(/[.!?](\s|$)/);
-  return akhir === -1 ? t : t.slice(0, akhir + 1);
-}
-
 /* ---------------------------------------------------------------------- */
 /* Potongan HTML                                                           */
 /* ---------------------------------------------------------------------- */
@@ -238,7 +250,7 @@ function kartuWisata(item, { denganTautan = false } = {}) {
   ].filter(([, teks]) => teks);
   return `
     <a href="wisata-detail.html?id=${encodeURIComponent(teksPolos(item.id))}" class="kartu reveal flex flex-col overflow-hidden">
-      <div class="bingkai-foto aspect-[3/2]">${gambar("wisata", item, "", 800)}</div>
+      <div class="bingkai-foto aspect-[3/2]">${fotoKartuWisata(item)}</div>
       <div class="p-5 md:p-6 flex flex-col flex-1">
         <h3 class="judul-kartu">${item.nama}</h3>
         <p class="text-[15px] text-[var(--muted)] mt-2 leading-[1.6]">${item.ringkas}</p>
@@ -266,17 +278,16 @@ function namaOrang(nama) {
 }
 
 /**
- * Foto orang (kolom foto atau FOTO.aparat); monogram inisial bila tidak ada atau gagal dimuat.
- * @param {object} orang  baris tab aparat (atau kkt)
+ * Foto orang (isian foto di DATA_KKT, atau FOTO_ORANG menurut nama); monogram inisial bila tidak ada.
+ * Monogram selalu dirender di belakang foto, jadi bila foto gagal dimuat monogramlah yang tampil.
+ * @param {object} orang  { nama, foto? }
  * @param {string} kelas  kelas ukuran/bentuk, mis. "avatar" atau "potret"
- * @param {string} [tab]  tab asal, untuk mencari foto cadangan di FOTO
  */
-function visualOrang(orang, kelas, tab = "aparat") {
+function visualOrang(orang, kelas) {
   const isi = orang.nama ? inisial(orang.nama) : '<i data-lucide="user-round" class="w-1/3 h-1/3"></i>';
-  const [utama, ...cadangan] = sumberFoto(tab, orang, 800);
-  // Monogram selalu dirender di belakang foto, jadi bila foto gagal dimuat monogramlah yang tampil.
-  const foto = utama
-    ? `<img src="${escapeHtml(utama)}" data-cadangan="${escapeHtml(cadangan.join(" "))}" data-tanpa-pengganti alt="${orang.nama}" class="absolute inset-0 w-full h-full object-cover" loading="lazy" onerror="fotoBerikutnya(this)" />`
+  const berkas = orang.foto || FOTO_ORANG[kodeDari(orang.nama)];
+  const foto = berkas
+    ? `<img src="img/${berkas}" alt="${orang.nama}" class="absolute inset-0 w-full h-full object-cover" loading="lazy" onerror="this.remove()" />`
     : "";
   return `<span class="monogram relative overflow-hidden ${kelas}">${foto}<span aria-hidden="true">${isi}</span></span>`;
 }

@@ -77,7 +77,7 @@ TAMPIL = ("Ya = tampil di situs. Tidak = disembunyikan, data tetap tersimpan. Ko
 KOLOM = {
     "profil": {
         "kunci": ("WAJIB. Nama informasi yang dicari situs — jangan diubah. Daftar kunci ada di tab petunjuk.", "jam_layanan"),
-        "nilai": ("Isi informasinya. Beberapa paragraf: pisahkan dengan baris baru (Ctrl+Enter).", "Senin – Jumat, 08.00 – 15.00 WITA"),
+        "nilai": ("Isi informasinya. Beberapa paragraf: pisahkan dengan baris baru (Ctrl+Enter).", "Senin – Kamis, 08.00 – 16.30 WITA / Jumat, 08.00 – 13.30 WITA"),
         "keterangan": ("Catatan untuk admin; tidak tampil di situs.", "CONTOH — ganti"),
     },
     "lingkungan": {
@@ -137,7 +137,7 @@ PILIHAN = {
     ("layanan", "tampil"): (["Ya", "Tidak"], True),
     ("kontak", "kategori"): (["darurat", "umum"], True),
     ("layanan", "kategori"): (sorted({r.get("kategori", "") for r in DATA.get("layanan", [])} - {""}) or ["Kependudukan"], False),
-    # Daftar destinasi tetap = destinasi di data-contoh.js (harus sama dengan FOTO.wisata di komponen.js).
+    # Daftar destinasi tetap = destinasi di data-contoh.js (harus sama dengan DESTINASI di komponen.js).
     ("wisata", "nama"): ([r["nama"] for r in DATA.get("wisata", [])], True),
     ("aparat", "atasan"): ("aparat.jabatan", True),
 }
@@ -176,7 +176,7 @@ ATURAN = [
 
 KUNCI_PROFIL = [
     ("alamat_kantor", "Alamat kantor kelurahan"), ("telepon_kantor", "Telepon kantor"), ("email", "Email kantor"),
-    ("jam_layanan", "Jam layanan kantor"), ("luas_wilayah", "Luas wilayah, angka saja (km²)"), ("ketinggian", "Ketinggian (mdpl)"),
+    ("jam_layanan", "Jam layanan per kelompok hari, dipisah / — mis. Senin – Kamis, 08.00 – 16.30 WITA / Jumat, 08.00 – 13.30 WITA / Sabtu – Minggu, Tutup. Bilah atas situs menampilkan jam hari ini."), ("luas_wilayah", "Luas wilayah, angka saja (km²)"), ("ketinggian", "Ketinggian (mdpl)"),
     ("suhu", "Suhu rata-rata (°C)"), ("batas_utara", "Batas utara"), ("batas_selatan", "Batas selatan"),
     ("batas_timur", "Batas timur"), ("batas_barat", "Batas barat"), ("sejarah", "Sejarah, satu paragraf per baris"),
     ("tahun_data", "Tahun data kependudukan"),

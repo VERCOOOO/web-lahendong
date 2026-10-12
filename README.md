@@ -67,24 +67,26 @@ fotonya ke pengembang.
 | Foto | Tempat | Didaftarkan di |
 |---|---|---|
 | Hero Beranda | `img/hero-lahendong.webp` | `index.html` |
-| Foto kartu wisata (halaman Wisata & Beranda) | `img/wisata-*.webp` | `FOTO.wisata` di [`komponen.js`](assets/js/komponen.js) |
-| Latar kop detail wisata — **foto atau video** berulang | `img/wisata/<kode>/latar.*` | `MEDIA_DESTINASI` di [`wisata-detail.js`](assets/js/halaman/wisata-detail.js) |
-| Foto & video "Suasana …" per destinasi (diklik untuk diperbesar/diputar) | `img/wisata/<kode>/` | `MEDIA_DESTINASI` |
-| Aparat (opsional; tanpa foto = monogram) | `img/` | `FOTO.aparat` (menurut nama) di `komponen.js` |
+| Foto kartu wisata (halaman Wisata & Beranda) | `img/wisata/<kode>/kartu.webp` | `DESTINASI` di [`komponen.js`](assets/js/komponen.js) |
+| Latar kop detail wisata — **foto atau video** berulang | `img/wisata/<kode>/latar.*` | `DESTINASI` |
+| Galeri foto & video per destinasi (diklik untuk diperbesar/diputar) | `img/wisata/<kode>/` | `DESTINASI` |
+| Aparat & kepala lingkungan (opsional; tanpa foto = monogram) | `img/orang/` | `FOTO_ORANG` (menurut nama) di `komponen.js` |
 | KKT & dosen lapangan | `img/` | kolom `foto` di `DATA_KKT` |
 
 Setiap destinasi sudah punya media contoh bertanda "FOTO/VIDEO CONTOH" di `img/wisata/<kode>/`
-(`latar.webp`, `foto-1…4.webp`, `video-1.mp4` + posternya `video-1.webp`). Cara termudah menggantinya:
+(`kartu.webp`, `latar.webp`, `foto-1…4.webp`, `video-1.mp4` + posternya `video-1.webp`). Cara termudah menggantinya:
 **timpa berkasnya dengan nama yang sama.** Jenis media dikenali dari akhirannya (`.mp4`/`.webm` = video).
 Latar video: ubah `latar` menjadi `{ berkas: "latar.mp4", poster: "latar.webp" }` — diputar tanpa suara,
 berulang, dengan tombol Jeda; pengunjung yang memilih "kurangi gerak" atau hemat data melihat posternya saja.
+Foto galeri boleh lanskap maupun potret: galeri menyusun baris yang rata kiri-kanan sesuai rasio tiap
+foto, jadi tidak ada yang terpotong atau menyisakan sel kosong (semua lanskap = petak seragam).
 Saran video: MP4 (H.264) 720p–1080p, tanpa suara, kamera diam, 10–30 detik yang menyambung saat berulang,
 di bawah ±8 MB (video beberapa menit terlalu berat untuk pengunjung ber-HP).
 
-**Daftar destinasi wisata tetap.** `FOTO.wisata` sekaligus daftar destinasinya: baris di tab `wisata`
-yang namanya tidak terdaftar tidak tampil (Cek Data memberi tahu). Menambah destinasi = simpan fotonya
-di `img/`, daftarkan di `FOTO.wisata`, tambahkan barisnya di `data-contoh.js`, lalu buat ulang template
-(dropdown `nama` mengikuti `data-contoh.js`).
+**Daftar destinasi wisata tetap.** `DESTINASI` sekaligus daftar destinasinya: baris di tab `wisata`
+yang namanya tidak terdaftar tidak tampil (Cek Data memberi tahu). Menambah destinasi = buat folder
+`img/wisata/<kode>/`, daftarkan di `DESTINASI`, tambahkan barisnya di `data-contoh.js`, lalu buat ulang
+template (dropdown `nama` mengikuti `data-contoh.js`).
 
 ### Tab `profil`
 
@@ -170,7 +172,7 @@ dalam bahasa biasa. Untuk detail teknis, buka konsol browser (F12 → Console); 
 │   ├── data.js          pengaturan (PAKAI_DUMMY, ID_SPREADSHEET), SKEMA tab, ambilData()
 │   ├── data-contoh.js   data awal: isi template spreadsheet & data saat PAKAI_DUMMY = true
 │   ├── ui.js            kerangka: header, footer, breadcrumb, info kantor, animasi, status memuat
-│   ├── komponen.js      FOTO statis, isiDariData(), aturKolom(), potongan HTML bersama
+│   ├── komponen.js      DESTINASI & FOTO_ORANG, isiDariData(), aturKolom(), potongan HTML bersama
 │   └── halaman/         logika per halaman (index.html → beranda.js; cek-data.js = pemeriksa sheet)
 ├── img/                 gambar statis
 ├── data/                template spreadsheet
@@ -201,7 +203,7 @@ isiDariData(document.getElementById("grid-wisata"), "wisata",
 wadah `[data-wadah-profil]` bila nilainya kosong.
 
 **Grid kartu** yang jumlahnya ditentukan admin memakai `class="grid-adaptif"` (atribut opsional
-`data-maks`, `data-hp="2"`); `isiDariData()` memanggil `aturKolom()` otomatis. Jangan tambahkan kelas
+`data-maks`); `isiDariData()` memanggil `aturKolom()` otomatis. Jangan tambahkan kelas
 kolom Tailwind (`lg:grid-cols-4`) pada wadah itu.
 
 Nilai dari `ambilData()` sudah di-escape, jadi aman disisipkan ke HTML. Untuk konteks non-HTML

@@ -27,8 +27,8 @@ const ID_SPREADSHEET = "11f8D-qzWt1rdkin7uBMmrbrEkZmc4dih39ruUwTh1gQ";
    - Tidak ada angka yang ditulis dua kali. Total penduduk, KK, dan jiwa per lingkungan
      dihitung dari tab lingkungan (lihat ringkasPenduduk di komponen.js).
    - Kolom "tampil" (Ya/Tidak): "Tidak" menyembunyikan baris tanpa menghapusnya; kosong = Ya.
-   - Tidak ada kolom foto: semua foto statis di folder img/, didaftarkan di FOTO (komponen.js).
-   - Daftar destinasi wisata tetap (yang punya foto di FOTO.wisata); sheet hanya mengubah teksnya.
+   - Tidak ada kolom foto: semua foto statis di folder img/, didaftarkan di komponen.js.
+   - Daftar destinasi wisata tetap (DESTINASI di komponen.js); sheet hanya mengubah teksnya.
    - Kolom "keterangan" (tab profil) hanya catatan untuk admin dan tidak dibaca situs.
    Peta tab → halaman ada di tab "petunjuk" pada sheet dan di README.md.
    Halaman cek-data.html memeriksa semua aturan ini dan melaporkan kesalahan isian. */
@@ -43,7 +43,7 @@ const SKEMA = {
   aparat: ["jabatan", "nama", "atasan", "nomor"],
   // Narahubung non-aparat. kategori: "darurat" atau "umum".
   kontak: ["nama", "tampil", "peran", "nomor", "kategori"],
-  // Daftar destinasi TETAP: hanya baris yang namanya terdaftar di FOTO.wisata (komponen.js) yang tampil,
+  // Daftar destinasi TETAP: hanya baris yang namanya terdaftar di DESTINASI (komponen.js) yang tampil,
   // karena tiap destinasi butuh foto. Menambah destinasi = pekerjaan pengembang (foto + daftar).
   wisata: ["nama", "tampil", "ringkas", "deskripsi", "jam", "tiket", "fasilitas", "waktu_terbaik", "cara_kesana", "pengelola", "maps_link"],
   // Satu baris per jenis surat. syarat & alur: satu butir per baris di dalam sel.
@@ -63,10 +63,6 @@ function urlTab(namaTab) {
   return "https://docs.google.com/spreadsheets/d/" + ID_SPREADSHEET +
     "/gviz/tq?tqx=out:csv&headers=1&sheet=" + encodeURIComponent(namaTab);
 }
-
-/* URL CSV per tab (dipakai hanya saat PAKAI_DUMMY = false). Tiap entri boleh
-   diganti URL CSV lain, mis. tautan dari menu "Publikasikan ke web". */
-const URL_SHEET = Object.fromEntries(Object.keys(SKEMA).map((tab) => [tab, urlTab(tab)]));
 
 const BATAS_WAKTU_MS = 15000;
 
@@ -103,11 +99,9 @@ async function ambilData(namaTab) {
  * @returns {Promise<{kolom: string[], baris: Array<Object>}>}
  */
 async function muatTab(namaTab) {
-  if (PAKAI_DUMMY) {
-    const mentah = DATA_DUMMY[namaTab] || [];
-    return { kolom: SKEMA[namaTab] || [], baris: rapikanBaris(namaTab, mentah) };
-  }
-  const { kolom, mentah } = await ambilDariSheet(namaTab);
+  const { kolom, mentah } = PAKAI_DUMMY
+    ? { kolom: SKEMA[namaTab] || [], mentah: DATA_DUMMY[namaTab] || [] }
+    : await ambilDariSheet(namaTab);
   return { kolom, baris: rapikanBaris(namaTab, mentah) };
 }
 
@@ -116,16 +110,11 @@ async function muatTab(namaTab) {
 /* ---------------------------------------------------------------------- */
 
 async function ambilDariSheet(namaTab) {
-  const url = URL_SHEET[namaTab];
-  if (!url) throw new Error('URL untuk tab "' + namaTab + '" belum diisi di URL_SHEET');
-  if (/docs\.google\.com/.test(url) && !/output=csv|out:csv/.test(url)) {
-    console.warn('[data] URL tab "' + namaTab + '" bukan URL CSV. Tautan "/edit" tidak bisa dipakai langsung — isi ID_SPREADSHEET saja.');
-  }
   if (typeof Papa === "undefined") throw new Error("PapaParse belum dimuat");
 
   // Baris kosong tidak dilewati di sini agar nomor baris tetap sama dengan di spreadsheet;
   // baris kosong dibuang belakangan oleh saringBaris.
-  const hasil = Papa.parse((await unduhCSV(url)).replace(/\r?\n$/, ""), {
+  const hasil = Papa.parse((await unduhCSV(urlTab(namaTab))).replace(/\r?\n$/, ""), {
     header: true,
     skipEmptyLines: false,
     transformHeader: normalisasiKunci,
@@ -147,7 +136,7 @@ async function unduhCSV(url) {
     if (!res.ok) throw new Error("server membalas HTTP " + res.status);
     const teks = await res.text();
     if (/^\s*</.test(teks)) {
-      throw new Error("yang diterima halaman HTML, bukan CSV — sheet belum dibagikan ke \"Siapa saja yang memiliki link\", atau URL bukan format CSV");
+      throw new Error("yang diterima halaman HTML, bukan CSV — sheet belum dibagikan ke \"Siapa saja yang memiliki link\"");
     }
     return teks;
   } catch (err) {
@@ -214,7 +203,7 @@ function saringBaris(namaTab, baris) {
 /**
  * Setiap baris mendapat kode dari kolom pertamanya, mis. "Surat Keterangan Domisili" →
  * "surat-keterangan-domisili". Kode dipakai sebagai alamat tautan (wisata-detail.html?id=danau-linow,
- * layanan.html#surat-keterangan-domisili) dan kunci FOTO cadangan di komponen.js.
+ * layanan.html#surat-keterangan-domisili) dan kunci DESTINASI di komponen.js.
  * Nama kembar mendapat akhiran -2, -3, … (halaman Cek Data memperingatkannya).
  */
 function beriKode(namaTab, baris) {
@@ -229,7 +218,7 @@ function beriKode(namaTab, baris) {
   });
 }
 
-/** "Kue Lapis Bu Ani (Lingk. 2)" → "kue-lapis-bu-ani-lingk-2". */
+/** "Surat Keterangan Usaha (SKU)" → "surat-keterangan-usaha-sku". */
 function kodeDari(teks) {
   return teksPolos(teks)
     .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
@@ -241,32 +230,6 @@ function kodeDari(teks) {
 /* ---------------------------------------------------------------------- */
 /* Utilitas nilai                                                          */
 /* ---------------------------------------------------------------------- */
-
-/**
- * Isi kolom foto → alamat gambar, atau "" bila tidak bisa dipakai. Diterima:
- * - tautan berbagi Google Drive (…/file/d/ID/view, open?id=ID, uc?id=ID) → gambar Drive
- *   berukuran `lebar` piksel (file harus dibagikan "Siapa saja yang memiliki link");
- * - tautan gambar https lain, dipakai apa adanya;
- * - nama berkas di folder img/ situs, mis. "kkt-vergino.webp".
- */
-function urlFoto(nilai, lebar = 1200) {
-  const teks = teksPolos(nilai).trim();
-  if (!teks) return "";
-  const idDrive = idGoogleDrive(teks);
-  if (idDrive) return "https://drive.google.com/thumbnail?id=" + encodeURIComponent(idDrive) + "&sz=w" + lebar;
-  // Tautan Drive tanpa ID berkas (mis. tautan folder) bukan gambar.
-  if (/(drive|docs)\.google\.com/i.test(teks)) return "";
-  if (/^https:\/\//i.test(teks)) return teks;
-  if (/^[\w.-]+\.(webp|jpe?g|png|gif|avif|svg)$/i.test(teks)) return "img/" + teks;
-  return "";
-}
-
-/** ID berkas dari tautan Google Drive, atau "" bila bukan tautan Drive. */
-function idGoogleDrive(teks) {
-  if (!/(drive|docs)\.google\.com|googleusercontent\.com/i.test(teks)) return "";
-  const cocok = teks.match(/\/d\/([\w-]{20,})/) || teks.match(/[?&]id=([\w-]{20,})/);
-  return cocok ? cocok[1] : "";
-}
 
 /** Hanya tautan http(s) yang diterima; nilai lain (mis. "javascript:") dikosongkan. */
 function urlAman(nilai) {

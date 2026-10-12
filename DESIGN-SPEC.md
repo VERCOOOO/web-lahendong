@@ -93,14 +93,17 @@ Bagan KKT   : pengurus inti di puncak (ketua di tengah, bergaris belerang, diapi
 Kop wisata  : latar foto atau video (berulang, tanpa suara) selebar layar, tinggi 72vh (440–760px), judul di
               kiri bawah + jam & tiket berikon belerang. Video: tombol Jeda/Putar bulat di kanan bawah;
               "kurangi gerak"/hemat data = poster saja. Tepi bawah tetap siluet punggungan.
-Media wisata: mosaik 3:2 — HP 2 kolom (kotak pertama selebar penuh), desktop 4 kolom dengan kotak pertama 2×2
-              bila ≥ 5 media. Video bertanda lingkaran putar di tengah. Klik = diperbesar di `<dialog>`
-              berlatar `--deep-2` 92% (video diputar dengan kendali), panah kiri/kanan & Esc.
+Galeri wisata: baris rata kiri-kanan (justified) — lebar kotak sebanding rasio fotonya, jadi potret & lanskap
+              tidak terpotong dan setiap baris penuh; tinggi baris ideal 110 / 200 / 240px (HP / tablet /
+              desktop). Video bertanda lingkaran putar. Klik = diperbesar di `<dialog>` berlatar `--deep-2`
+              92% (video diputar dengan kendali), panah kiri/kanan & Esc.
+Kontak      : HP 1 kolom, tablet & desktop 2 kolom; jumlah ganjil → kartu pertama (mis. Lurah) satu baris
+              penuh, sehingga tidak ada sel kosong.
 Cek Data    : satu kartu per tab; temuan bergaris kiri `--danger` (perlu diperbaiki), `--accent` (periksa),
               `--toska` (info). Alat admin, tidak ada di menu.
 
 ## 6. GRID ADAPTIF
-Kartu yang jumlahnya ditentukan admin (wisata, kolom struktur aparat, lingkungan, kontak) memakai
+Kartu yang jumlahnya ditentukan admin (wisata, kolom struktur aparat, lingkungan) memakai
 `.grid-adaptif`. `aturKolom()` di `komponen.js` menghitung:
 
     baris = ceil(n / maks)      kolom = ceil(n / baris)      (maks bawaan 4, atribut data-maks)
@@ -109,8 +112,8 @@ Kartu yang jumlahnya ditentukan admin (wisata, kolom struktur aparat, lingkungan
 |---|---|---|---|---|---|---|---|---|
 | Susunan desktop | 1 | 2 | 3 | 4 | 3+2 | 3×2 | 4+3 | 4×2 |
 
-Baris terakhir yang tidak penuh diletakkan di tengah (`rata-kiri` untuk pengecualian di Kontak).
-Tablet (640–1023px) 2 kolom; HP 1 kolom, atau 2 kolom untuk kartu kecil (`data-hp="2"`).
+Baris terakhir yang tidak penuh diletakkan di tengah. Tablet (640–1023px) 2 kolom; HP 1 kolom.
+Kontak memakai `.grid-kontak` dan galeri wisata `.galeri-media` (lihat §5).
 Satu kartu dibatasi lebar 560px agar tidak melebar sepanjang layar.
 
 ## 7. IKON & GAMBAR

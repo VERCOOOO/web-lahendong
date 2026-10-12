@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   isiDariData(document.getElementById("daftar-narahubung"), ["aparat", "kontak"], ([aparat, kontak]) => {
     const { darurat, dariAparat, umum } = kelompokkanNarahubung(aparat, kontak);
     return [
-      grup("Darurat", darurat.map(kartuDarurat), 3),
+      grup("Darurat", darurat.map(kartuDarurat)),
       grup("Aparat kelurahan", dariAparat.map(kartuNarahubung)),
       grup("Layanan umum", umum.map(kartuNarahubung)),
     ].join("");
@@ -53,13 +53,13 @@ function kelompokkanNarahubung(aparat, kontak) {
   return { darurat: darurat.filter(adaNomor), dariAparat: dariAparat.filter(adaNomor), umum: umum.filter(adaNomor) };
 }
 
-/** Satu kelompok berjudul; kelompok tanpa isi tidak ditampilkan. maks = kolom terbanyak di desktop. */
-function grup(judul, kartu, maks = 2) {
+/** Satu kelompok berjudul; kelompok tanpa isi tidak ditampilkan. */
+function grup(judul, kartu) {
   if (!kartu.length) return "";
   return `
     <section>
       <h3 class="label-kecil mb-4">${judul}</h3>
-      <div class="grid-adaptif rata-kiri" data-maks="${maks}">${kartu.join("")}</div>
+      <div class="grid-kontak">${kartu.join("")}</div>
     </section>
   `;
 }

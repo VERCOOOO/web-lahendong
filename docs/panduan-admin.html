@@ -320,8 +320,9 @@
           <ol>
             <li>Tab <code>profil</code> → cari <code>kunci</code>-nya (<code>jam_layanan</code>, <code>alamat_kantor</code>, <code>telepon_kantor</code>, <code>email</code>).</li>
             <li>Ganti kolom <code>nilai</code> saja.</li>
+            <li>Jam layanan ditulis per kelompok hari, dipisah garis miring: <code>Senin – Kamis, 08.00 – 16.30 WITA / Jumat, 08.00 – 13.30 WITA / Sabtu – Minggu, Hanya keadaan mendesak</code>. Nama hari sebelum koma.</li>
           </ol>
-          <p class="hasil">Satu kali ubah, tampil di bilah atas, footer, halaman Kontak, dan halaman Layanan sekaligus.</p>
+          <p class="hasil">Satu kali ubah, tampil di bilah atas, footer, halaman Kontak, dan halaman Layanan sekaligus. Jam layanan tampil sebagai daftar per hari; bilah atas menampilkan jam hari ini.</p>
         </article>
         <article class="resep">
           <h3>Mengubah keterangan wisata</h3>
@@ -352,10 +353,10 @@
         <article class="resep pengembang">
           <h3>Mengganti foto atau menambah destinasi wisata</h3>
           <ol>
-            <li>Kirim fotonya ke pengembang situs: foto beranda, foto/video wisata (latar halaman dan bagian “Suasana”), atau foto aparat/KKT.</li>
+            <li>Kirim fotonya ke pengembang situs: foto beranda, foto/video wisata (latar halaman dan galeri), atau foto aparat/KKT.</li>
             <li>Untuk destinasi baru, sertakan juga namanya; pengembang mendaftarkannya, lalu barisnya bisa diisi di tab <code>wisata</code>.</li>
           </ol>
-          <p class="hasil">Spreadsheet hanya berisi teks, jadi tidak ada tautan atau nama berkas foto yang perlu diurus operator. Foto dan video tampil di halaman detail tiap destinasi: sebagai latar di bagian atas, dan di bagian “Suasana” yang bisa diklik untuk diperbesar atau diputar. Video sebaiknya beberapa detik, tanpa suara, direkam dengan kamera diam. Foto orang hanya dengan izin yang bersangkutan.</p>
+          <p class="hasil">Spreadsheet hanya berisi teks, jadi tidak ada tautan atau nama berkas foto yang perlu diurus operator. Foto dan video tampil di halaman detail tiap destinasi: sebagai latar di bagian atas, dan di galeri yang bisa diklik untuk diperbesar atau diputar. Foto boleh lanskap maupun potret. Video sebaiknya beberapa detik, tanpa suara, direkam dengan kamera diam. Foto orang hanya dengan izin yang bersangkutan.</p>
         </article>
         <article class="resep pengembang">
           <h3>Memasang peta wilayah (PNG)</h3>
@@ -462,7 +463,7 @@ assets/css/style.css  sistem desain (palet, tipografi, komponen, struktur)
 assets/js/data.js     PAKAI_DUMMY, ID_SPREADSHEET, SKEMA tab, ambilData()
 assets/js/data-contoh.js  data awal = isi template sheet
 assets/js/ui.js       header, footer, info kantor, animasi, status memuat
-assets/js/komponen.js FOTO statis + potongan HTML bersama
+assets/js/komponen.js DESTINASI & FOTO_ORANG + potongan HTML bersama
 assets/js/halaman/    logika per halaman (index.html → beranda.js)
 data/template-data-lahendong.xlsx  template spreadsheet
 tools/buat_template.py  membuat ulang template (python3 tools/buat_template.py)</pre>
@@ -515,7 +516,7 @@ tools/buat_template.py  membuat ulang template (python3 tools/buat_template.py)<
       { isi: "Tentang, rute, pengelola", tab: ["wisata"], kolom: "deskripsi, cara_kesana, pengelola, maps_link" },
       { isi: "Informasi kunjungan", tab: ["wisata"], kolom: "jam, tiket, fasilitas, waktu_terbaik" },
       { isi: "Latar atas (foto atau video)", tetap: true, kolom: "berkas situs img/wisata/<kode>/" },
-      { isi: "Suasana: foto & video (klik untuk memperbesar/memutar)", tetap: true, kolom: "berkas situs img/wisata/<kode>/" },
+      { isi: "Galeri foto & video (klik untuk memperbesar/memutar)", tetap: true, kolom: "berkas situs img/wisata/<kode>/" },
     ]},
     { nama: "Layanan", berkas: "layanan.html", bagian: [
       { isi: "Daftar surat: kelompok, pencarian, buka-tutup", tab: ["layanan"], kolom: "nama_surat, kategori, syarat, alur, waktu, biaya, catatan" },

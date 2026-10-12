@@ -190,7 +190,7 @@
             <tr><td><code>assets/js/data.js</code></td><td>Pengaturan (<code>PAKAI_DUMMY</code>, <code>ID_SPREADSHEET</code>), <code>SKEMA</code> kolom tiap tab, <code>ambilData()</code>, normalisasi, dan utilitas nilai (<code>keAngka</code>, <code>escapeHtml</code>, <code>urlAman</code>).</td><td>Ganti sheet, tambah tab/kolom</td></tr>
             <tr><td><code>assets/js/data-contoh.js</code></td><td><code>DATA_DUMMY</code>: data awal. Dipakai saat mode contoh, dan menjadi sumber template <code>.xlsx</code>.</td><td>Bersama perubahan <code>SKEMA</code></td></tr>
             <tr><td><code>assets/js/ui.js</code></td><td>Kerangka yang sama di semua halaman: menu (<code>NAV_LINKS</code>), header, footer, breadcrumb, info kantor, animasi muncul, pesan memuat/gagal/kosong.</td><td>Menambah halaman ke menu, mengubah header/footer</td></tr>
-            <tr><td><code>assets/js/komponen.js</code></td><td>Registri <code>FOTO</code> (sekaligus daftar destinasi wisata, lewat <code>wisataTetap()</code>), <code>isiDariData()</code>, <code>aturKolom()</code>, format angka, teks bertanda baris baru, kartu wisata, monogram aparat.</td><td>Menambah foto, mengubah potongan bersama</td></tr>
+            <tr><td><code>assets/js/komponen.js</code></td><td>Registri <code>DESTINASI</code> (daftar destinasi wisata beserta foto & videonya, lewat <code>wisataTetap()</code>) dan <code>FOTO_ORANG</code>, <code>isiDariData()</code>, <code>aturKolom()</code>, format angka, teks bertanda baris baru, kartu wisata, monogram aparat.</td><td>Menambah foto, mengubah potongan bersama</td></tr>
             <tr><td><code>kkt.html</code></td><td>Halaman mahasiswa KKT Unsrat Angkatan 149, ditautkan dari baris bawah footer (tidak ada di menu). Satu-satunya halaman yang datanya ditulis di kode: <code>DATA_KKT</code> di awal <code>halaman/kkt.js</code>.</td><td>Mengubah daftar mahasiswa KKT</td></tr>
             <tr><td><code>cek-data.html</code></td><td>Alat admin (tidak ada di menu): memeriksa seluruh sheet dan melaporkan isian yang keliru beserta cara memperbaikinya. Logikanya di <code>halaman/cek-data.js</code>.</td><td>Menambah aturan pemeriksaan</td></tr>
             <tr><td><code>assets/js/halaman/*.js</code></td><td>Logika satu halaman: tab mana yang diambil dan bagaimana dirender. <code>index.html</code> memakai <code>beranda.js</code>; halaman lain bernama sama.</td><td>Mengubah isi satu halaman</td></tr>
@@ -256,21 +256,21 @@
       </article>
 
       <article class="fungsi">
-        <header><code>FOTO</code>, <code>wisataTetap()</code> &amp; <code>gambar(tab, item)</code><span class="label">komponen.js</span></header>
+        <header><code>DESTINASI</code>, <code>FOTO_ORANG</code> &amp; <code>visualOrang()</code><span class="label">komponen.js</span></header>
         <div class="badan">
-          <p>Semua foto statis: berkasnya di <code>img/</code> dan didaftarkan di kode, spreadsheet hanya berisi teks. <code>FOTO.wisata</code> sekaligus <strong>daftar destinasi</strong>: <code>wisataTetap()</code> membuang baris tab <code>wisata</code> yang kodenya tidak terdaftar, sehingga admin tidak bisa menambah destinasi tanpa foto (Cek Data menandai baris semacam itu). Media halaman detail ada di <code>MEDIA_DESTINASI</code> (<code>halaman/wisata-detail.js</code>, berkas di <code>img/wisata/&lt;kode&gt;/</code>): <code>latar</code> untuk kop (foto, atau <code>{ berkas, poster }</code> untuk video berulang tanpa suara — tidak diputar otomatis bila <code>prefers-reduced-motion</code> atau <code>saveData</code>, dan selalu ada tombol Jeda) dan <code>media</code> untuk mosaik “Suasana” (jenis dikenali dari akhiran <code>.mp4</code>/<code>.webm</code>). Media yang gagal dimuat dihapus dari mosaik; pembesar <code>&lt;dialog&gt;</code> membaca daftar dari kotak yang tersisa.</p>
-          <p><code>sumberFoto()</code> menyusun urutan sumber: isian <code>foto</code> pada data di kode (<code>DATA_KKT</code>, dibaca <code>urlFoto()</code>) → registri <code>FOTO</code> (menurut kode baris) → <code>placeholder.webp</code>. Bila satu sumber gagal dimuat, <code>fotoBerikutnya()</code> di <code>onerror</code> mencoba sumber berikutnya. Aparat memakai <code>visualOrang()</code>: monogram inisial selalu dirender di belakang foto, jadi bila foto gagal yang tampil monogram.</p>
-<pre><code><span class="k">const</span> FOTO = {
-  wisata: { <span class="s">"danau-linow"</span>: <span class="s">"wisata-danau-linow.webp"</span>, … },   <span class="c">// kode dari nama</span>
-  aparat: { },   <span class="c">// menurut kode nama orang</span>
-};</code></pre>
+          <p>Semua foto statis: berkasnya di <code>img/</code> dan didaftarkan di kode, spreadsheet hanya berisi teks. <code>DESTINASI</code> sekaligus <strong>daftar destinasi</strong>: <code>wisataTetap()</code> membuang baris tab <code>wisata</code> yang kodenya tidak terdaftar, sehingga admin tidak bisa menambah destinasi tanpa foto (Cek Data menandai baris semacam itu). Setiap destinasi punya folder <code>img/wisata/&lt;kode&gt;/</code>: <code>kartu</code> untuk kartu di Wisata & Beranda (<code>fotoKartuWisata()</code>), <code>latar</code> untuk kop (foto, atau <code>{ berkas, poster }</code> untuk video berulang tanpa suara — tidak diputar otomatis bila <code>prefers-reduced-motion</code> atau <code>saveData</code>, dan selalu ada tombol Jeda) dan <code>media</code> untuk galeri (jenis dikenali dari akhiran <code>.mp4</code>/<code>.webm</code>). Galeri disusun <code>susunGaleri()</code> di <code>halaman/wisata-detail.js</code>: rasio tiap foto dibaca saat dimuat, kotak dibagi ke baris yang tingginya mendekati tinggi ideal, lalu tiap baris diregangkan selebar wadah (lebar kotak sebanding rasionya) — potret tidak terpotong dan tidak ada sel kosong. Disusun ulang saat lebar berubah. Media yang gagal dimuat dilepas; pembesar <code>&lt;dialog&gt;</code> membaca daftar dari kotak yang tersisa.</p>
+          <p><code>visualOrang(orang, kelas)</code> memakai isian <code>foto</code> (data di kode, mis. <code>DATA_KKT</code>) atau <code>FOTO_ORANG</code> menurut kode nama — berlaku untuk aparat, kepala lingkungan, dan Kontak sekaligus. Monogram inisial selalu dirender di belakang foto, jadi bila foto tidak ada atau gagal dimuat, monogramlah yang tampil.</p>
+<pre><code><span class="k">const</span> DESTINASI = {
+  <span class="s">"danau-linow"</span>: { kartu: <span class="s">"kartu.webp"</span>, latar: <span class="s">"latar.webp"</span>, media: [{ berkas: <span class="s">"foto-1.webp"</span> }, …] },
+};
+<span class="k">const</span> FOTO_ORANG = { <span class="s">"reymon-stive-londok-s-t"</span>: <span class="s">"orang/reymon-londok.webp"</span> };</code></pre>
         </div>
       </article>
 
       <article class="fungsi">
         <header><code>isiInfoKantor()</code><span class="label">ui.js</span></header>
         <div class="badan">
-          <p>Mengisi setiap elemen bertanda <code>data-profil="kunci"</code> dari tab <code>profil</code>, di halaman mana pun, tanpa JavaScript tambahan. Bila nilainya kosong, wadah terdekat <code>[data-wadah-profil]</code> dihapus, sehingga situs tidak pernah menampilkan baris kosong atau isian karangan. <code>data-profil-tautan="tel"</code> atau <code>"mailto"</code> menjadikannya tautan telepon/email.</p>
+          <p>Mengisi setiap elemen bertanda <code>data-profil="kunci"</code> dari tab <code>profil</code>, di halaman mana pun, tanpa JavaScript tambahan. Bila nilainya kosong, wadah terdekat <code>[data-wadah-profil]</code> dihapus, sehingga situs tidak pernah menampilkan baris kosong atau isian karangan. <code>data-profil-tautan="tel"</code> atau <code>"mailto"</code> menjadikannya tautan telepon/email. <code>data-profil-format="jadwal"</code> menampilkan jam layanan sebagai daftar hari–jam (<code>jadwalDari()</code> memecah isian di tanda <code>/</code> atau baris baru, nama hari di depan koma), dan <code>"hari-ini"</code> hanya jam hari ini menurut WITA (dipakai bilah atas).</p>
 <pre><code>&lt;p data-wadah-profil&gt;Jam layanan: &lt;span data-profil=<span class="s">"jam_layanan"</span>&gt;&lt;/span&gt;&lt;/p&gt;</code></pre>
         </div>
       </article>
@@ -303,7 +303,7 @@
           <tbody>
             <tr><td>Desktop (≥1024px)</td><td class="num">1</td><td class="num">2</td><td class="num">3</td><td class="num">4</td><td class="num">3+2</td><td class="num">3×2</td><td class="num">4+3</td><td class="num">4×2</td><td class="num">3×3</td></tr>
             <tr><td>Tablet (640–1023px)</td><td class="num" colspan="9">2 kolom</td></tr>
-            <tr><td>HP</td><td class="num" colspan="9">1 kolom; 2 kolom untuk kartu kecil (<code>data-hp="2"</code>: aparat, lingkungan)</td></tr>
+            <tr><td>HP</td><td class="num" colspan="9">1 kolom</td></tr>
           </tbody>
         </table>
       </div>
@@ -312,7 +312,7 @@
 @media (min-width: 1024px) {
   .grid-adaptif &gt; * { flex-basis: calc((100% - (var(--kolom) - 1) * var(--jarak)) / var(--kolom)); }
 }</code></pre>
-      <p>Pengaturan per wadah lewat atribut HTML: <code>data-maks="3"</code> (paling banyak 3 per baris), <code>data-hp="2"</code> (2 kolom di HP), dan kelas <code>rata-kiri</code> (baris terakhir rata kiri, dipakai di Kontak). Deret angka statistik (<code>.deret-statistik</code>) memakai hitungan yang sama, sehingga bila satu angka dikosongkan, sisanya tetap mengisi lebar penuh.</p>
+      <p>Pengaturan per wadah lewat atribut HTML: <code>data-maks="3"</code> (paling banyak 3 per baris). Kontak tidak memakai grid ini, melainkan <code>.grid-kontak</code>: 2 kolom, dan bila jumlahnya ganjil kartu pertama mengisi satu baris (<code>:first-child:nth-last-child(odd)</code>), murni CSS. Deret angka statistik (<code>.deret-statistik</code>) memakai hitungan yang sama, sehingga bila satu angka dikosongkan, sisanya tetap mengisi lebar penuh.</p>
     </section>
 
     <!-- 5b -->
@@ -395,9 +395,9 @@
 
       <h3>Mengganti atau menambah foto</h3>
       <ol class="langkah">
-        <li>Foto utama wisata atau aparat: simpan <code>.webp</code> di <code>img/</code> (wisata 3:2, mis. 1600 × 1067 px) lalu daftarkan di <code>FOTO</code> (<code>komponen.js</code>) menurut kode barisnya, mis. <code>"danau-linow"</code>.</li>
-        <li>Foto/video destinasi: simpan di <code>img/wisata/&lt;kode&gt;/</code>. Mengganti media contoh cukup menimpa berkas bernama sama; menambah = tambahkan <code>{ berkas, poster?, keterangan? }</code> ke <code>media</code> destinasinya di <code>MEDIA_DESTINASI</code>. Video: MP4 H.264, tanpa suara (<code>ffmpeg -i asli.mov -an -vf scale=-2:720 -c:v libx264 -pix_fmt yuv420p -crf 28 -movflags +faststart video-1.mp4</code>), 10–30 detik.</li>
-        <li>Destinasi baru: daftarkan fotonya di <code>FOTO.wisata</code>, tambahkan barisnya di <code>data-contoh.js</code>, lalu jalankan <code>tools/buat_template.py</code> agar dropdown <code>nama</code> di tab <code>wisata</code> ikut memuatnya. Admin lalu mengisi barisnya di sheet.</li>
+        <li>Foto aparat/kepala lingkungan: simpan di <code>img/orang/</code> lalu daftarkan di <code>FOTO_ORANG</code> (<code>komponen.js</code>) menurut kode namanya.</li>
+        <li>Foto/video destinasi: simpan di <code>img/wisata/&lt;kode&gt;/</code>. Mengganti media contoh cukup menimpa berkas bernama sama; menambah = tambahkan <code>{ berkas, poster?, keterangan? }</code> ke <code>media</code> destinasinya di <code>DESTINASI</code>. Video: MP4 H.264, tanpa suara (<code>ffmpeg -i asli.mov -an -vf scale=-2:720 -c:v libx264 -pix_fmt yuv420p -crf 28 -movflags +faststart video-1.mp4</code>), 10–30 detik.</li>
+        <li>Destinasi baru: buat foldernya, daftarkan di <code>DESTINASI</code>, tambahkan barisnya di <code>data-contoh.js</code>, lalu jalankan <code>tools/buat_template.py</code> agar dropdown <code>nama</code> di tab <code>wisata</code> ikut memuatnya. Admin lalu mengisi barisnya di sheet.</li>
         <li>Hero Beranda: ganti berkas <code>img/hero-lahendong.webp</code>. KKT: kolom <code>foto</code> di <code>DATA_KKT</code>.</li>
       </ol>
 
@@ -418,7 +418,7 @@ python3 -m http.server 8000
 <span class="c"># buka http://localhost:8000</span></code></pre></li>
         <li><strong>Periksa data mentah</strong> dari konsol:
 <pre><code><span class="k">await</span> ambilData(<span class="s">"lingkungan"</span>)      <span class="c">// array objek yang dipakai situs</span>
-<span class="k">await</span> fetch(URL_SHEET.lingkungan).then((r) =&gt; r.text())   <span class="c">// CSV mentah dari Google</span></code></pre></li>
+<span class="k">await</span> fetch(urlTab(<span class="s">"lingkungan"</span>)).then((r) =&gt; r.text())   <span class="c">// CSV mentah dari Google</span></code></pre></li>
       </ol>
       <div class="gulir">
         <table>

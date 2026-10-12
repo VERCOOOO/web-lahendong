@@ -1,58 +1,7 @@
 /* Detail wisata (wisata-detail.html?id=danau-linow): mencari destinasi berdasarkan ?id=.
-   Sumber: tab wisata (teks). Foto & video statis dari MEDIA_DESTINASI di bawah;
-   foto kartu di halaman Wisata/Beranda dari FOTO.wisata di komponen.js. */
-
-/* Media tiap destinasi. Berkasnya di img/wisata/<kode>/ (mis. img/wisata/danau-linow/).
-   Jenisnya dikenali dari akhiran nama berkas: .mp4 / .webm = video, selain itu foto.
-   Cara termudah mengganti: timpa berkas contoh dengan berkas baru bernama sama.
-
-   latar  : latar kop halaman — foto, atau video yang diputar berulang tanpa suara.
-            Foto: lanskap 16:9, mis. 1920 × 1080 px. Kosong = foto kartu (FOTO.wisata).
-            Video: { berkas: "latar.mp4", poster: "latar.webp" } — poster tampil selagi video dimuat,
-            dan menggantikan video bila pengunjung memilih "kurangi gerak" atau menghemat data.
-   media  : foto & video untuk bagian "Suasana …", berurutan; yang pertama tampil paling besar.
-            Foto 3:2 (mis. 1200 × 800 px). Video: isi poster agar kotaknya langsung bergambar.
-            keterangan (opsional) tampil saat media diperbesar. Daftar kosong = bagian tidak tampil.
-   Saran video: MP4 (H.264) 720p–1080p, tanpa suara, 10–30 detik, di bawah ±8 MB, kamera diam (tripod). */
-const MEDIA_DESTINASI = {
-  "danau-linow": {
-    latar: "latar.webp",
-    media: [
-      { berkas: "foto-1.webp", keterangan: "Foto contoh — akan diganti" },
-      { berkas: "foto-2.webp", keterangan: "Foto contoh — akan diganti" },
-      { berkas: "video-1.mp4", poster: "video-1.webp", keterangan: "Video contoh — akan diganti" },
-      { berkas: "foto-3.webp", keterangan: "Foto contoh — akan diganti" },
-      { berkas: "foto-4.webp", keterangan: "Foto contoh — akan diganti" },
-    ],
-  },
-  "hutan-pinus-lahendong": {
-    latar: "latar.webp",
-    media: [
-      { berkas: "foto-1.webp", keterangan: "Foto contoh — akan diganti" },
-      { berkas: "foto-2.webp", keterangan: "Foto contoh — akan diganti" },
-      { berkas: "video-1.mp4", poster: "video-1.webp", keterangan: "Video contoh — akan diganti" },
-      { berkas: "foto-3.webp", keterangan: "Foto contoh — akan diganti" },
-      { berkas: "foto-4.webp", keterangan: "Foto contoh — akan diganti" },
-    ],
-  },
-  "mah-watu": {
-    latar: "latar.webp",
-    media: [
-      { berkas: "foto-1.webp", keterangan: "Foto contoh — akan diganti" },
-      { berkas: "foto-2.webp", keterangan: "Foto contoh — akan diganti" },
-      { berkas: "video-1.mp4", poster: "video-1.webp", keterangan: "Video contoh — akan diganti" },
-      { berkas: "foto-3.webp", keterangan: "Foto contoh — akan diganti" },
-      { berkas: "foto-4.webp", keterangan: "Foto contoh — akan diganti" },
-    ],
-  },
-};
+   Teks dari tab wisata; foto & video dari DESTINASI di komponen.js. */
 
 const adalahVideo = (berkas) => /\.(mp4|webm)$/i.test(berkas || "");
-
-/** Alamat berkas media satu destinasi; kosong bila nama berkasnya kosong. */
-function alamatMedia(item, berkas) {
-  return berkas ? `img/wisata/${encodeURIComponent(teksPolos(item.id))}/${encodeURIComponent(berkas)}` : "";
-}
 
 /** Video latar tidak diputar otomatis bila pengunjung memilih "kurangi gerak" atau mode hemat data. */
 function bolehPutarOtomatis() {
@@ -85,9 +34,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   document.title = teksPolos(item.nama) + " — Kelurahan Lahendong";
-  wadah.innerHTML = tampilanDetail(item) + bagianMedia(item);
+  wadah.innerHTML = tampilanDetail(item) + bagianGaleri(item);
   pasangLatarVideo();
-  pasangPembesar();
+  pasangGaleri();
   segarkanTampilan();
 });
 
@@ -182,20 +131,18 @@ function tampilanDetail(item) {
 /* ---------------------------------------------------------------------- */
 
 function latarKop(item) {
-  const latar = MEDIA_DESTINASI[teksPolos(item.id)]?.latar;
+  const { kartu, latar } = DESTINASI[teksPolos(item.id)];
   const berkas = typeof latar === "string" ? latar : latar?.berkas;
-  const poster = alamatMedia(item, latar?.poster);
-
   let isi;
   if (adalahVideo(berkas)) {
+    const poster = berkasDestinasi(item, latar.poster);
     isi = `
-      <video class="latar-video" src="${alamatMedia(item, berkas)}" ${poster ? `poster="${poster}"` : ""}
+      <video class="latar-video" src="${berkasDestinasi(item, berkas)}" ${poster ? `poster="${poster}"` : ""}
              muted loop playsinline ${bolehPutarOtomatis() ? "autoplay" : 'preload="none"'} aria-hidden="true"></video>`;
-  } else if (berkas) {
-    // Bila foto latar gagal dimuat, foto kartu destinasi dipakai sebagai cadangan.
-    isi = `<img src="${alamatMedia(item, berkas)}" alt="" onerror="this.onerror=null; this.src='${sumberFoto("wisata", item)[0] || FOTO_PENGGANTI}'" />`;
   } else {
-    isi = gambar("wisata", item, "", 1600).replace(/alt="[^"]*"/, 'alt=""');
+    // Tanpa latar, atau bila latar gagal dimuat, foto kartu destinasi yang dipakai.
+    const cadangan = berkasDestinasi(item, kartu) || FOTO_PENGGANTI;
+    isi = `<img src="${berkasDestinasi(item, berkas) || cadangan}" alt="" onerror="this.onerror=null; this.src='${cadangan}'" />`;
   }
   return `
     <div class="latar-kop">${isi}</div>
@@ -236,23 +183,21 @@ function pasangLatarVideo() {
 }
 
 /* ---------------------------------------------------------------------- */
-/* Foto & video destinasi, pembesar media                                  */
+/* Galeri foto & video                                                     */
 /* ---------------------------------------------------------------------- */
 
-function bagianMedia(item) {
-  const media = (MEDIA_DESTINASI[teksPolos(item.id)]?.media || []).filter((m) => m.berkas);
+function bagianGaleri(item) {
+  const media = DESTINASI[teksPolos(item.id)].media.filter((m) => m.berkas);
   if (!media.length) return "";
-  const adaVideo = media.some((m) => adalahVideo(m.berkas));
+  const jenis = media.some((m) => adalahVideo(m.berkas)) ? "Foto & video" : "Foto";
   return `
     <section class="bg-[var(--surface)] border-y border-[var(--line)]">
       <div class="wadah seksi">
         <div class="reveal mb-8 md:mb-10">
-          <span class="eyebrow">${adaVideo ? "Foto & video" : "Foto"}</span>
-          <h2 class="judul-seksi garis-aksen mt-4">Suasana ${item.nama}</h2>
+          <span class="eyebrow">Galeri</span>
+          <h2 class="judul-seksi garis-aksen mt-4">${jenis} ${item.nama}</h2>
         </div>
-        <div class="media-destinasi reveal" data-jumlah="${media.length}">
-          ${media.map((m, i) => kotakMedia(item, m, i)).join("")}
-        </div>
+        <div class="galeri-media reveal">${media.map((m) => kotakMedia(item, m)).join("")}</div>
       </div>
     </section>
     <dialog class="pembesar-foto" aria-label="Media diperbesar">
@@ -268,28 +213,87 @@ function bagianMedia(item) {
   `;
 }
 
-function kotakMedia(item, m, i) {
+/** Satu kotak galeri. Rasionya dibaca dari berkasnya sendiri (aturRasio), jadi foto potret tidak terpotong. */
+function kotakMedia(item, m) {
   const video = adalahVideo(m.berkas);
-  const src = alamatMedia(item, m.berkas);
-  const alt = escapeHtml(m.keterangan || teksPolos(item.nama));
-  // Kotak video menampilkan poster; tanpa poster, bingkai pertama video dipakai.
-  const gambarKotak = video && !m.poster
-    ? `<video src="${src}#t=0.5" muted playsinline preload="metadata" aria-hidden="true" onerror="this.closest('.kotak-media').remove()"></video>`
-    : `<img src="${video ? alamatMedia(item, m.poster) : src}" alt="${alt}" loading="lazy" onerror="this.closest('.kotak-media').remove()" />`;
+  const src = berkasDestinasi(item, m.berkas);
+  const keterangan = escapeHtml(m.keterangan || "");
+  // Kotak video menampilkan posternya; tanpa poster, bingkai awal videonya.
+  const tampak = video && !m.poster
+    ? `<video src="${src}#t=0.5" muted playsinline preload="metadata" aria-hidden="true" onloadedmetadata="aturRasio(this)" onerror="mediaGagal(this)"></video>`
+    : `<img src="${video ? berkasDestinasi(item, m.poster) : src}" alt="${keterangan || item.nama}" loading="lazy" onload="aturRasio(this)" onerror="mediaGagal(this)" />`;
   return `
     <button type="button" class="kotak-media" data-jenis="${video ? "video" : "foto"}" data-src="${src}"
-            data-keterangan="${escapeHtml(m.keterangan || "")}" aria-label="${video ? "Putar video" : "Perbesar foto"} ${i + 1}">
-      ${gambarKotak}
+            data-keterangan="${keterangan}" aria-label="${video ? "Putar video" : "Perbesar foto"}">
+      ${tampak}
       ${video ? `<span class="tanda-putar" aria-hidden="true"><i data-lucide="play" class="w-5 h-5"></i></span>` : ""}
     </button>`;
 }
 
+function aturRasio(el) {
+  const [w, h] = el.tagName === "VIDEO" ? [el.videoWidth, el.videoHeight] : [el.naturalWidth, el.naturalHeight];
+  if (!w || !h) return;
+  el.closest(".kotak-media").style.setProperty("--rasio", (w / h).toFixed(3));
+  susunGaleri();
+}
+
+/** Media yang gagal dimuat dilepas dari galeri (dan dari pembesar). */
+function mediaGagal(el) {
+  el.closest(".kotak-media").remove();
+  susunGaleri();
+}
+
+/**
+ * Galeri rata kiri-kanan: kotak dibagi ke beberapa baris yang tingginya mendekati tinggi ideal,
+ * lalu tiap baris diregangkan selebar wadah (lebar kotak sebanding rasionya, lihat .baris-media).
+ * Tidak ada foto yang terpotong dan tidak ada sel kosong; bila semua lanskap, petaknya seragam per baris.
+ * Kotak ke-i masuk baris tempat titik tengahnya jatuh bila total rasio dibagi rata ke semua baris.
+ */
+function susunGaleri() {
+  const wadah = document.querySelector(".galeri-media");
+  const kotak = wadah ? [...wadah.querySelectorAll(".kotak-media")] : [];
+  if (!kotak.length) {
+    wadah?.closest("section").remove();
+    return;
+  }
+  const lebar = wadah.clientWidth;
+  const tinggiIdeal = lebar < 640 ? 110 : lebar < 1024 ? 200 : 240;
+  const rasio = kotak.map((k) => Number(k.style.getPropertyValue("--rasio")) || 1.5);
+  const total = rasio.reduce((a, r) => a + r, 0);
+  const jumlahBaris = Math.max(1, Math.round((total * tinggiIdeal) / lebar));
+  const perBaris = total / jumlahBaris;
+
+  const baris = Array.from({ length: jumlahBaris }, () => {
+    const el = document.createElement("div");
+    el.className = "baris-media";
+    return el;
+  });
+  let sebelum = 0;
+  kotak.forEach((k, i) => {
+    baris[Math.min(jumlahBaris - 1, Math.floor((sebelum + rasio[i] / 2) / perBaris))].append(k);
+    sebelum += rasio[i];
+  });
+  wadah.replaceChildren(...baris.filter((b) => b.children.length));
+}
+
+/** Galeri: susun baris (ulang saat lebar berubah), lalu pasang pembesar media. */
+function pasangGaleri() {
+  const wadah = document.querySelector(".galeri-media");
+  if (!wadah) return;
+  susunGaleri();
+  let lebarTerakhir = wadah.clientWidth;
+  new ResizeObserver(() => {
+    if (wadah.clientWidth === lebarTerakhir) return;
+    lebarTerakhir = wadah.clientWidth;
+    susunGaleri();
+  }).observe(wadah);
+  pasangPembesar();
+}
+
 /** Klik kotak → diperbesar (video diputar dengan suara & kendali); panah kiri/kanan untuk berpindah;
-    Esc atau klik latar untuk menutup. Daftarnya dibaca dari kotak yang tersisa, jadi media yang gagal
-    dimuat (dan sudah dihapus) ikut terlewati. */
+    Esc atau klik latar untuk menutup. Daftarnya dibaca dari kotak yang tersisa saat itu. */
 function pasangPembesar() {
   const dialog = document.querySelector(".pembesar-foto");
-  if (!dialog) return;
   const img = dialog.querySelector("img");
   const video = dialog.querySelector("video");
   const keterangan = dialog.querySelector("figcaption");
@@ -310,14 +314,19 @@ function pasangPembesar() {
     } else {
       video.removeAttribute("src");
       img.src = asal.dataset.src;
-      img.alt = asal.dataset.keterangan || "";
+      img.alt = asal.dataset.keterangan;
     }
     keterangan.textContent = [asal.dataset.keterangan, semua.length > 1 ? `${indeks + 1} / ${semua.length}` : ""].filter(Boolean).join(" · ");
     dialog.querySelectorAll(".geser").forEach((t) => (t.hidden = semua.length < 2));
   };
 
-  daftar().forEach((kotak) =>
-    kotak.addEventListener("click", () => { tampilkan(daftar().indexOf(kotak)); dialog.showModal(); }));
+  // Satu pendengar di wadah: kotak berpindah baris saat galeri disusun ulang.
+  document.querySelector(".galeri-media").addEventListener("click", (e) => {
+    const kotak = e.target.closest(".kotak-media");
+    if (!kotak) return;
+    tampilkan(daftar().indexOf(kotak));
+    dialog.showModal();
+  });
   dialog.addEventListener("close", () => video.pause());
   dialog.querySelector(".tutup").addEventListener("click", () => dialog.close());
   dialog.querySelector(".sebelumnya").addEventListener("click", () => tampilkan(indeks - 1));
