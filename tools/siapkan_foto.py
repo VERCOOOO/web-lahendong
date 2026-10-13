@@ -5,19 +5,32 @@
   latar   rasio asli, sisi lebar paling besar 1920 px (latar kop halaman)
   galeri  rasio asli, sisi terpanjang paling besar 1600 px (galeri; potret maupun lanskap)
 
-Orientasi dari kamera HP (EXIF) dibetulkan, hasilnya WebP. Foto asli cukup disimpan di data/
-(tidak ikut di-commit); hanya hasil di img/ yang masuk repo. Butuh Pillow (pip install pillow).
+Orientasi dari kamera HP (EXIF) dibetulkan, hasilnya WebP; foto HEIC (iPhone) dibaca lewat ImageMagick.
+Foto asli cukup disimpan di data/ (tidak ikut di-commit); hanya hasil di img/ yang masuk repo.
+Butuh Pillow (pip install pillow) dan, untuk HEIC, ImageMagick.
 
 Contoh: python3 tools/siapkan_foto.py "data/linow/linow card.png" img/wisata/danau-linow/kartu.webp --jenis kartu
 """
 import argparse
 import os
+import subprocess
+import tempfile
 
 from PIL import Image, ImageOps
 
 
+def buka(asli):
+    """Pillow tidak membaca HEIC, jadi HEIC diubah dulu ke PNG sementara dengan ImageMagick."""
+    if not asli.lower().endswith((".heic", ".heif")):
+        return ImageOps.exif_transpose(Image.open(asli)).convert("RGB")
+    with tempfile.TemporaryDirectory() as tmp:
+        png = os.path.join(tmp, "foto.png")
+        subprocess.run(["convert", asli, "-auto-orient", png], check=True)
+        return Image.open(png).convert("RGB")
+
+
 def siapkan(asli, tujuan, jenis):
-    im = ImageOps.exif_transpose(Image.open(asli)).convert("RGB")
+    im = buka(asli)
     if jenis == "kartu":
         im = ImageOps.fit(im, (1200, 800), Image.LANCZOS)
     else:

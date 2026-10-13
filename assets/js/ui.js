@@ -35,16 +35,16 @@ function halamanAktif() {
 /* Header                                                                  */
 /* ---------------------------------------------------------------------- */
 
-/* Emblem: gunung berkawah dengan uap panas bumi — ciri khas Lahendong. */
+/* Logo: bukit, pohon pinus, danau, dan matahari belerang — tanda netral, bukan lambang pemerintahan.
+   Sama dengan img/logo.svg (favicon); warna memakai token agar latarnya bisa diganti di footer. */
 function emblem(ukuran = 36, latar = "var(--primary)") {
   return `
     <svg viewBox="0 0 40 40" width="${ukuran}" height="${ukuran}" aria-hidden="true" class="shrink-0">
-      <rect width="40" height="40" rx="9" fill="${latar}"/>
-      <path d="M5 31 L15 16.5 H25 L35 31 Z" fill="var(--bg)"/>
-      <path d="M15 16.5 Q20 19.5 25 16.5" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round"/>
-      <path d="M17.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4 M22.5 13.5 q-1.6 -2.2 0 -4.4 q1.6 -2.2 0 -4.4"
-            fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"/>
-      <path d="M8 34.5 H32" stroke="var(--bg)" stroke-width="1.6" stroke-linecap="round" opacity=".55"/>
+      <rect width="40" height="40" rx="10" fill="${latar}"/>
+      <circle cx="27" cy="12.5" r="3.2" fill="var(--accent)"/>
+      <path d="M2 31 C9 24 12 19 16 19 C20 19 22 24 26 24 C30 24 33 27 38 31 Z" fill="var(--toska-muda)"/>
+      <path d="M12 31 L16 21.5 L20 31 Z M16.8 31 L20.5 23.5 L24.2 31 Z" fill="var(--deep)"/>
+      <path d="M7 35 q3.25 -2.2 6.5 0 t6.5 0 t6.5 0 t6.5 0" fill="none" stroke="var(--toska)" stroke-width="2.2" stroke-linecap="round"/>
     </svg>
   `;
 }
