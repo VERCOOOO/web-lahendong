@@ -30,9 +30,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   document.title = teksPolos(item.nama) + " — Kelurahan Lahendong";
   wadah.innerHTML = tampilanDetail(item) + bagianGaleri(item);
+  segarkanTampilan();
   pasangVideoLatar(document.querySelector(".kop-wisata video"));
   pasangGaleri();
-  segarkanTampilan();
 });
 
 function tampilkanPesan(wadah, ikon, judul, pesan, warnaIkon = "text-[var(--muted)]") {
@@ -220,6 +220,7 @@ function susunGaleri() {
     return;
   }
   const lebar = wadah.clientWidth;
+  if (!lebar) return; // belum tampil (mis. tab di latar belakang); disusun saat lebarnya terbaca
   const tinggiIdeal = lebar < 640 ? 110 : lebar < 1024 ? 200 : 240;
   const rasio = kotak.map((k) => Number(k.style.getPropertyValue("--rasio")) || 1.5);
   const total = rasio.reduce((a, r) => a + r, 0);

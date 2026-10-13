@@ -38,7 +38,6 @@ const DESTINASI = {
       { berkas: "foto-8.webp" },
       { berkas: "foto-9.webp" },
       { berkas: "foto-10.webp" },
-      { berkas: "foto-11.webp" },
     ],
   },
   "objek-wisata-air-panas-belerang-dan-hutan-pinus": {

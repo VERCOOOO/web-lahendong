@@ -71,6 +71,7 @@ fotonya ke pengembang.
 |---|---|---|
 | Hero Beranda — video berulang tanpa suara | `img/beranda/hero.mp4`, `hero-hp.mp4`, `hero.webp` (poster) | `index.html` |
 | Kop halaman Layanan | `img/layanan/hero.webp` (+ `hero-hp.webp` untuk HP) | `layanan.html` |
+| Kop halaman Wisata | `img/wisata/hero.webp` (+ `hero-hp.webp`) | `wisata.html` |
 | Foto kartu wisata (halaman Wisata & Beranda) | `img/wisata/<kode>/kartu.webp` | `DESTINASI` di [`komponen.js`](assets/js/komponen.js) |
 | Latar kop detail wisata — **foto atau video** berulang | `img/wisata/<kode>/latar.*` | `DESTINASI` |
 | Galeri foto & video per destinasi (diklik untuk diperbesar/diputar) | `img/wisata/<kode>/` | `DESTINASI` |
