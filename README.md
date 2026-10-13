@@ -18,7 +18,8 @@ Kode hanya menentukan **tampilan**.
 
 | Tab sheet | Tampil di halaman | Isi |
 |---|---|---|
-| `profil` | Profil, Kontak, Layanan, Penduduk, Beranda, header & footer | Alamat, telepon, email & jam layanan; luas, ketinggian, suhu; batas wilayah; sejarah; tahun & sumber data |
+| `profil` | Profil, Kontak, Layanan, Penduduk, Beranda, header & footer | Alamat, telepon, email & jam layanan; letak, koordinat, luas, ketinggian, suhu; batas wilayah; visi & misi; tahun & sumber data |
+| `sejarah` | Profil (bagian Sejarah) | Satu baris per bagian: `judul` & `isi` (baris berawalan `- ` menjadi butir) |
 | `lingkungan` | Penduduk, Beranda (angka ringkas), Pemerintahan (kartu lingkungan) | Satu baris per lingkungan — **semua total dihitung dari sini** |
 | `aparat` | Pemerintahan (struktur), Beranda (pimpinan), Kontak | Satu baris per aparat |
 | `kontak` | Kontak | Nomor darurat & layanan umum selain aparat |
@@ -66,7 +67,7 @@ fotonya ke pengembang.
 
 | Foto | Tempat | Didaftarkan di |
 |---|---|---|
-| Hero Beranda | `img/hero-lahendong.webp` | `index.html` |
+| Hero Beranda — video berulang tanpa suara | `img/beranda/hero.mp4`, `hero-hp.mp4`, `hero.webp` (poster) | `index.html` |
 | Foto kartu wisata (halaman Wisata & Beranda) | `img/wisata/<kode>/kartu.webp` | `DESTINASI` di [`komponen.js`](assets/js/komponen.js) |
 | Latar kop detail wisata — **foto atau video** berulang | `img/wisata/<kode>/latar.*` | `DESTINASI` |
 | Galeri foto & video per destinasi (diklik untuk diperbesar/diputar) | `img/wisata/<kode>/` | `DESTINASI` |
@@ -80,6 +81,10 @@ Latar video: ubah `latar` menjadi `{ berkas: "latar.mp4", poster: "latar.webp" }
 berulang, dengan tombol Jeda; pengunjung yang memilih "kurangi gerak" atau hemat data melihat posternya saja.
 Foto galeri boleh lanskap maupun potret: galeri menyusun baris yang rata kiri-kanan sesuai rasio tiap
 foto, jadi tidak ada yang terpotong atau menyisakan sel kosong (semua lanskap = petak seragam).
+**Menyiapkan video** (hero Beranda maupun latar wisata): `python3 tools/siapkan_video.py ASLI.mp4 img/wisata/<kode>/latar`
+membuat versi layar lebar (1920 px), versi HP (`-hp`, 1280 px), dan poster sekaligus, membuang suara, dan membaurkan
+ujung video ke awalnya agar perulangannya tidak melompat. Video yang ramai gerak (mis. drone) pakai `--crf 31`.
+Simpan video asli di `data/` — folder itu tidak ikut di-commit untuk berkas video.
 Saran video: MP4 (H.264) 720p–1080p, tanpa suara, kamera diam, 10–30 detik yang menyambung saat berulang,
 di bawah ±8 MB (video beberapa menit terlalu berat untuk pengunjung ber-HP).
 
@@ -127,9 +132,8 @@ ditandai halaman Cek Data beserta saran ejaan yang benar.
 Nilai yang belum ada data resminya ditandai **CONTOH** di kolom `keterangan` dan wajib diganti
 sebelum situs diumumkan:
 
-- Tab `profil`: jam layanan, luas, ketinggian, suhu, sejarah.
-- Tab `layanan`: syarat, alur, waktu, biaya, dan catatan setiap surat.
-- Masih kosong: telepon & email kantor, kepala & wakil kepala Lingkungan 7, nomor aparat.
+- Masih kosong: kepala & wakil kepala Lingkungan 7, cara menuju lokasi Mah’Watu, dan pengelola tiap destinasi
+  (diisi hanya bila sudah pasti; kolom kosong tidak ditampilkan).
 
 ### Menyambungkan sheet ke situs
 

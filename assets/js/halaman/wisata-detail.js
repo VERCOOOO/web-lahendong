@@ -3,11 +3,6 @@
 
 const adalahVideo = (berkas) => /\.(mp4|webm)$/i.test(berkas || "");
 
-/** Video latar tidak diputar otomatis bila pengunjung memilih "kurangi gerak" atau mode hemat data. */
-function bolehPutarOtomatis() {
-  return !window.matchMedia("(prefers-reduced-motion: reduce)").matches && !navigator.connection?.saveData;
-}
-
 document.addEventListener("DOMContentLoaded", async () => {
   const wadah = document.getElementById("konten-detail");
   const id = new URLSearchParams(window.location.search).get("id");
@@ -35,7 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   document.title = teksPolos(item.nama) + " — Kelurahan Lahendong";
   wadah.innerHTML = tampilanDetail(item) + bagianGaleri(item);
-  pasangLatarVideo();
+  pasangVideoLatar(document.querySelector(".kop-wisata video"));
   pasangGaleri();
   segarkanTampilan();
 });
@@ -133,23 +128,13 @@ function tampilanDetail(item) {
 function latarKop(item) {
   const { kartu, latar } = DESTINASI[teksPolos(item.id)];
   const berkas = typeof latar === "string" ? latar : latar?.berkas;
-  let isi;
-  if (adalahVideo(berkas)) {
-    const poster = berkasDestinasi(item, latar.poster);
-    isi = `
-      <video class="latar-video" src="${berkasDestinasi(item, berkas)}" ${poster ? `poster="${poster}"` : ""}
-             muted loop playsinline ${bolehPutarOtomatis() ? "autoplay" : 'preload="none"'} aria-hidden="true"></video>`;
-  } else {
-    // Tanpa latar, atau bila latar gagal dimuat, foto kartu destinasi yang dipakai.
-    const cadangan = berkasDestinasi(item, kartu) || FOTO_PENGGANTI;
-    isi = `<img src="${berkasDestinasi(item, berkas) || cadangan}" alt="" onerror="this.onerror=null; this.src='${cadangan}'" />`;
-  }
-  return `
-    <div class="latar-kop">${isi}</div>
-    ${adalahVideo(berkas) ? `
-      <button type="button" class="kendali-video" aria-label="Jeda video latar">
-        <i data-lucide="pause" class="w-4 h-4"></i><span>Jeda</span>
-      </button>` : ""}`;
+  // Tanpa latar, atau bila latar gagal dimuat, foto kartu destinasi yang dipakai.
+  const cadangan = berkasDestinasi(item, kartu) || FOTO_PENGGANTI;
+  const isi = adalahVideo(berkas)
+    ? `<video data-src="${berkasDestinasi(item, berkas)}" data-src-hp="${berkasDestinasi(item, latar.hp || berkas)}"
+              poster="${berkasDestinasi(item, latar.poster) || cadangan}" muted loop playsinline preload="none" aria-hidden="true"></video>`
+    : `<img src="${berkasDestinasi(item, berkas) || cadangan}" alt="" onerror="this.onerror=null; this.src='${cadangan}'" />`;
+  return `<div class="latar-kop">${isi}</div>`;
 }
 
 /** Baris pertama jam & tiket sebagai info singkat di kop. */
@@ -158,28 +143,6 @@ function ringkasKunjungan(item) {
   if (!info.length) return "";
   return `<div class="kop-wisata-info">${info.map(([ikon, teks]) =>
     `<span><i data-lucide="${ikon}" class="w-4 h-4"></i>${teks}</span>`).join("")}</div>`;
-}
-
-/** Video latar: diputar otomatis bila boleh; tombol Jeda/Putar selalu tersedia. */
-function pasangLatarVideo() {
-  const video = document.querySelector(".latar-video");
-  const tombol = document.querySelector(".kendali-video");
-  if (!video || !tombol) return;
-
-  const perbarui = () => {
-    const jalan = !video.paused;
-    tombol.setAttribute("aria-label", jalan ? "Jeda video latar" : "Putar video latar");
-    tombol.innerHTML = `<i data-lucide="${jalan ? "pause" : "play"}" class="w-4 h-4"></i><span>${jalan ? "Jeda" : "Putar"}</span>`;
-    segarkanTampilan();
-  };
-  video.addEventListener("play", perbarui);
-  video.addEventListener("pause", perbarui);
-  video.addEventListener("error", () => tombol.remove());
-  tombol.addEventListener("click", () => (video.paused ? video.play() : video.pause()));
-
-  // Browser bisa menunda putar otomatis (mis. tab di latar belakang); tombol mengikuti keadaan sebenarnya.
-  if (bolehPutarOtomatis()) video.play().catch(perbarui);
-  perbarui();
 }
 
 /* ---------------------------------------------------------------------- */
@@ -194,8 +157,8 @@ function bagianGaleri(item) {
     <section class="bg-[var(--surface)] border-y border-[var(--line)]">
       <div class="wadah seksi">
         <div class="reveal mb-8 md:mb-10">
-          <span class="eyebrow">Galeri</span>
-          <h2 class="judul-seksi garis-aksen mt-4">${jenis} ${item.nama}</h2>
+          <span class="eyebrow">${jenis}</span>
+          <h2 class="judul-seksi garis-aksen mt-4">Galeri ${/^objek wisata/i.test(teksPolos(item.nama)) ? "" : "wisata "}${item.nama}</h2>
         </div>
         <div class="galeri-media reveal">${media.map((m) => kotakMedia(item, m)).join("")}</div>
       </div>

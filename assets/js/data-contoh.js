@@ -11,23 +11,34 @@
 const DATA_DUMMY = {
   profil: [
     { kunci: "alamat_kantor", nilai: "Kelurahan Lahendong, Kecamatan Tomohon Selatan, Kota Tomohon, Sulawesi Utara", keterangan: "Footer dan halaman Kontak." },
-    { kunci: "telepon_kantor", nilai: "", keterangan: "Header, footer, dan halaman Kontak. Kosong = tidak ditampilkan." },
-    { kunci: "email", nilai: "", keterangan: "Halaman Kontak. Kosong = tidak ditampilkan." },
-    { kunci: "jam_layanan", nilai: "Senin – Kamis, 08.00 – 16.30 WITA / Jumat, 08.00 – 13.30 WITA / Sabtu – Minggu, Hanya keadaan mendesak", keterangan: "CONTOH — ganti. Header, footer, halaman Kontak dan Layanan." },
-    { kunci: "luas_wilayah", nilai: "7,85", keterangan: "CONTOH — ganti. Angka saja, satuan km². Beranda dan Profil." },
-    { kunci: "ketinggian", nilai: "800–950", keterangan: "CONTOH — ganti. Satuan mdpl. Profil." },
-    { kunci: "suhu", nilai: "22–26", keterangan: "CONTOH — ganti. Satuan °C. Profil." },
+    { kunci: "telepon_kantor", nilai: "085555555", keterangan: "Header, footer, dan halaman Kontak. Kosong = tidak ditampilkan." },
+    { kunci: "email", nilai: "lahendong@gmail.com", keterangan: "Halaman Kontak. Kosong = tidak ditampilkan." },
+    { kunci: "jam_layanan", nilai: "Senin – Kamis, 08.00 – 16.30 WITA / Jumat, 08.00 – 13.30 WITA / Sabtu – Minggu, Hanya keadaan mendesak", keterangan: "Header, footer, halaman Kontak dan Layanan." },
+    {
+      kunci: "letak",
+      nilai:
+        "Secara geografis, Kelurahan Lahendong berada di wilayah perbukitan vulkanik dan dataran tinggi, sekitar 5,2 km dari pusat Kota Tomohon dan sekitar 30 km di sebelah selatan Kota Manado.\n" +
+        "Dengan luas 6,8 km², Lahendong termasuk kelurahan terluas di Kecamatan Tomohon Selatan setelah Kelurahan Pinaras dan Kelurahan Pangolombian. Ketinggiannya yang mencapai 750–1.200 mdpl menjadikannya kawasan berhawa sejuk dan kaya akan manifestasi panas bumi.",
+      keterangan: "Profil, bagian Kondisi wilayah. Satu baris dalam sel = satu paragraf.",
+    },
+    { kunci: "koordinat", nilai: "1°16′42″ LU, 124°48′51″ BT", keterangan: "Profil, di bawah angka kondisi wilayah." },
+    { kunci: "luas_wilayah", nilai: "6,8", keterangan: "Angka saja, satuan km². Beranda dan Profil." },
+    { kunci: "ketinggian", nilai: "750–1.200", keterangan: "Satuan mdpl. Profil." },
+    { kunci: "suhu", nilai: "22–26", keterangan: "Satuan °C. Profil." },
     { kunci: "batas_utara", nilai: "Tumatangtang 1, Kampung Jawa", keterangan: "Profil, tabel batas wilayah." },
     { kunci: "batas_selatan", nilai: "Leilem", keterangan: "Profil, tabel batas wilayah." },
     { kunci: "batas_timur", nilai: "Pangolombian, Tondangow", keterangan: "Profil, tabel batas wilayah." },
     { kunci: "batas_barat", nilai: "Pinaras, Rambunan", keterangan: "Profil, tabel batas wilayah." },
+    { kunci: "visi", nilai: "Tomohon Maju, Berdaya Saing, dan Sejahtera", keterangan: "Profil, bagian Visi & Misi." },
     {
-      kunci: "sejarah",
+      kunci: "misi",
       nilai:
-        "Lahendong tumbuh dari perkampungan kecil di sekitar sumber panas bumi alami di kaki pegunungan Tomohon.\n" +
-        "Nama \"Lahendong\" dipercaya masyarakat setempat berkaitan dengan uap panas bumi yang kerap muncul di kawasan ini sejak lama.\n" +
-        "Seiring waktu, wilayah ini berkembang menjadi salah satu kelurahan definitif di Kecamatan Tomohon Selatan, dengan warga yang bertumpu pada pertanian, usaha rumahan, serta pariwisata di sekitar Danau Linow dan kawasan panas bumi.",
-      keterangan: "CONTOH — ganti. Profil. Satu baris dalam sel = satu paragraf; paragraf pertama ditampilkan lebih besar.",
+        "Menjaga dan melestarikan Tomohon sebagai kota religius dan berbudaya\n" +
+        "Mewujudkan ketahanan pangan dan pembangunan berwawasan lingkungan\n" +
+        "Mewujudkan Tomohon sebagai kota wisata dunia\n" +
+        "Mewujudkan pemerintahan yang berintegritas, adaptif, dan responsif\n" +
+        "Meningkatkan kesejahteraan masyarakat",
+      keterangan: "Profil, bagian Visi & Misi. Satu misi per baris dalam sel (Ctrl+Enter); nomor dibuat situs.",
     },
     { kunci: "tahun_data", nilai: "2026", keterangan: "Tahun data kependudukan (tab lingkungan). Halaman Penduduk." },
     { kunci: "sumber_data", nilai: "Kelurahan Lahendong", keterangan: "Sumber data kependudukan. Halaman Penduduk." },
@@ -36,6 +47,15 @@ const DATA_DUMMY = {
   // Sumber: Kelurahan Lahendong, 2026. Kepala & wakil kepala lingkungan dari daftar kelurahan;
   // Lingkungan 7 belum memiliki kepala dan wakil (sel kosong → "Belum tersedia").
   // Jumlah jiwa (laki + perempuan) dan semua total dihitung situs dari tab ini.
+  sejarah: [
+    { judul: "Sejarah singkat", isi: "Sejarah Kelurahan Lahendong di Tomohon Selatan memiliki kaitan erat dengan kisah migrasi leluhur Minahasa, legenda alam Danau Linow, dan kekayaan ekologis wilayah tersebut." },
+    { judul: "Asal usul nama", isi: "Sebutan Lahendong berasal dari nama sebatang pohon besar yang dahulu tumbuh mencolok di dekat mata air wilayah tersebut, yaitu Pohon Lumahendong (atau Lahendong). Pada zaman dahulu, kulit pohon Lahendong ditumbuk oleh penduduk setempat dan dimanfaatkan sebagai bahan pakaian tradisional yang disebut Momo’." },
+    { judul: "Awal mula permukiman (abad ke-17 & 18)", isi: "- Kedatangan leluhur awal: Catatan sejarawan Belanda, Dr. J.G.F. Riedel, menyebutkan bahwa permukiman awal di kawasan Rano Lahendong dirintis oleh Penghulu Repi dari kalangan Makatelu Pitu bersama keluarganya.\n- Migrasi dari Sarongsong (tahun 1750): Pada tahun 1750, di masa kepemimpinan Mayoor Tongkotou, seorang petani bernama Mokalo Rondonuwo berjalan kaki sejauh 5 km dari Sarongsong Tulau (Wanua Ureh). Ia menemukan kawasan hutan subur yang dipenuhi hawa dingin dan aroma belerang (fumarola). Mokalo kemudian mengajak keluarga dan kerabatnya datang untuk merombak hutan dan menjadikannya lahan pertanian padi, jagung, serta area berburu." },
+    { judul: "Bencana Danau Linow dan perpindahan penduduk", isi: "Pada masa-masa awal permukiman yang mulai meluas ke arah selatan, terjadi bencana alam besar. Air Danau Linow meluap hebat seperti air bah, merusak lahan pertanian yang siap panen dan menimbulkan korban jiwa.\nAkibat bencana tersebut, penduduk sepakat bermusyawarah untuk memindahkan permukiman ke arah timur, mendekati mata air tempat Pohon Lumahendong tumbuh pesat. Di lokasi baru inilah desa berkembang secara permanen." },
+    { judul: "Bagian dari Walak Sarongsong", isi: "Dalam sejarah pemerintahan adat Minahasa, Lahendong dulunya merupakan bagian dari Walak atau Distrik Sarongsong. Karena wilayahnya yang berbatasan langsung dengan Leilem (Sonder) sering memicu ketegangan antarwalak, Kepala Walak Sarongsong bernama Tamboto sengaja menempatkan kerabatnya, Manopo (cucu Waworuntu I), sebagai Hukum Kedua (Kumarua) yang berkedudukan di Lahendong untuk menjaga stabilitas perbatasan." },
+    { judul: "Era modern: pusat energi panas bumi (sejak 2001)", isi: "Memasuki abad ke-21, Lahendong mengukir sejarah baru sebagai tonggak pengembangan energi panas bumi di wilayah timur Indonesia. Sejak tahun 2001, Pertamina Geothermal Energy (PGE) mengoperasikan Pembangkit Listrik Tenaga Panas Bumi (PLTP) Lahendong secara komersial.\nKekayaan belerang dan manifestasi termal yang dahulu ditemukan para leluhur kini dikelola menjadi sumber listrik utama yang memasok kebutuhan energi wilayah Sulawesi Utara dan Gorontalo." },
+  ],
+
   lingkungan: [
     { nama: "Lingkungan 1", kepala: "Julius Joni Rondonuwu", wakil_kepala: "Jetni Vinsensia Poli", jumlah_kk: "124", laki: "169", perempuan: "176", jumlah_lansia: "37", jumlah_rumah: "106" },
     { nama: "Lingkungan 2", kepala: "Jonathan Tombuku Londok", wakil_kepala: "Femmi Selvie Kowel", jumlah_kk: "116", laki: "172", perempuan: "156", jumlah_lansia: "45", jumlah_rumah: "80" },
@@ -49,16 +69,17 @@ const DATA_DUMMY = {
 
   // Struktur belum final. "atasan" = jabatan atasannya; kosong = pimpinan. Urutan = urutan baris.
   aparat: [
-    { jabatan: "Lurah", nama: "Reymon Stive Londok, S.T", atasan: "", nomor: "" },
-    { jabatan: "Sekretaris Kelurahan", nama: "Cicilia M. Karamoy, S.ST, M.Kes", atasan: "Lurah", nomor: "" },
-    { jabatan: "Kepala Seksi Pemerintahan", nama: "Marthen J. Mende, ST", atasan: "Lurah", nomor: "" },
+    { jabatan: "Lurah", nama: "Reymon Stive Londok, S.T", atasan: "", nomor: "081234567890" },
+    { jabatan: "Sekretaris Kelurahan", nama: "Cicilia M. Karamoy, S.ST, M.Kes", atasan: "Lurah", nomor: "081234567891" },
+    { jabatan: "Kepala Seksi Pemerintahan", nama: "Marthen J. Mende, ST", atasan: "Lurah", nomor: "081234567892" },
   ],
 
   // Nomor darurat nasional. Tambahkan narahubung umum (puskesmas, polsek, dsb.) dengan kategori "umum".
   kontak: [
     { nama: "Polisi", tampil: "Ya", peran: "Kepolisian", nomor: "110", kategori: "darurat" },
     { nama: "Pemadam Kebakaran", tampil: "Ya", peran: "Kebakaran dan penyelamatan", nomor: "113", kategori: "darurat" },
-    { nama: "Ambulans", tampil: "Ya", peran: "Gawat darurat medis", nomor: "2005", kategori: "darurat" },
+    { nama: "Ambulans", tampil: "Ya", peran: "Gawat darurat medis", nomor: "118 / 119", kategori: "darurat" },
+    { nama: "SAR/BASARNAS", tampil: "Ya", peran: "Pencarian dan pertolongan", nomor: "115", kategori: "darurat" },
   ],
 
   wisata: [
@@ -67,49 +88,56 @@ const DATA_DUMMY = {
       tampil: "Ya",
       ringkas: "Danau vulkanik dengan warna air yang dapat berubah — hijau, biru, hingga kekuningan.",
       deskripsi:
-        "Danau Linow Lahendong merupakan danau vulkanik yang berada di wilayah Lahendong, Kota Tomohon, Sulawesi Utara. Danau ini terbentuk dari aktivitas vulkanik dan memiliki kandungan belerang serta aktivitas panas bumi di kawasan sekitarnya. Lingkungan danau dikelilingi vegetasi hijau dan perbukitan, sehingga memiliki kondisi alam yang sejuk dan asri. Selain sebagai kawasan wisata, Danau Linow juga memiliki nilai ekologis dan geologis yang berkaitan dengan karakteristik kawasan vulkanik Lahendong.\n" +
-        "Keunikan utamanya adalah warna air yang dapat berubah-ubah, seperti hijau, biru, dan kekuningan. Keunikan warna air serta suasana alamnya yang asri dan sejuk menjadi daya tarik utama bagi wisatawan.",
-      jam: "Setiap hari, 10.00 – 20.00 WITA\nGerbang masuk ditutup sekitar pukul 19.00 WITA",
+        "Danau Linow merupakan danau vulkanik di Kelurahan Lahendong, Kecamatan Tomohon Selatan, Kota Tomohon, Sulawesi Utara. Danau ini terbentuk dari aktivitas vulkanik dan mengandung belerang, dengan aktivitas panas bumi di kawasan sekitarnya. Lingkungan danau dikelilingi vegetasi hijau dan perbukitan, sehingga suasananya sejuk dan asri.\n" +
+        "Keunikan utamanya adalah warna air yang dapat berubah-ubah, seperti hijau, biru, dan kekuningan. Warna air serta suasana alamnya yang asri dan sejuk menjadi daya tarik utama bagi wisatawan.",
+      jam:
+        "Setiap hari, 10.00 – 20.00 WITA\n" +
+        "Gerbang masuk ditutup sekitar pukul 19.00 WITA",
       tiket: "Rp40.000 per orang",
       fasilitas: "Kafe dan restoran, resort dan penginapan, area perkemahan (camping ground), area parkir, toilet, tempat ibadah, spot foto",
       waktu_terbaik: "Pagi hari atau sore menjelang matahari terbenam, untuk melihat perubahan warna air danau",
       cara_kesana:
-        "Dari pusat Kota Manado, menuju Pineleng melalui Jl. Sam Ratulangi atau Jl. Winangun, lalu masuk ke jalur utama Jl. Raya Manado – Tomohon.\n" +
-        "Ikuti jalan menanjak melewati Tinoor hingga memasuki Kota Tomohon, lalu tetap lurus melewati pusat kota dan kawasan Pasar Beriman Tomohon.\n" +
-        "Lanjutkan ke arah selatan menuju Kelurahan Lahendong melalui Jl. Kawangkoan – Tomohon.\n" +
-        "Setelah melewati area pemandian air panas Lahendong, ikuti papan petunjuk di sebelah kanan menuju Danau Linow Resort hingga tiba di gerbang utama.",
-      pengelola: "PT Karyadeka Alam Asri\nDirektur Utama: Pengky Wewengkang\nDirektur Operasional: James Pengky Wewengkang\nManajer Resort: Andreas Dengen",
+        "Dari Manado: lewati Jalan Sam Ratulangi lalu Jalan Raya Manado – Tomohon hingga pusat Kota Tomohon (sekitar 26 km).\n" +
+        "Dari pusat Kota Tomohon (sekitar Menara Alfa Omega), ikuti Jalan Raya Tomohon ke arah selatan menuju Kelurahan Lahendong.\n" +
+        "Setelah melewati Objek Wisata Air Panas Belerang dan Hutan Pinus di sisi kanan jalan, lanjutkan sekitar 1,5 km, lalu belok kiri mengikuti papan petunjuk Danau Linow.\n" +
+        "Total jarak dari pusat Kota Tomohon sekitar 7–8 km.",
+      pengelola: "",
       maps_link: "https://maps.google.com/?q=Danau+Linow+Tomohon",
     },
     {
-      nama: "Hutan Pinus Lahendong",
+      nama: "Objek Wisata Air Panas Belerang dan Hutan Pinus",
       tampil: "Ya",
-      ringkas: "Hutan pinus sejuk yang berpadu dengan kolam sulfur beruap dan pemandian air panas alami.",
+      ringkas: "Hutan pinus sejuk yang berpadu dengan kolam sulfur beruap putih.",
       deskripsi:
-        "Hutan Pinus Lahendong adalah destinasi wisata alam unik di Tomohon yang memadukan keindahan hutan pinus hijau nan rimbun dengan fenomena geotermal berupa kolam sulfur beruap putih dan pemandian air panas alami yang kaya khasiat bagi kulit. Perpaduan uap panas bumi yang mengepul di antara deretan pepohonan pinus yang menjulang tinggi menciptakan suasana yang sejuk dan menenangkan, menjadikannya tempat ideal untuk menyegarkan pikiran, berburu spot foto, serta bersantai menikmati kedamaian alam Tomohon jauh dari hiruk-pikuk perkotaan.",
-      jam: "13.00 – 18.00 WITA",
-      tiket: "Rp35.000 per orang, umumnya sudah termasuk kuliner ringan (kopi, teh, pisang goreng, atau jagung rebus)\nKolam air panas: sekitar Rp5.000 – Rp10.000",
-      fasilitas: "Area parkir, toilet, warung dan rumah makan sederhana, spot foto, jalur penjelajahan ringan (hiking), bilik rendam air panas",
+        "Objek Wisata Air Panas Belerang dan Hutan Pinus Lahendong adalah destinasi wisata alam di Tomohon yang memadukan hutan pinus hijau nan rimbun dengan fenomena panas bumi berupa kolam sulfur beruap putih dan pemandian air panas alami yang dipercaya berkhasiat bagi kulit.\n" +
+        "Uap panas bumi yang mengepul di antara deretan pohon pinus yang menjulang menciptakan suasana sejuk dan menenangkan, sehingga cocok untuk menyegarkan pikiran, berfoto, dan bersantai menikmati alam Tomohon jauh dari hiruk-pikuk perkotaan.",
+      jam: "Setiap hari, 10.00 – 18.00 WITA",
+      tiket:
+        "Rp25.000 per orang, sudah termasuk kopi\n" +
+        "Kolam air panas: Rp15.000 per orang\n" +
+        "Bilik rendam air panas: Rp50.000 per ruangan (muat 3 orang)\n" +
+        "Kolam dan bilik air panas sementara belum beroperasi karena air berkurang di musim kemarau",
+      fasilitas: "Area parkir, toilet, spot foto, jalur penjelajahan ringan (hiking), kolam dan bilik rendam air panas (sementara belum beroperasi)",
       waktu_terbaik:
         "Pagi hari (09.00 – 11.00 WITA): uap dari kolam sulfur mengepul tebal berpadu udara pagi yang masih dingin; cocok untuk berjalan santai tanpa terik matahari.\n" +
-        "Sore hari (15.00 – 17.00 WITA): cahaya matahari melembut (golden hour) untuk berfoto, lalu ditutup dengan berendam air panas belerang menjelang malam.",
+        "Sore hari (15.00 – 17.00 WITA): cahaya matahari melembut (golden hour) untuk berfoto, dan suasana hutan pinus lebih teduh.",
       cara_kesana:
-        "Berjarak sekitar 5,3 km dari pusat Kota Tomohon, kurang lebih 13–15 menit perjalanan.\n" +
-        "Dari pusat kota (sekitar Menara Alfa Omega atau Pasar Beriman), arahkan kendaraan ke selatan menuju jalur utama arah Kawangkoan/Sonder melalui Jalan Raya Tomohon.\n" +
-        "Lewati wilayah Walian. Setelah memasuki Kelurahan Lahendong, berbelok ke kanan masuk ke Jalan Lahendong; gerbang masuk mudah terlihat dari tepi jalan.",
-      pengelola:
-        "Pengelolaan bersama antara Pemerintah Kota Tomohon dan pihak swasta/masyarakat lokal.\n" +
-        "Dinas Pariwisata Kota Tomohon: regulasi kepariwisataan, promosi daerah, pemantauan dampak lingkungan kawasan resapan air, dan koordinasi investasi ekowisata.\n" +
-        "Pengelola lokal: operasional harian, pemeliharaan fasilitas (kafe, pemandian air panas, spot foto), dan penyediaan lapangan kerja bagi warga Lahendong.",
-      maps_link: "https://maps.google.com/?q=Hutan+Pinus+Lahendong",
+        "Berjarak sekitar 5,3 km dari pusat Kota Tomohon, kurang lebih 10–15 menit perjalanan.\n" +
+        "Dari pusat Kota Tomohon (sekitar Menara Alfa Omega), ikuti Jalan Raya Tomohon ke arah selatan menuju Kelurahan Lahendong.\n" +
+        "Setelah memasuki Kelurahan Lahendong, gerbang masuk berada di sisi kanan jalan dan mudah terlihat; perhatikan papan petunjuknya.",
+      pengelola: "",
+      maps_link: "https://maps.google.com/?q=Pemandian+Air+Panas+Belerang+Pinus+Lahendong",
     },
     {
       nama: "Mah’Watu",
       tampil: "Ya",
       ringkas: "Wisata alam asri dengan kafe terbuka, gazebo, dan aliran air belerang berwarna hijau toska.",
       deskripsi:
-        "Mah’Watu merupakan salah satu destinasi wisata alam yang berada di Kota Tomohon, Sulawesi Utara. Tempat wisata ini menawarkan suasana yang asri dan sejuk dengan pemandangan alam yang indah, sehingga cocok dijadikan tempat untuk bersantai dan melepas penat. Keindahan lingkungan sekitar yang masih alami menjadi daya tarik tersendiri bagi pengunjung. Selain menikmati pemandangan, wisatawan juga dapat menghabiskan waktu bersama keluarga maupun teman sambil menikmati suasana yang tenang dan udara yang segar.",
-      jam: "Senin – Sabtu, 10.00 – 18.00 WITA\nMinggu, 12.00 – 18.00 WITA",
+        "Mah’Watu merupakan destinasi wisata alam di Kelurahan Lahendong, Kecamatan Tomohon Selatan, Kota Tomohon. Tempat wisata ini menawarkan suasana asri dan sejuk dengan aliran air belerang berwarna hijau toska di antara tebing batu dan pepohonan, sehingga cocok untuk bersantai dan melepas penat.\n" +
+        "Selain menikmati pemandangan, pengunjung dapat menghabiskan waktu bersama keluarga maupun teman di kafe terbuka dan gazebo sambil menikmati suasana yang tenang dan udara yang segar.",
+      jam:
+        "Senin – Sabtu, 10.00 – 18.00 WITA\n" +
+        "Minggu, 12.00 – 18.00 WITA",
       tiket: "Rp20.000 – Rp25.000",
       fasilitas: "Kafe outdoor, gazebo, ruang terbuka hijau, spot foto, toilet",
       waktu_terbaik:
@@ -121,56 +149,66 @@ const DATA_DUMMY = {
     },
   ],
 
-  // CONTOH — syarat, alur, waktu, dan biaya perlu dicocokkan dengan ketentuan kantor kelurahan.
-  // Satu syarat / satu langkah per baris di dalam sel. Tambah atau hapus baris surat sesuka hati.
+  // Informasi kantor kelurahan (Oktober 2026): syarat KK & KTP untuk semua surat keterangan, ditambah
+  // bukti lunas pajak untuk surat yang berkaitan dengan usaha/keuangan; dapat ditunggu; tanpa biaya.
   layanan: [
     {
       nama_surat: "Surat Keterangan Domisili",
       tampil: "Ya",
-      kategori: "Kependudukan",
-      syarat: "Fotokopi KTP\nFotokopi Kartu Keluarga\nSurat pengantar RT/lingkungan",
-      alur: "Bawa berkas ke kantor kelurahan\nPetugas memeriksa berkas\nSurat ditandatangani lurah\nSurat diambil pemohon",
-      waktu: "1 hari kerja",
+      kategori: "",
+      syarat: "Kartu Keluarga (KK)\nKartu Tanda Penduduk (KTP)",
+      alur: "Bawa berkas persyaratan ke kantor kelurahan\nSurat diproses dan dapat ditunggu",
+      waktu: "Dapat ditunggu; lama pengerjaan menyesuaikan jenis surat",
       biaya: "Gratis",
       catatan: "",
     },
     {
-      nama_surat: "Surat Keterangan Tidak Mampu (SKTM)",
+      nama_surat: "Surat Keterangan Orang yang Sama",
       tampil: "Ya",
-      kategori: "Sosial",
-      syarat: "Fotokopi KTP\nFotokopi Kartu Keluarga\nSurat pengantar RT/lingkungan\nKeterangan penghasilan",
-      alur: "Bawa berkas ke kantor kelurahan\nPetugas memeriksa berkas dan, bila perlu, melakukan survei singkat\nSurat ditandatangani lurah",
-      waktu: "1–2 hari kerja",
+      kategori: "",
+      syarat: "Kartu Keluarga (KK)\nKartu Tanda Penduduk (KTP)",
+      alur: "Bawa berkas persyaratan ke kantor kelurahan\nSurat diproses dan dapat ditunggu",
+      waktu: "Dapat ditunggu; lama pengerjaan menyesuaikan jenis surat",
       biaya: "Gratis",
-      catatan: "Sebutkan keperluan SKTM (sekolah, kesehatan, atau bantuan sosial) saat mengajukan.",
+      catatan: "Untuk data yang berbeda di dokumen kependudukan, mis. nama di Kartu Keluarga berbeda dengan di KTP.",
     },
     {
-      nama_surat: "Surat Pengantar Nikah",
+      nama_surat: "Surat Keterangan Kehilangan",
       tampil: "Ya",
-      kategori: "Kependudukan",
-      syarat: "Fotokopi KTP kedua calon mempelai\nFotokopi Kartu Keluarga\nSurat pengantar RT/lingkungan\nPas foto",
-      alur: "Bawa berkas ke kantor kelurahan\nPetugas memeriksa data\nSurat diteruskan ke KUA atau Dinas Kependudukan",
-      waktu: "1 hari kerja",
+      kategori: "",
+      syarat: "Kartu Keluarga (KK)\nKartu Tanda Penduduk (KTP)",
+      alur: "Bawa berkas persyaratan ke kantor kelurahan\nSurat diproses dan dapat ditunggu",
+      waktu: "Dapat ditunggu; lama pengerjaan menyesuaikan jenis surat",
       biaya: "Gratis",
       catatan: "",
     },
     {
       nama_surat: "Surat Keterangan Usaha",
       tampil: "Ya",
-      kategori: "Usaha",
-      syarat: "Fotokopi KTP\nFotokopi Kartu Keluarga\nFoto lokasi usaha\nSurat pengantar RT/lingkungan",
-      alur: "Bawa berkas ke kantor kelurahan\nPetugas memeriksa lokasi usaha\nSurat ditandatangani lurah",
-      waktu: "1–3 hari kerja",
+      kategori: "",
+      syarat: "Kartu Keluarga (KK)\nKartu Tanda Penduduk (KTP)\nBukti lunas pajak",
+      alur: "Bawa berkas persyaratan ke kantor kelurahan\nSurat diproses dan dapat ditunggu",
+      waktu: "Dapat ditunggu; lama pengerjaan menyesuaikan jenis surat",
       biaya: "Gratis",
       catatan: "",
     },
     {
-      nama_surat: "Surat Keterangan Kelahiran",
+      nama_surat: "Surat Keterangan Berkelakuan Baik",
       tampil: "Ya",
-      kategori: "Kependudukan",
-      syarat: "Fotokopi KTP kedua orang tua\nFotokopi Kartu Keluarga\nSurat keterangan lahir dari bidan atau rumah sakit",
-      alur: "Bawa berkas ke kantor kelurahan\nPetugas memeriksa berkas\nSurat ditandatangani lurah",
-      waktu: "1 hari kerja",
+      kategori: "",
+      syarat: "Kartu Keluarga (KK)\nKartu Tanda Penduduk (KTP)",
+      alur: "Bawa berkas persyaratan ke kantor kelurahan\nSurat diproses dan dapat ditunggu",
+      waktu: "Dapat ditunggu; lama pengerjaan menyesuaikan jenis surat",
+      biaya: "Gratis",
+      catatan: "",
+    },
+    {
+      nama_surat: "Surat Keterangan Belum Pernah Kawin",
+      tampil: "Ya",
+      kategori: "",
+      syarat: "Kartu Keluarga (KK)\nKartu Tanda Penduduk (KTP)",
+      alur: "Bawa berkas persyaratan ke kantor kelurahan\nSurat diproses dan dapat ditunggu",
+      waktu: "Dapat ditunggu; lama pengerjaan menyesuaikan jenis surat",
       biaya: "Gratis",
       catatan: "",
     },

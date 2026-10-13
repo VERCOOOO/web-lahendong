@@ -15,12 +15,12 @@
 
    kartu : foto kartu di halaman Wisata & Beranda, 3:2 (mis. 1200 × 800 px).
    latar : latar kop halaman detail — foto 16:9 (mis. 1920 × 1080 px), atau video yang diputar
-           berulang tanpa suara: { berkas: "latar.mp4", poster: "latar.webp" }. Poster tampil selagi
-           video dimuat dan menggantikannya bila pengunjung memilih "kurangi gerak" atau hemat data.
+           berulang tanpa suara: { berkas: "latar.mp4", hp: "latar-hp.mp4", poster: "latar.webp" }.
+           Ketiga berkas video dibuat sekaligus oleh: python3 tools/siapkan_video.py ASLI.mp4 img/wisata/<kode>/latar
    media : foto & video bagian galeri halaman detail, berurutan. Rasio bebas (lanskap maupun potret).
            Video sebaiknya diberi poster. keterangan (opsional) tampil saat media diperbesar.
    Jenis media dikenali dari akhiran: .mp4 / .webm = video, selain itu foto.
-   Saran video: MP4 (H.264) 720p–1080p, tanpa suara, kamera diam, 10–30 detik, di bawah ±8 MB.
+   Saran video: kamera diam atau bergerak pelan, 10–30 detik.
    Menambah destinasi: buat foldernya, daftarkan di sini, tambahkan barisnya di data-contoh.js,
    lalu buat ulang template (python3 tools/buat_template.py) agar muncul di dropdown nama. */
 const DESTINASI = {
@@ -35,7 +35,7 @@ const DESTINASI = {
       { berkas: "foto-4.webp" },
     ],
   },
-  "hutan-pinus-lahendong": {
+  "objek-wisata-air-panas-belerang-dan-hutan-pinus": {
     kartu: "kartu.webp",
     latar: "latar.webp",
     media: [
@@ -48,7 +48,7 @@ const DESTINASI = {
   },
   "mah-watu": {
     kartu: "kartu.webp",
-    latar: "latar.webp",
+    latar: { berkas: "latar.mp4", hp: "latar-hp.mp4", poster: "latar.webp" },
     media: [
       { berkas: "foto-1.webp" },
       { berkas: "foto-2.webp" },
@@ -80,6 +80,41 @@ function berkasDestinasi(item, berkas) {
 function fotoKartuWisata(item) {
   const src = berkasDestinasi(item, DESTINASI[teksPolos(item.id)]?.kartu) || FOTO_PENGGANTI;
   return `<img src="${src}" alt="${item.nama}" loading="lazy" onerror="this.onerror=null; this.src='${FOTO_PENGGANTI}'" />`;
+}
+
+/* Video latar (hero Beranda, kop detail wisata) — <video data-src data-src-hp poster muted loop>.
+   Berkasnya baru diunduh bila boleh diputar: tidak saat pengunjung memilih "kurangi gerak" atau
+   mode hemat data (yang tampil posternya), kecuali ia menekan tombol Putar. HP memakai versi -hp. */
+function bolehPutarOtomatis() {
+  return !window.matchMedia("(prefers-reduced-motion: reduce)").matches && !navigator.connection?.saveData;
+}
+
+/** Pasang video latar dan tombol Jeda/Putar-nya (gerak lebih dari 5 detik wajib bisa dihentikan). */
+function pasangVideoLatar(video) {
+  if (!video) return;
+  const tombol = document.createElement("button");
+  tombol.type = "button";
+  tombol.className = "kendali-video";
+  video.closest("section").append(tombol);
+
+  const putar = () => {
+    if (!video.src) video.src = window.matchMedia("(max-width: 767px)").matches ? video.dataset.srcHp : video.dataset.src;
+    return video.play();
+  };
+  const perbarui = () => {
+    const jalan = !video.paused;
+    tombol.setAttribute("aria-label", jalan ? "Jeda video latar" : "Putar video latar");
+    tombol.innerHTML = `<i data-lucide="${jalan ? "pause" : "play"}" class="w-4 h-4"></i><span>${jalan ? "Jeda" : "Putar"}</span>`;
+    segarkanTampilan();
+  };
+  video.addEventListener("play", perbarui);
+  video.addEventListener("pause", perbarui);
+  video.addEventListener("error", () => tombol.remove()); // poster tetap tampil
+  tombol.addEventListener("click", () => (video.paused ? putar().catch(perbarui) : video.pause()));
+
+  // Browser bisa menunda putar otomatis (mis. tab di latar belakang); tombol mengikuti keadaan sebenarnya.
+  if (bolehPutarOtomatis()) putar().catch(perbarui);
+  perbarui();
 }
 
 /* ---------------------------------------------------------------------- */
@@ -209,11 +244,28 @@ function barisDari(teks) {
   return String(teks || "").split(/\n+/).map((b) => b.trim()).filter(Boolean);
 }
 
-/** Tiap baris menjadi <p>; bila lead = true, paragraf pertama memakai gaya .lead. */
+/**
+ * Tiap baris menjadi <p>; baris berawalan "- ", "* ", atau "• " menjadi butir daftar (berurutan = satu daftar),
+ * dan "Label: isi" di awal butir ditebalkan labelnya. Bila lead = true, paragraf pertama memakai gaya .lead.
+ */
 function paragraf(teks, { lead = false } = {}) {
-  return barisDari(teks)
-    .map((b, i) => `<p${lead && i === 0 ? ' class="lead"' : ""}>${b}</p>`)
-    .join("");
+  let html = "";
+  let butir = [];
+  const tutupDaftar = () => {
+    if (butir.length) html += `<ul class="daftar-baris">${butir.join("")}</ul>`;
+    butir = [];
+  };
+  barisDari(teks).forEach((b) => {
+    const isiButir = b.match(/^[-*•]\s+(.+)$/)?.[1];
+    if (isiButir) {
+      butir.push(`<li>${isiButir.replace(/^([^:]{2,60}:)\s/, "<strong>$1</strong> ")}</li>`);
+      return;
+    }
+    tutupDaftar();
+    html += `<p${lead && !html ? ' class="lead"' : ""}>${b}</p>`;
+  });
+  tutupDaftar();
+  return html;
 }
 
 /** Satu baris → teks biasa; beberapa baris → dipisah <br>. */

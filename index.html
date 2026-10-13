@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="assets/css/style.css?v=422f75de" />
+  <link rel="stylesheet" href="assets/css/style.css?v=9b7f61df" />
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
@@ -22,10 +22,11 @@
 
   <main id="konten-utama" class="flex-1">
 
-    <!-- HERO — ilustrasi poster; judul di bidang langit (kiri atas) -->
-    <!-- Gambar hero statis: img/hero-lahendong.webp -->
+    <!-- HERO — video Danau Linow berulang tanpa suara (img/beranda/, dibuat tools/siapkan_video.py);
+         posternya tampil selagi dimuat atau bila pengunjung memilih "kurangi gerak". -->
     <section class="hero" id="hero">
-      <img src="img/hero-lahendong.webp" alt="Ilustrasi gunung berasap, hutan pinus, dan danau di Lahendong" class="hero-gambar" />
+      <video class="hero-gambar" data-src="img/beranda/hero.mp4" data-src-hp="img/beranda/hero-hp.mp4"
+             poster="img/beranda/hero.webp" muted loop playsinline preload="none" aria-hidden="true"></video>
       <div class="wadah hero-isi">
         <span class="eyebrow">Tomohon Selatan · Sulawesi Utara</span>
         <h1 class="judul-hero mt-4">Lahendong</h1>
@@ -35,7 +36,7 @@
         </p>
         <div class="hero-aksi">
           <a href="wisata.html" class="tombol">Jelajahi wisata <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
-          <a href="layanan.html" class="tombol tombol-sekunder bg-white/70">Layanan surat</a>
+          <a href="layanan.html" class="tombol tombol-sekunder bg-white/90">Layanan surat</a>
         </div>
       </div>
     </section>
@@ -134,10 +135,10 @@
 
   <div id="footer"></div>
 
-  <script src="assets/js/data.js?v=b5bd2f1e"></script>
-  <script src="assets/js/data-contoh.js?v=9e431512"></script>
+  <script src="assets/js/data.js?v=df4c9c7e"></script>
+  <script src="assets/js/data-contoh.js?v=8cc43cfc"></script>
   <script src="assets/js/ui.js?v=3f153858"></script>
-  <script src="assets/js/komponen.js?v=62f6196e"></script>
-  <script src="assets/js/halaman/beranda.js?v=8171e0db"></script>
+  <script src="assets/js/komponen.js?v=4d314291"></script>
+  <script src="assets/js/halaman/beranda.js?v=c7f95925"></script>
 </body>
 </html>

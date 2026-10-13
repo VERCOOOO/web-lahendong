@@ -1,0 +1,6 @@
+# Video asli (besar) dan unduhan yang belum selesai — hasil siap pakai ada di img/
+data/*.mp4
+data/*.mov
+data/*.MOV
+data/*.zip
+data/*.fdmdownload

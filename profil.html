@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="assets/css/style.css?v=422f75de" />
+  <link rel="stylesheet" href="assets/css/style.css?v=9b7f61df" />
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
@@ -26,22 +26,24 @@
       <div class="wadah kop-isi">
         <nav class="remah" aria-label="Lokasi halaman" data-remah></nav>
         <h1 class="judul-halaman">Profil Kelurahan</h1>
-        <p class="kop-ringkas">Sejarah singkat, kondisi geografis, batas wilayah, dan lokasi Kelurahan Lahendong di Kecamatan Tomohon Selatan, Kota Tomohon.</p>
+        <p class="kop-ringkas">Sejarah, kondisi geografis, batas wilayah, visi dan misi, serta lokasi Kelurahan Lahendong di Kecamatan Tomohon Selatan, Kota Tomohon.</p>
       </div>
     </section>
 
-    <!-- 01 · SEJARAH — tab profil, kunci "sejarah" -->
+    <!-- 01 · SEJARAH — tab sejarah, satu baris per bagian -->
     <section class="wadah seksi">
       <div class="grid md:grid-cols-12 gap-8 md:gap-12">
         <div class="reveal md:col-span-4">
-          <span class="eyebrow">Sejarah</span>
-          <h2 class="judul-seksi mt-4">Asal usul Lahendong</h2>
+          <div class="md:sticky md:top-28">
+            <span class="eyebrow">Sejarah</span>
+            <h2 class="judul-seksi mt-4">Asal usul Lahendong</h2>
+          </div>
         </div>
-        <div id="sejarah" class="reveal md:col-span-8 prosa"><!-- diisi oleh JS --></div>
+        <div id="sejarah" class="reveal md:col-span-8"><!-- diisi oleh JS --></div>
       </div>
     </section>
 
-    <!-- 02 · GEOGRAFI — tab profil (luas, ketinggian, suhu) & statistik (jumlah lingkungan) -->
+    <!-- 02 · GEOGRAFI — tab profil (letak, luas, ketinggian, suhu, koordinat) & lingkungan (jumlah baris) -->
     <section class="bg-[var(--surface)] border-y border-[var(--line)]">
       <div class="wadah seksi">
         <div class="reveal mb-10 md:mb-12 grid md:grid-cols-12 gap-6">
@@ -49,14 +51,13 @@
             <span class="eyebrow">Geografi</span>
             <h2 class="judul-seksi garis-aksen mt-4">Kondisi wilayah</h2>
           </div>
-          <div class="md:col-span-6 md:self-end">
-            <p class="text-[var(--muted)] leading-[1.65]">
-              Lahendong berada di dataran tinggi Kota Tomohon, di kawasan vulkanik yang kaya
-              sumber panas bumi.
-            </p>
-          </div>
+          <div id="letak" class="md:col-span-6 md:self-end prosa text-[16px]"><!-- diisi oleh JS --></div>
         </div>
         <div id="grid-geografi" class="reveal deret-statistik pt-2"><!-- diisi oleh JS --></div>
+        <p class="reveal mt-8 flex items-center gap-2 text-sm text-[var(--muted)]" data-wadah-profil>
+          <i data-lucide="locate-fixed" class="w-4 h-4 text-[var(--primary)]"></i>
+          Koordinat: <span class="font-semibold text-[var(--ink)]" data-profil="koordinat"></span>
+        </p>
       </div>
     </section>
 
@@ -78,7 +79,10 @@
       </div>
     </section>
 
-    <!-- 04 · PETA — peta statis (img/peta-wilayah.png) + peta interaktif Google -->
+    <!-- 04 · VISI & MISI — tab profil, kunci visi & misi (misi: satu per baris); dihapus bila kosong -->
+    <section id="visi-misi" class="seksi-gelap"></section>
+
+    <!-- 05 · PETA — peta statis (img/peta-wilayah.png) + peta interaktif Google -->
     <section class="bg-[var(--surface)] border-y border-[var(--line)]">
       <div class="wadah seksi">
         <div class="reveal mb-10">
@@ -111,10 +115,10 @@
 
   <div id="footer"></div>
 
-  <script src="assets/js/data.js?v=b5bd2f1e"></script>
-  <script src="assets/js/data-contoh.js?v=9e431512"></script>
+  <script src="assets/js/data.js?v=df4c9c7e"></script>
+  <script src="assets/js/data-contoh.js?v=8cc43cfc"></script>
   <script src="assets/js/ui.js?v=3f153858"></script>
-  <script src="assets/js/komponen.js?v=62f6196e"></script>
-  <script src="assets/js/halaman/profil.js?v=dc7758b2"></script>
+  <script src="assets/js/komponen.js?v=4d314291"></script>
+  <script src="assets/js/halaman/profil.js?v=9a14b000"></script>
 </body>
 </html>

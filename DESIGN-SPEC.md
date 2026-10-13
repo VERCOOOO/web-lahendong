@@ -35,8 +35,8 @@ Semua warna didefinisikan di `:root`. Warna di luar daftar ini ditolak.
 Aturan:
 - `--accent` tidak pernah dipakai untuk teks di latar terang (kontrasnya 2:1). Untuk teks pakai `--accent-ink`.
 - Bidang gelap hanya: kop halaman, satu seksi/panel sorotan per halaman (layanan di Beranda, pimpinan di Pemerintahan), footer.
-- Tanpa gradien warna, tanpa overlay di atas ilustrasi. Pengecualian: kop detail wisata (foto/video asli)
-  memakai gradien `--deep-2` dari bawah & kiri agar judul putih terbaca.
+- Tanpa gradien warna, tanpa overlay di atas ilustrasi. Pengecualian: hero Beranda dan kop detail wisata
+  (foto/video asli) memakai gradien `--deep-2` agar judul putih terbaca.
 - Kontras teks minimal 4,5:1 (semua pasangan di atas sudah diperiksa).
 
 ## 3. TIPOGRAFI
@@ -66,8 +66,8 @@ Lebar konten: maks 1160px. Padding tepi layar: 24px desktop · 16px HP.
 ## 5. KOMPONEN
 Bilah resmi : `--deep-2`, 36px, teks kecil; jam layanan & tautan kontak (desktop).
 Header      : 72px, `--surface`, menempel saat digulir. Nav aktif = garis belerang 3px di bawah.
-Hero beranda: ilustrasi poster penuh; judul di bidang langit kiri atas, teks `--ink` (tanpa overlay).
-              Dua tombol: Jelajahi wisata (utama) & Layanan surat (sekunder).
+Hero beranda: video Danau Linow berulang tanpa suara (poster saat dimuat / "kurangi gerak"), gradien
+              `--deep-2` dari kiri atas, judul putih di kiri atas, tombol Jeda/Putar di kanan bawah. Dua tombol: Jelajahi wisata (utama) & Layanan surat (sekunder).
 Papan info  : panel putih bergaris atas belerang yang menumpang 88px di tepi bawah hero; berisi angka ringkas.
 Kop halaman : bidang `--deep` + garis kontur samar di kanan; tepi bawah berupa siluet punggungan gunung
               yang warnanya mengikuti seksi di bawahnya (kelas `tepi-putih` bila seksi itu putih).
@@ -99,6 +99,9 @@ Galeri wisata: baris rata kiri-kanan (justified) — lebar kotak sebanding rasio
               92% (video diputar dengan kendali), panah kiri/kanan & Esc.
 Kontak      : HP 1 kolom, tablet & desktop 2 kolom; jumlah ganjil → kartu pertama (mis. Lurah) satu baris
               penuh, sehingga tidak ada sel kosong.
+Sejarah     : bagian bersambung garis waktu tipis `--line` dengan penanda kotak belerang; judul tiap bagian
+              `.judul-kartu`, butir "Label: isi" ditebalkan labelnya.
+Visi & misi : bidang `--deep` (sorotan Profil); visi huruf judul besar putih, misi bernomor belerang bergaris rambut.
 Cek Data    : satu kartu per tab; temuan bergaris kiri `--danger` (perlu diperbaiki), `--accent` (periksa),
               `--toska` (info). Alat admin, tidak ada di menu.
 

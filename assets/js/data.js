@@ -33,8 +33,11 @@ const ID_SPREADSHEET = "11f8D-qzWt1rdkin7uBMmrbrEkZmc4dih39ruUwTh1gQ";
    Peta tab → halaman ada di tab "petunjuk" pada sheet dan di README.md.
    Halaman cek-data.html memeriksa semua aturan ini dan melaporkan kesalahan isian. */
 const SKEMA = {
-  // Informasi umum: kantor, wilayah, sejarah, tahun & sumber data penduduk.
+  // Informasi umum: kantor, letak & wilayah, visi-misi, tahun & sumber data penduduk.
   profil: ["kunci", "nilai", "keterangan"],
+  // Sejarah kelurahan, satu baris per bagian (judul + isi), urut seperti di sheet.
+  // isi: satu paragraf per baris; baris berawalan "- " menjadi butir daftar.
+  sejarah: ["judul", "isi"],
   // Satu baris per lingkungan. Jabatan ditentukan kolomnya (kepala / wakil_kepala), jadi tidak bisa tertukar;
   // sel kosong tampil "Belum tersedia". Jiwa = laki + perempuan; semua total dihitung dari tab ini.
   lingkungan: ["nama", "kepala", "wakil_kepala", "jumlah_kk", "laki", "perempuan", "jumlah_lansia", "jumlah_rumah"],
@@ -54,8 +57,9 @@ const SKEMA = {
 /* Kunci yang dikenal di tab profil — dipakai halaman Cek Data untuk menangkap salah ketik. */
 const KUNCI_PROFIL = [
   "alamat_kantor", "telepon_kantor", "email", "jam_layanan",
-  "luas_wilayah", "ketinggian", "suhu", "batas_utara", "batas_selatan", "batas_timur", "batas_barat",
-  "sejarah", "tahun_data", "sumber_data",
+  "letak", "koordinat", "luas_wilayah", "ketinggian", "suhu",
+  "batas_utara", "batas_selatan", "batas_timur", "batas_barat",
+  "visi", "misi", "tahun_data", "sumber_data",
 ];
 
 /** URL CSV satu tab, dicari berdasarkan nama tab. */

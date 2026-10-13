@@ -219,6 +219,7 @@
 
       <div class="pilih-tab" id="pilih-tab" role="group" aria-label="Sorot tab">
         <button type="button" data-tab="profil" aria-pressed="false">profil</button>
+        <button type="button" data-tab="sejarah" aria-pressed="false">sejarah</button>
         <button type="button" data-tab="lingkungan" aria-pressed="false">lingkungan</button>
         <button type="button" data-tab="aparat" aria-pressed="false">aparat</button>
         <button type="button" data-tab="kontak" aria-pressed="false">kontak</button>
@@ -485,7 +486,7 @@ tools/buat_template.py  membuat ulang template (python3 tools/buat_template.py)<
   const HALAMAN = [
     { nama: "Beranda", berkas: "index.html", bagian: [
       { isi: "Judul besar & kalimat pengantar", tetap: true },
-      { isi: "Gambar besar (hero)", tetap: true, kolom: "foto di berkas situs (img/hero-lahendong.webp)" },
+      { isi: "Video besar (hero)", tetap: true, kolom: "berkas situs img/beranda/ (video Danau Linow)" },
       { isi: "Angka ringkas", tab: ["lingkungan", "profil"], kolom: "dihitung dari lingkungan (penduduk, KK, jumlah lingkungan) · profil: luas_wilayah" },
       { isi: "Sambutan", tetap: true },
       { isi: "Pimpinan kelurahan", tab: ["aparat"], kolom: "aparat yang kolom atasannya kosong (Lurah)" },
@@ -493,9 +494,10 @@ tools/buat_template.py  membuat ulang template (python3 tools/buat_template.py)<
       { isi: "Layanan surat (6 teratas)", tab: ["layanan", "profil"], kolom: "layanan: nama_surat, waktu, biaya · profil: jam_layanan" },
     ]},
     { nama: "Profil", berkas: "profil.html", bagian: [
-      { isi: "Asal usul (sejarah)", tab: ["profil"], kolom: "profil: sejarah" },
-      { isi: "Kondisi wilayah", tab: ["profil", "lingkungan"], kolom: "profil: luas_wilayah, ketinggian, suhu · jumlah baris lingkungan" },
+      { isi: "Asal usul (sejarah)", tab: ["sejarah"], kolom: "sejarah: judul, isi — satu baris per bagian" },
+      { isi: "Kondisi wilayah", tab: ["profil", "lingkungan"], kolom: "profil: letak, luas_wilayah, ketinggian, suhu, koordinat · jumlah baris lingkungan" },
       { isi: "Batas wilayah", tab: ["profil"], kolom: "profil: batas_utara, batas_selatan, batas_timur, batas_barat" },
+      { isi: "Visi & misi", tab: ["profil"], kolom: "profil: visi, misi (satu per baris)" },
       { isi: "Peta wilayah (gambar)", tetap: true, kolom: "berkas img/peta-wilayah.png — tampil bila ada" },
       { isi: "Peta interaktif Google", tetap: true },
     ]},
@@ -538,10 +540,15 @@ tools/buat_template.py  membuat ulang template (python3 tools/buat_template.py)<
     { nama: "profil", isi: "Informasi umum kelurahan. Satu baris = satu informasi: kolom kunci adalah nama tetap yang dicari situs, nilai adalah isinya.",
       kolom: [
         ["kunci", "Nama informasi — jangan diubah", "jam_layanan"],
-        ["nilai", "Isinya", "Senin – Jumat, 08.00 – 15.00 WITA"],
+        ["nilai", "Isinya", "Senin – Kamis, 08.00 – 16.30 WITA / Jumat, 08.00 – 13.30 WITA"],
         ["keterangan", "Catatan untuk admin, tidak tampil di situs", "CONTOH — ganti…"],
       ],
-      catatan: "Kunci yang dikenal: alamat_kantor, telepon_kantor, email, jam_layanan, luas_wilayah (angka, km²), ketinggian (mdpl), suhu (°C), batas_utara, batas_selatan, batas_timur, batas_barat, sejarah ↵, tahun_data, sumber_data. Kunci salah ketik ditandai Cek Data." },
+      catatan: "Kunci yang dikenal: alamat_kantor, telepon_kantor, email, jam_layanan, luas_wilayah (angka, km²), ketinggian (mdpl), suhu (°C), letak ↵, koordinat, batas_utara, batas_selatan, batas_timur, batas_barat, visi, misi ↵, tahun_data, sumber_data. Kunci salah ketik ditandai Cek Data." },
+    { nama: "sejarah", isi: "Sejarah kelurahan, satu baris per bagian; urutan baris = urutan tampil di halaman Profil.",
+      kolom: [
+        ["judul", "Wajib. Judul bagian", "Asal usul nama"],
+        ["isi", "Satu paragraf per baris ↵; baris berawalan \"- \" menjadi butir, \"Label: isi\" ditebalkan labelnya", "- Migrasi dari Sarongsong (tahun 1750): …"],
+      ] },
     { nama: "lingkungan", isi: "Satu baris per lingkungan. Jumlah jiwa (laki + perempuan) dan semua total dihitung otomatis — tidak ada kolom jumlah jiwa.",
       kolom: [
         ["nama", "Wajib. Nama lingkungan", "Lingkungan 1"], ["kepala", "Kepala lingkungan; kosong = \"Belum tersedia\"", "Julius Joni Rondonuwu"],
@@ -568,9 +575,9 @@ tools/buat_template.py  membuat ulang template (python3 tools/buat_template.py)<
         ["cara_kesana", "Rute, satu langkah per baris ↵", "(langkah)"], ["pengelola", "Pengelola ↵", "PT Karyadeka Alam Asri"], ["maps_link", "Tautan Google Maps (https://)", "https://maps.google.com/?q=…"],
       ] },
     { nama: "layanan", isi: "Satu baris per jenis surat. Tambah atau hapus baris sesuka hati; halaman Layanan menyesuaikan sendiri.",
-      kolom: [["nama_surat", "Wajib. Nama surat; juga jadi tautan langsungnya", "Surat Keterangan Tidak Mampu (SKTM)"], ["tampil", "Ya / Tidak (dropdown)", "Ya"], ["kategori", "Kelompok (dropdown, boleh ketik baru)", "Sosial"],
+      kolom: [["nama_surat", "Wajib. Nama surat; juga jadi tautan langsungnya", "Surat Keterangan Domisili"], ["tampil", "Ya / Tidak (dropdown)", "Ya"], ["kategori", "Kelompok (dropdown, boleh ketik baru)", "Sosial"],
         ["syarat", "Satu berkas per baris ↵", "Fotokopi KTP ↵ Fotokopi KK"], ["alur", "Satu langkah per baris ↵", "Bawa berkas ke kantor ↵ …"], ["waktu", "Lama proses", "1 hari kerja"], ["biaya", "Biaya", "Gratis"],
-        ["catatan", "Pemberitahuan tambahan (opsional) ↵", "Sebutkan keperluan SKTM…"]],
+        ["catatan", "Pemberitahuan tambahan (opsional) ↵", "Untuk data yang berbeda di dokumen kependudukan…"]],
       catatan: "Surat tanpa kategori masuk kelompok \"Lainnya\". Kotak pencarian muncul otomatis bila surat berjumlah 5 atau lebih." },
   ];
 

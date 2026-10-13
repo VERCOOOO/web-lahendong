@@ -304,26 +304,42 @@ img { max-width: 100%; }
 
 /* --- Hero beranda ------------------------------------------------------- */
 
-/* Ilustrasi poster memenuhi layar; judul ditaruh di langit (kiri atas), jadi
-   tidak butuh lapisan gelap. Papan informasi menumpang di tepi bawahnya. */
+/* Video Danau Linow memenuhi layar; gradien --deep-2 dari kiri atas agar judul putih terbaca.
+   Papan informasi menumpang di tepi bawahnya. */
 .hero {
   position: relative;
+  isolation: isolate;
   min-height: 640px;
   height: min(86vh, 760px);
   display: flex;
   align-items: flex-start;
   overflow: hidden;
-  background: var(--toska-muda);
+  background: var(--deep);
+  color: #fff;
 }
 
 .hero-gambar {
   position: absolute;
   inset: 0;
+  z-index: -2;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 72% 100%;
+  object-position: 35% 50%;
 }
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(10, 34, 30, 0.55) 0%, rgba(10, 34, 30, 0.15) 55%, rgba(10, 34, 30, 0.35) 100%),
+    linear-gradient(90deg, rgba(10, 34, 30, 0.6) 0%, rgba(10, 34, 30, 0) 70%);
+}
+
+.hero .eyebrow { color: var(--toska); }
+.hero .judul-hero { color: #fff; }
 
 .hero-isi {
   position: relative;
@@ -337,8 +353,11 @@ img { max-width: 100%; }
   font-size: 18px;
   line-height: 1.55;
   font-weight: 500;
-  color: var(--ink);
+  color: var(--on-deep);
 }
+
+/* Tombol Jeda/Putar di atas papan informasi yang menumpang 88px */
+.hero .kendali-video { bottom: 104px; }
 
 .hero-aksi {
   display: flex;
@@ -766,6 +785,62 @@ details[open] { border-color: var(--primary); }
   width: 7px;
   height: 7px;
   background: var(--accent);
+}
+
+/* --- Sejarah (Profil): bagian bersambung garis waktu ------------------- */
+
+.bab-sejarah {
+  position: relative;
+  padding: 0 0 40px 28px;
+  border-left: 2px solid var(--line);
+}
+
+.bab-sejarah:last-child { padding-bottom: 0; border-left-color: transparent; }
+
+.bab-sejarah::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  background: var(--accent);
+}
+
+/* --- Visi & misi (Profil, bidang gelap) --------------------------------- */
+
+.visi {
+  margin-top: 10px;
+  font-family: var(--font-judul);
+  font-size: clamp(30px, 5vw, 44px);
+  font-weight: 700;
+  line-height: 1.05;
+  color: #fff;
+}
+
+.daftar-misi {
+  counter-reset: misi;
+  display: grid;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.daftar-misi li {
+  counter-increment: misi;
+  display: flex;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.daftar-misi li::before {
+  content: counter(misi) ".";
+  flex: none;
+  font-family: var(--font-judul);
+  font-weight: 700;
+  color: var(--accent);
 }
 
 /* --- Layanan surat ------------------------------------------------------ */
@@ -1447,8 +1522,7 @@ details[open] { border-color: var(--primary); }
   z-index: -1;
 }
 
-.latar-kop img,
-.latar-kop video {
+.latar-kop > * {
   width: 100%;
   height: 100%;
   object-fit: cover;

@@ -12,6 +12,8 @@ const FAKTA_BERANDA = [
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
+  pasangVideoLatar(document.querySelector(".hero video"));
+
   isiDariData(document.getElementById("deret-statistik"), ["lingkungan", "profil"], ([lingkungan, profil]) => {
     const ringkas = ringkasPenduduk(lingkungan);
     return FAKTA_BERANDA

@@ -59,7 +59,9 @@ DATA = js_ke_json(ambil_objek(open(f"{REPO}/assets/js/data-contoh.js").read(), "
 
 PETA = {
     "profil": ("Profil, Kontak, Layanan, Penduduk (tahun & sumber), header & footer",
-               "Alamat, telepon, email & jam layanan kantor; luas, ketinggian, suhu; batas wilayah; sejarah; tahun & sumber data"),
+               "Alamat, telepon, email & jam layanan kantor; letak, koordinat, luas, ketinggian, suhu; batas wilayah; visi & misi; tahun & sumber data"),
+    "sejarah": ("Profil (bagian Sejarah)",
+                "Satu baris per bagian sejarah, urut seperti di sheet. isi: satu paragraf per baris; baris berawalan \"- \" menjadi butir"),
     "lingkungan": ("Penduduk (angka, grafik & tabel), Beranda (angka ringkas), Pemerintahan (kartu lingkungan)",
                    "Satu baris per lingkungan: kepala & wakil kepala lingkungan, KK, laki-laki, perempuan, lansia, rumah. Semua total dihitung otomatis dari tab ini"),
     "aparat": ("Pemerintahan (struktur), Beranda (pimpinan), Kontak (bila nomor diisi)",
@@ -79,6 +81,11 @@ KOLOM = {
         "kunci": ("WAJIB. Nama informasi yang dicari situs — jangan diubah. Daftar kunci ada di tab petunjuk.", "jam_layanan"),
         "nilai": ("Isi informasinya. Beberapa paragraf: pisahkan dengan baris baru (Ctrl+Enter).", "Senin – Kamis, 08.00 – 16.30 WITA / Jumat, 08.00 – 13.30 WITA"),
         "keterangan": ("Catatan untuk admin; tidak tampil di situs.", "CONTOH — ganti"),
+    },
+    "sejarah": {
+        "judul": ("WAJIB. Judul bagian sejarah. Urutan baris = urutan tampil.", "Asal usul nama"),
+        "isi": ("Isi bagian itu. Satu paragraf per baris (Ctrl+Enter); baris berawalan \"- \" menjadi butir daftar, "
+                "dan \"Label: isi\" di awal butir ditebalkan labelnya.", "- Migrasi dari Sarongsong (tahun 1750): Pada tahun 1750, …"),
     },
     "lingkungan": {
         "nama": ("WAJIB. Nama lingkungan. \"Lingkungan 3\" ditampilkan sebagai angka besar.", "Lingkungan 3"),
@@ -118,7 +125,7 @@ KOLOM = {
         "maps_link": ("Tautan Google Maps lengkap, diawali https://", "https://maps.google.com/?q=Danau+Linow"),
     },
     "layanan": {
-        "nama_surat": ("WAJIB. Nama surat. Untuk menghapus surat: hapus barisnya.", "Surat Keterangan Tidak Mampu (SKTM)"),
+        "nama_surat": ("WAJIB. Nama surat. Untuk menghapus surat: hapus barisnya.", "Surat Keterangan Domisili"),
         "tampil": TAMPIL,
         "kategori": ("Kelompok surat: pilih dari daftar atau ketik kategori baru. Kosong = Lainnya.", "Sosial"),
         "syarat": ("Berkas yang dibawa, satu per baris (Ctrl+Enter).", "Fotokopi KTP⏎Fotokopi Kartu Keluarga"),
@@ -178,7 +185,9 @@ KUNCI_PROFIL = [
     ("alamat_kantor", "Alamat kantor kelurahan"), ("telepon_kantor", "Telepon kantor"), ("email", "Email kantor"),
     ("jam_layanan", "Jam layanan per kelompok hari, dipisah / — mis. Senin – Kamis, 08.00 – 16.30 WITA / Jumat, 08.00 – 13.30 WITA / Sabtu – Minggu, Tutup. Bilah atas situs menampilkan jam hari ini."), ("luas_wilayah", "Luas wilayah, angka saja (km²)"), ("ketinggian", "Ketinggian (mdpl)"),
     ("suhu", "Suhu rata-rata (°C)"), ("batas_utara", "Batas utara"), ("batas_selatan", "Batas selatan"),
-    ("batas_timur", "Batas timur"), ("batas_barat", "Batas barat"), ("sejarah", "Sejarah, satu paragraf per baris"),
+    ("batas_timur", "Batas timur"), ("batas_barat", "Batas barat"),
+    ("letak", "Uraian letak & kondisi wilayah, satu paragraf per baris"), ("koordinat", "Titik koordinat, mis. 1°16′42″ LU, 124°48′51″ BT"),
+    ("visi", "Visi"), ("misi", "Misi, satu per baris (nomor dibuat situs)"),
     ("tahun_data", "Tahun data kependudukan"),
     ("sumber_data", "Sumber data kependudukan"),
 ]
@@ -190,9 +199,7 @@ TIDAK_DIATUR = [
 
 MASIH_CONTOH = [
     "Nilai yang belum ada data resminya ditandai \"CONTOH\" di kolom keterangan dan wajib diganti sebelum situs diumumkan:",
-    "• Tab profil: jam_layanan, luas_wilayah, ketinggian, suhu, sejarah.",
-    "• Tab layanan: syarat, alur, waktu, biaya, dan catatan setiap surat perlu dicocokkan dengan ketentuan kantor kelurahan.",
-    "• Masih kosong: telepon_kantor, email, kepala & wakil kepala Lingkungan 7, nomor aparat.",
+    "• Masih kosong: kepala & wakil kepala Lingkungan 7; cara menuju lokasi Mah’Watu; pengelola tiap destinasi (isi hanya bila pasti).",
 ]
 
 
