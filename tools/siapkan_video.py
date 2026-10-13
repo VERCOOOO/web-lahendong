@@ -9,7 +9,7 @@ Suara dibuang. Ujung video dibaurkan ke awalnya (crossfade) agar perulangannya t
 melompat, sehingga hasilnya lebih pendek sebanyak --baur detik. Target ukuran: di bawah ±8 MB
 (layar lebar) dan ±4 MB (HP); naikkan --crf bila masih lebih besar. Butuh ffmpeg.
 
-Contoh: python3 tools/siapkan_video.py "data/mahwatu hero.mp4" img/wisata/mah-watu/latar
+Contoh: python3 tools/siapkan_video.py "data/mahwatu/mahwatu hero.mp4" img/wisata/mah-watu/latar
 """
 import argparse
 import json

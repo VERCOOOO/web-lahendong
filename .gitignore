@@ -1,11 +1,4 @@
-# Video asli (besar) dan unduhan yang belum selesai — hasil siap pakai ada di img/
-data/*.mp4
-data/*.mov
-data/*.MOV
-data/*.zip
-data/*.fdmdownload
-data/*.jpg
-data/*.jpeg
-data/*.png
-data/*.PNG
-data/*.webp
+# Folder data/: hanya template spreadsheet yang di-commit. Foto & video asli (berat) disimpan di sini
+# lalu diproses dengan tools/siapkan_foto.py / siapkan_video.py; hasilnya di img/.
+data/*
+!data/template-data-lahendong.xlsx

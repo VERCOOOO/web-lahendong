@@ -1,6 +1,8 @@
 # web-lahendong
 
-Situs resmi Kelurahan Lahendong, Kecamatan Tomohon Selatan, Kota Tomohon, Sulawesi Utara.
+Situs informasi Kelurahan Lahendong, Kecamatan Tomohon Selatan, Kota Tomohon, Sulawesi Utara —
+disusun oleh Mahasiswa KKT Unsrat Angkatan 149. Sengaja tidak menyebut diri situs resmi pemerintah;
+footer mengingatkan pengunjung untuk memastikan keperluan administrasi ke kantor kelurahan.
 HTML + Tailwind (CDN) + JavaScript biasa — tanpa build step. Desain mengikuti [DESIGN-SPEC.md](DESIGN-SPEC.md).
 
 > **Admin kelurahan:** baca [**Panduan Admin**](docs/panduan-admin.html) — versi visual dari README ini,
@@ -75,17 +77,20 @@ fotonya ke pengembang.
 | Aparat & kepala lingkungan (opsional; tanpa foto = monogram) | `img/orang/` | `FOTO_ORANG` (menurut nama) di `komponen.js` |
 | KKT & dosen lapangan | `img/` | kolom `foto` di `DATA_KKT` |
 
-Setiap destinasi sudah punya media contoh bertanda "FOTO/VIDEO CONTOH" di `img/wisata/<kode>/`
-(`kartu.webp`, `latar.webp`, `foto-1…4.webp`, `video-1.mp4` + posternya `video-1.webp`). Cara termudah menggantinya:
-**timpa berkasnya dengan nama yang sama.** Jenis media dikenali dari akhirannya (`.mp4`/`.webm` = video).
-Latar video: ubah `latar` menjadi `{ berkas: "latar.mp4", poster: "latar.webp" }` — diputar tanpa suara,
+**Alur foto:** simpan foto asli di `data/<destinasi>/` (folder ini tidak ikut di-commit — hanya yang dipakai
+masuk repo), lalu proses ke `img/wisata/<kode>/` dengan `python3 tools/siapkan_foto.py ASLI TUJUAN.webp --jenis kartu|latar|galeri`
+(kartu dipotong 3:2, latar & galeri rasio asli, semua WebP). Pola nama di `data/`: `… card` → `kartu.webp`,
+`… hero` → `latar.webp`/video, foto bernomor → `foto-1.webp`, `foto-2.webp`, … berurutan. Mengganti foto cukup
+menimpa berkas di `img/` dengan nama yang sama.
+
+Latar video: ubah `latar` menjadi `{ berkas: "latar.mp4", hp: "latar-hp.mp4", poster: "latar.webp" }` — diputar tanpa suara,
 berulang, dengan tombol Jeda; pengunjung yang memilih "kurangi gerak" atau hemat data melihat posternya saja.
 Foto galeri boleh lanskap maupun potret: galeri menyusun baris yang rata kiri-kanan sesuai rasio tiap
 foto, jadi tidak ada yang terpotong atau menyisakan sel kosong (semua lanskap = petak seragam).
 **Menyiapkan video** (hero Beranda maupun latar wisata): `python3 tools/siapkan_video.py ASLI.mp4 img/wisata/<kode>/latar`
 membuat versi layar lebar (1920 px), versi HP (`-hp`, 1280 px), dan poster sekaligus, membuang suara, dan membaurkan
 ujung video ke awalnya agar perulangannya tidak melompat. Video yang ramai gerak (mis. drone) pakai `--crf 31`.
-Simpan video asli di `data/` — folder itu tidak ikut di-commit untuk berkas video.
+Simpan video asli di `data/` — folder itu tidak ikut di-commit.
 Saran video: MP4 (H.264) 720p–1080p, tanpa suara, kamera diam, 10–30 detik yang menyambung saat berulang,
 di bawah ±8 MB (video beberapa menit terlalu berat untuk pengunjung ber-HP).
 

@@ -30,9 +30,15 @@ const DESTINASI = {
     media: [
       { berkas: "foto-1.webp" },
       { berkas: "foto-2.webp" },
-      { berkas: "video-1.mp4", poster: "video-1.webp" },
       { berkas: "foto-3.webp" },
       { berkas: "foto-4.webp" },
+      { berkas: "foto-5.webp" },
+      { berkas: "foto-6.webp" },
+      { berkas: "foto-7.webp" },
+      { berkas: "foto-8.webp" },
+      { berkas: "foto-9.webp" },
+      { berkas: "foto-10.webp" },
+      { berkas: "foto-11.webp" },
     ],
   },
   "objek-wisata-air-panas-belerang-dan-hutan-pinus": {
@@ -41,9 +47,6 @@ const DESTINASI = {
     media: [
       { berkas: "foto-1.webp" },
       { berkas: "foto-2.webp" },
-      { berkas: "video-1.mp4", poster: "video-1.webp" },
-      { berkas: "foto-3.webp" },
-      { berkas: "foto-4.webp" },
     ],
   },
   "mah-watu": {
@@ -52,9 +55,12 @@ const DESTINASI = {
     media: [
       { berkas: "foto-1.webp" },
       { berkas: "foto-2.webp" },
-      { berkas: "video-1.mp4", poster: "video-1.webp" },
       { berkas: "foto-3.webp" },
       { berkas: "foto-4.webp" },
+      { berkas: "foto-5.webp" },
+      { berkas: "foto-6.webp" },
+      { berkas: "foto-7.webp" },
+      { berkas: "foto-8.webp" },
     ],
   },
 };

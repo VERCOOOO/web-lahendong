@@ -25,7 +25,7 @@ Semua warna didefinisikan di `:root`. Warna di luar daftar ini ditolak.
 | `--toska` | `#6FD0BF` | aksen di bidang gelap (label, tautan) |
 | `--toska-muda` | `#DDF1EC` | latar monogram & bingkai foto |
 | `--deep` | `#0E2E29` | hutan malam — kop halaman, seksi sorotan |
-| `--deep-2` | `#0A221E` | footer, bilah resmi di atas header |
+| `--deep-2` | `#0A221E` | footer, bilah atas di atas header |
 | `--on-deep` / `--on-deep-muted` | `#E6F0EC` / `#A7C1BA` | teks di bidang gelap |
 | `--accent` | `#E0AE1E` | belerang — **penanda saja**: kotak eyebrow, garis bawah judul, garis atas papan |
 | `--accent-ink` | `#8A6400` | belerang untuk **teks** di latar terang (jumlah per kelompok, salam) |
@@ -64,7 +64,7 @@ Spasi    : kelipatan 8px. Jarak antarseksi 96px desktop · 56px HP.
 Lebar konten: maks 1160px. Padding tepi layar: 24px desktop · 16px HP.
 
 ## 5. KOMPONEN
-Bilah resmi : `--deep-2`, 36px, teks kecil; jam layanan & tautan kontak (desktop).
+Bilah atas  : `--deep-2`, 36px, teks kecil ("Situs informasi…", bukan "situs resmi"); jam hari ini & tautan kontak (desktop).
 Header      : 72px, `--surface`, menempel saat digulir. Nav aktif = garis belerang 3px di bawah.
 Hero beranda: video Danau Linow berulang tanpa suara (poster saat dimuat / "kurangi gerak"), gradien
               `--deep-2` dari kiri atas, judul putih di kiri atas, tombol Jeda/Putar di kanan bawah. Dua tombol: Jelajahi wisata (utama) & Layanan surat (sekunder).

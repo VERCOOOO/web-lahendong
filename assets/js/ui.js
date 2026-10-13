@@ -71,7 +71,7 @@ function renderHeader() {
 
   /* Tanpa ini, header sticky terkurung di dalam #header (setinggi header itu
      sendiri) dan ikut tergulir hilang. Dengan display: contents, header menempel
-     relatif terhadap <body>, sedangkan bilah resmi di atasnya tetap tergulir. */
+     relatif terhadap <body>, sedangkan bilah atas di atasnya tetap tergulir. */
   wadah.style.display = "contents";
 
   wadah.innerHTML = `
@@ -82,8 +82,8 @@ function renderHeader() {
     <div class="bg-[var(--deep-2)] text-[var(--on-deep-muted)] text-[12.5px]">
       <div class="wadah h-9 flex items-center justify-between gap-4">
         <p class="flex items-center gap-2 min-w-0">
-          <i data-lucide="landmark" class="w-3.5 h-3.5 shrink-0 text-[var(--accent)]"></i>
-          <span class="truncate">Situs resmi Kelurahan Lahendong, Kota Tomohon</span>
+          <i data-lucide="info" class="w-3.5 h-3.5 shrink-0 text-[var(--accent)]"></i>
+          <span class="truncate">Situs informasi Kelurahan Lahendong, Kota Tomohon</span>
         </p>
         <div class="hidden md:flex items-center gap-5 shrink-0">
           <span class="flex items-center gap-1.5" data-wadah-profil><i data-lucide="clock" class="w-3.5 h-3.5 text-white/60"></i><span data-profil="jam_layanan" data-profil-format="hari-ini"></span></span>
@@ -169,8 +169,12 @@ function renderFooter() {
               </div>
             </div>
             <p class="text-sm text-white/75 leading-relaxed mt-5 max-w-[320px]">
-              Pusat informasi resmi mengenai pemerintahan, data kependudukan, layanan surat,
+              Informasi seputar pemerintahan, data kependudukan, layanan surat,
               dan destinasi wisata Kelurahan Lahendong.
+            </p>
+            <p class="text-xs text-white/60 leading-relaxed mt-3 max-w-[320px]">
+              Disusun oleh Mahasiswa KKT Unsrat Angkatan 149 sebagai sarana informasi. Untuk keperluan
+              administrasi, pastikan kembali ke Kantor Kelurahan Lahendong.
             </p>
           </div>
 
@@ -203,7 +207,7 @@ function renderFooter() {
 
       <div class="border-t border-white/10">
         <div class="wadah py-5 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-xs text-white/60">
-          <p>&copy; ${new Date().getFullYear()} Pemerintah Kelurahan Lahendong. Seluruh hak cipta dilindungi.</p>
+          <p>&copy; ${new Date().getFullYear()} Situs Informasi Kelurahan Lahendong</p>
           <!-- Kredit tim penyusun situs; halaman KKT sengaja tidak ada di menu atas. -->
           <a href="kkt.html" class="inline-flex items-center gap-1.5 text-white/75 hover:text-white">
             Dikembangkan oleh Mahasiswa KKT Unsrat Angkatan 149
