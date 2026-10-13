@@ -4,3 +4,8 @@ data/*.mov
 data/*.MOV
 data/*.zip
 data/*.fdmdownload
+data/*.jpg
+data/*.jpeg
+data/*.png
+data/*.PNG
+data/*.webp

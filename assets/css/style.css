@@ -1505,16 +1505,21 @@ details[open] { border-color: var(--primary); }
   .struktur-kkt .cabang-struktur { --sela: 64px; }
 }
 
-/* --- Kop detail wisata: latar foto/video penuh ----------------------- */
+/* --- Kop berlatar foto/video (Layanan, detail wisata) ---------------- */
 
 /* Foto/video asli + gradien --deep-2 agar judul putih terbaca; garis kontur kop biasa tidak dipakai. */
-.kop-wisata {
+.kop-berfoto {
   display: flex;
   align-items: flex-end;
-  min-height: clamp(440px, 72vh, 760px);
+  min-height: clamp(380px, 54vh, 560px);
 }
 
-.kop-wisata::after { display: none; }
+.kop-berfoto::after { display: none; }
+.kop-berfoto > .wadah { width: 100%; }
+.kop-berfoto .kop-ringkas { color: var(--on-deep); }
+
+/* Detail wisata: lebih tinggi, latar menjadi tokoh utama halaman */
+.kop-wisata { min-height: clamp(440px, 72vh, 760px); }
 
 .latar-kop {
   position: absolute;
@@ -1537,9 +1542,12 @@ details[open] { border-color: var(--primary); }
     linear-gradient(90deg, rgba(10, 34, 30, 0.55) 0%, rgba(10, 34, 30, 0) 65%);
 }
 
-.kop-wisata-isi { width: 100%; padding-block: 120px 88px; }
+/* Latar yang ramai (mis. foto bertulisan di kop Layanan): lapisan lebih pekat agar judul tetap menonjol */
+.latar-kop.latar-pekat::after {
+  background: linear-gradient(90deg, rgba(10, 34, 30, 0.92) 0%, rgba(10, 34, 30, 0.78) 45%, rgba(10, 34, 30, 0.5) 100%);
+}
 
-.kop-wisata .kop-ringkas { color: var(--on-deep); }
+.kop-wisata-isi { padding-block: 120px 88px; }
 
 .kop-wisata-info {
   display: flex;

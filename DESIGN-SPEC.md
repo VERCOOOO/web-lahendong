@@ -90,6 +90,8 @@ Lingkungan  : nomor lingkungan sebagai angka besar `--primary`, batang porsi jiw
 Bagan KKT   : pengurus inti di puncak (ketua di tengah, bergaris belerang, diapit sekretaris & bendahara),
               garis turun ke kolom bidang (kepala `--deep` berikon, koordinator berlatar `--toska-muda`,
               anggota dalam daftar ringkas). Panel dosen lapangan memakai bidang `--deep`.
+Kop berfoto : `.kop-berfoto` — kop halaman dengan latar foto/video asli + gradien `--deep-2`, judul putih di
+              kiri bawah (Layanan; foto bertulisan memakai `.latar-pekat` yang lebih gelap).
 Kop wisata  : latar foto atau video (berulang, tanpa suara) selebar layar, tinggi 72vh (440–760px), judul di
               kiri bawah + jam & tiket berikon belerang. Video: tombol Jeda/Putar bulat di kanan bawah;
               "kurangi gerak"/hemat data = poster saja. Tepi bawah tetap siluet punggungan.

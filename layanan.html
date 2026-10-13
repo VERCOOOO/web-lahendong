@@ -12,7 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="assets/css/style.css?v=9b7f61df" />
+  <link rel="stylesheet" href="assets/css/style.css?v=c21a5ff7" />
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
@@ -22,7 +22,12 @@
 
   <main id="konten-utama" class="flex-1">
 
-    <section class="kop-halaman">
+    <!-- Foto kop: img/layanan/hero.webp (HP: hero-hp.webp) -->
+    <section class="kop-halaman kop-berfoto">
+      <div class="latar-kop latar-pekat">
+        <img src="img/layanan/hero.webp" srcset="img/layanan/hero-hp.webp 960w, img/layanan/hero.webp 1536w" sizes="100vw"
+             alt="" class="object-[center_40%]" />
+      </div>
       <div class="wadah kop-isi">
         <nav class="remah" aria-label="Lokasi halaman" data-remah></nav>
         <h1 class="judul-halaman">Layanan Surat</h1>

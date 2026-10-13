@@ -77,7 +77,7 @@ function infoKunjungan(item) {
 function tampilanDetail(item) {
   const tautanPeta = escapeHtml(urlAman(teksPolos(item.maps_link)));
   return `
-    <section class="kop-halaman kop-wisata">
+    <section class="kop-halaman kop-berfoto kop-wisata">
       ${latarKop(item)}
       <div class="wadah kop-wisata-isi">
         <a href="wisata.html" class="inline-flex items-center gap-2 text-[var(--toska)] hover:text-white text-sm font-semibold">
