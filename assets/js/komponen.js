@@ -64,7 +64,6 @@ const DESTINASI = {
       { berkas: "foto-18.webp" },
       { berkas: "foto-19.webp" },
       { berkas: "foto-20.webp" },
-      { berkas: "foto-21.webp" },
     ],
   },
   "mah-watu": {
