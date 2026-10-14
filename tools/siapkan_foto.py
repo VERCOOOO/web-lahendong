@@ -7,24 +7,43 @@
   hero    rasio asli, lebar 1920 px + versi HP TUJUAN-hp.webp lebar 960 px (kop halaman, img/hero/)
   potret  dipotong ke 3:4 dari tengah-atas, 600 × 800 px (pas foto KKT & dosen, img/kkt/)
 
-Orientasi dari kamera HP (EXIF) dibetulkan, bingkai hitam dibuang, hasilnya WebP; foto HEIC (iPhone) dibaca lewat ImageMagick.
+Orientasi dari kamera HP (EXIF) dibetulkan, warna diubah ke sRGB, bingkai hitam dibuang, hasilnya WebP; foto HEIC (iPhone) dibaca lewat ImageMagick.
 Foto asli cukup disimpan di data/ (tidak ikut di-commit); hanya hasil di img/ yang masuk repo.
 Butuh Pillow (pip install pillow) dan, untuk HEIC, ImageMagick.
 
 Contoh: python3 tools/siapkan_foto.py "data/linow/linow card.png" img/wisata/danau-linow/kartu.webp --jenis kartu
 """
 import argparse
+import io
 import os
 import subprocess
 import tempfile
 
-from PIL import Image, ImageOps
+from PIL import Image, ImageCms, ImageOps
+
+
+def ke_srgb(im):
+    """Foto HP (mis. iPhone, Display P3) diubah ke sRGB: WebP disimpan tanpa profil warna, jadi tanpa
+    konversi ini warnanya tampil pucat di browser."""
+    icc = im.info.get("icc_profile")
+    if not icc:
+        return im.convert("RGB")
+    try:
+        sumber = ImageCms.ImageCmsProfile(io.BytesIO(icc))
+        return ImageCms.profileToProfile(im.convert("RGB"), sumber, ImageCms.createProfile("sRGB"), outputMode="RGB")
+    except (OSError, ImageCms.PyCMSError):
+        return im.convert("RGB")
 
 
 def buka(asli):
     """Pillow tidak membaca HEIC, jadi HEIC diubah dulu ke PNG sementara dengan ImageMagick."""
     if not asli.lower().endswith((".heic", ".heif")):
-        return ImageOps.exif_transpose(Image.open(asli)).convert("RGB")
+        im = Image.open(asli)
+        icc = im.info.get("icc_profile")
+        im = ImageOps.exif_transpose(im)
+        if icc:
+            im.info["icc_profile"] = icc
+        return ke_srgb(im)
     with tempfile.TemporaryDirectory() as tmp:
         png = os.path.join(tmp, "foto.png")
         subprocess.run(["convert", asli, "-auto-orient", png], check=True)
