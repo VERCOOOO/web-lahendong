@@ -3,9 +3,16 @@
 
 const adalahVideo = (berkas) => /\.(mp4|webm)$/i.test(berkas || "");
 
+/* Kode lama → kode sekarang, agar tautan yang terlanjur dibagikan tetap membuka destinasinya
+   (kode berubah bila nama destinasi di sheet diganti). */
+const KODE_LAMA = {
+  "objek-wisata-air-panas-belerang-dan-hutan-pinus": "air-panas-belerang-dan-hutan-pinus",
+};
+
 document.addEventListener("DOMContentLoaded", async () => {
   const wadah = document.getElementById("konten-detail");
-  const id = new URLSearchParams(window.location.search).get("id");
+  const dariAlamat = new URLSearchParams(window.location.search).get("id");
+  const id = KODE_LAMA[dariAlamat] || dariAlamat;
 
   if (!id) {
     tampilkanPesan(wadah, "map-pin-off", "Destinasi tidak ditemukan",

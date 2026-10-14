@@ -105,7 +105,7 @@ const DATA_DUMMY = {
       maps_link: "https://maps.google.com/?q=Danau+Linow+Tomohon",
     },
     {
-      nama: "Objek Wisata Air Panas Belerang dan Hutan Pinus",
+      nama: "Air Panas Belerang dan Hutan Pinus",
       tampil: "Ya",
       ringkas: "Hutan pinus sejuk yang berpadu dengan kolam sulfur beruap putih.",
       deskripsi:

@@ -40,7 +40,7 @@ const DESTINASI = {
       { berkas: "foto-10.webp" },
     ],
   },
-  "objek-wisata-air-panas-belerang-dan-hutan-pinus": {
+  "air-panas-belerang-dan-hutan-pinus": {
     kartu: "kartu.webp",
     latar: "latar.webp",
     media: [
