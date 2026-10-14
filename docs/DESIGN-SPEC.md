@@ -78,7 +78,8 @@ Grid kartu  : `.grid-adaptif` — lihat §6.
 Tombol      : `--primary` teks putih; sekunder bergaris; `tombol-belerang` (di bidang gelap, teks `--ink`).
 Statistik   : `.deret-statistik`, pembatas garis rambut; jumlah kolom mengikuti jumlah angka.
 Tabel       : garis horizontal saja, header latar `--bg`, baris total bergaris tebal.
-Footer      : `--deep-2`, siluet punggungan di atasnya, 3 kolom, judul kolom `--toska`.
+Footer      : `--deep-2`, siluet punggungan di atasnya, 3 kolom, judul kolom `--toska`. Kolom pertama memuat
+              `tombol-belerang` "Kenali Tim KKT Unsrat 149" (halaman KKT tidak ada di menu atas).
 Orang       : foto statis bila ada; bila tidak, monogram inisial di latar `--toska-muda`. Tanpa foto stok.
 Struktur    : pimpinan = panel `--deep` berpotret 4:5, nama besar, daftar jabatan yang dibawahi.
               Bawahan langsung = kolom kartu; staf mereka di dalam kolom. Garis penghubung tipis `--line`:

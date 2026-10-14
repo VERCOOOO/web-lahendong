@@ -154,6 +154,7 @@ function renderFooter() {
     ["layanan.html", "Layanan Surat"],
     ["penduduk.html", "Data Penduduk"],
     ["pemerintahan.html", "Aparat Kelurahan"],
+    ["kkt.html", "Tim KKT Unsrat 149"],
   ];
 
   wadah.innerHTML = `
@@ -176,6 +177,12 @@ function renderFooter() {
               Disusun oleh Mahasiswa KKT Unsrat Angkatan 149 sebagai sarana informasi. Untuk keperluan
               administrasi, pastikan kembali ke Kantor Kelurahan Lahendong.
             </p>
+            <!-- Halaman KKT tidak ada di menu atas; tombol ini membuatnya mudah ditemukan. -->
+            <a href="kkt.html" class="tombol tombol-belerang mt-6">
+              <i data-lucide="users" class="w-4 h-4"></i>
+              Kenali Tim KKT Unsrat 149
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
           </div>
 
           <div class="md:col-span-3">
@@ -208,7 +215,7 @@ function renderFooter() {
       <div class="border-t border-white/10">
         <div class="wadah py-5 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-xs text-white/60">
           <p>&copy; ${new Date().getFullYear()} Situs Informasi Kelurahan Lahendong</p>
-          <!-- Kredit tim penyusun situs; halaman KKT sengaja tidak ada di menu atas. -->
+          <!-- Kredit tim penyusun situs; halaman KKT tidak ada di menu atas (lihat tombol & Tautan Cepat). -->
           <a href="kkt.html" class="inline-flex items-center gap-1.5 text-white/75 hover:text-white">
             Dikembangkan oleh Mahasiswa KKT Unsrat Angkatan 149
             <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>

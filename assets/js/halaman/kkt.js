@@ -1,5 +1,5 @@
 /* KKT (kkt.html): dosen lapangan & mahasiswa KKT Unsrat Angkatan 149, dikelompokkan per bidang.
-   Halaman ini tidak ada di menu atas; tautannya ada di baris bawah footer (ui.js).
+   Halaman ini tidak ada di menu atas; tautannya ada di footer: tombol, Tautan Cepat, baris kredit (ui.js).
 
    Berbeda dengan halaman lain, data KKT TIDAK diambil dari spreadsheet — cukup ubah DATA_KKT di bawah,
    lalu jalankan python3 tools/versi_aset.py, commit, dan push. */

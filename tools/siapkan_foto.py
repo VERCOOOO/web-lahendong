@@ -7,9 +7,10 @@
   hero    rasio asli, lebar 1920 px + versi HP TUJUAN-hp.webp lebar 960 px (kop halaman, img/hero/)
   potret  dipotong ke 3:4 dari tengah-atas, 600 × 800 px (pas foto KKT & dosen, img/kkt/)
 
-Orientasi dari kamera HP (EXIF) dibetulkan, warna diubah ke sRGB, bingkai hitam dibuang, hasilnya WebP; foto HEIC (iPhone) dibaca lewat ImageMagick.
+Orientasi dari kamera HP (EXIF) dibetulkan, warna diubah ke sRGB, bingkai hitam dibuang, hasilnya WebP; foto HEIC (iPhone)
+dibaca lewat pillow-heif (pip install pillow-heif) atau, bila tidak ada, ImageMagick.
 Foto asli cukup disimpan di data/ (tidak ikut di-commit); hanya hasil di img/ yang masuk repo.
-Butuh Pillow (pip install pillow) dan, untuk HEIC, ImageMagick.
+Butuh Pillow (pip install pillow); untuk HEIC sebaiknya juga pillow-heif.
 
 Contoh: python3 tools/siapkan_foto.py "data/linow/linow card.png" img/wisata/danau-linow/kartu.webp --jenis kartu
 """
@@ -20,6 +21,13 @@ import subprocess
 import tempfile
 
 from PIL import Image, ImageCms, ImageOps
+
+try:  # foto iPhone (HEIC/HEVC): pillow-heif membawa dekodernya sendiri; tanpa itu dipakai ImageMagick
+    import pillow_heif
+    pillow_heif.register_heif_opener()
+    HEIF_LANGSUNG = True
+except ImportError:
+    HEIF_LANGSUNG = False
 
 
 def ke_srgb(im):
@@ -36,8 +44,8 @@ def ke_srgb(im):
 
 
 def buka(asli):
-    """Pillow tidak membaca HEIC, jadi HEIC diubah dulu ke PNG sementara dengan ImageMagick."""
-    if not asli.lower().endswith((".heic", ".heif")):
+    """HEIC dibaca pillow-heif bila terpasang; bila tidak, diubah dulu ke PNG sementara dengan ImageMagick."""
+    if HEIF_LANGSUNG or not asli.lower().endswith((".heic", ".heif")):
         im = Image.open(asli)
         icc = im.info.get("icc_profile")
         im = ImageOps.exif_transpose(im)
@@ -47,7 +55,9 @@ def buka(asli):
     with tempfile.TemporaryDirectory() as tmp:
         png = os.path.join(tmp, "foto.png")
         subprocess.run(["convert", asli, "-auto-orient", png], check=True)
-        return Image.open(png).convert("RGB")
+        im = Image.open(png)
+        im.load()  # baca sebelum folder sementara dihapus
+        return ke_srgb(im)
 
 
 def buang_bingkai(im, ambang=24):

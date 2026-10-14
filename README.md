@@ -33,7 +33,8 @@ Tabel yang sama, beserta arti setiap kolom, ada di tab `petunjuk` pada spreadshe
 
 **Tidak diatur dari spreadsheet:** judul dan kalimat pengantar tiap halaman (berkas HTML),
 **semua foto** (lihat [Foto](#foto-statis-diatur-pengembang)), peta wilayah (`img/umum/peta-wilayah.png` — tampil otomatis bila ada), dan
-halaman **KKT Unsrat Angkatan 149** (`kkt.html`, ditautkan dari baris bawah footer, tidak ada di menu):
+halaman **KKT Unsrat Angkatan 149** (`kkt.html`, tidak ada di menu atas; ditautkan dari footer lewat tombol
+"Kenali Tim KKT Unsrat 149", Tautan Cepat, dan baris kredit):
 datanya ditulis di `DATA_KKT` pada awal [`assets/js/halaman/kkt.js`](assets/js/halaman/kkt.js) —
 nama, NIM, fakultas, peran (opsional), serta dosen lapangan (pembimbing & pengawas), periode, dan
 paragraf "tentang". Foto mahasiswa otomatis `img/kkt/<nim>.webp`.
@@ -72,8 +73,8 @@ diisi **placeholder** (siluet abu-hijau untuk pas foto).
 |---|---|---|
 | Hero Beranda — video berulang tanpa suara | `img/hero/beranda.mp4`, `beranda-hp.mp4`, `beranda.webp` (poster) | Asli |
 | Kop Profil · Pemerintahan · Penduduk · Layanan · Wisata · Kontak · KKT | `img/hero/<halaman>.webp` (+ `<halaman>-hp.webp` untuk HP) | Asli |
-| Pas foto mahasiswa KKT (3:4) | `img/kkt/<nim>.webp`, mis. `img/kkt/230211060074.webp` | Asli: 4 dari 15 (sisanya placeholder) |
-| Dosen Pembimbing / Pengawas Lapangan | `img/kkt/dosenpemlap.webp` / `img/kkt/dosenpenglap.webp` | Asli / placeholder |
+| Pas foto mahasiswa KKT (3:4) | `img/kkt/<nim>.webp`, mis. `img/kkt/230211060074.webp` | Asli: 9 dari 15 (sisanya placeholder) |
+| Dosen Pembimbing / Pengawas Lapangan | `img/kkt/dosenpemlap.webp` / `img/kkt/dosenpenglap.webp` | Asli |
 | Kartu, latar kop & galeri tiap destinasi | `img/wisata/<kode>/` — didaftarkan di `DESTINASI` ([`komponen.js`](assets/js/komponen.js)) | Asli |
 | Aparat & kepala lingkungan (opsional; tanpa foto = monogram) | `img/orang/` — didaftarkan di `FOTO_ORANG` | — |
 | Logo & favicon | `img/logo/` | Asli |
