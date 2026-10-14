@@ -35,7 +35,7 @@ Semua warna didefinisikan di `:root`. Warna di luar daftar ini ditolak.
 Aturan:
 - `--accent` tidak pernah dipakai untuk teks di latar terang (kontrasnya 2:1). Untuk teks pakai `--accent-ink`.
 - Bidang gelap hanya: kop halaman, satu seksi/panel sorotan per halaman (layanan di Beranda, pimpinan di Pemerintahan), footer.
-- Tanpa gradien warna, tanpa overlay di atas ilustrasi. Pengecualian: hero Beranda dan kop detail wisata
+- Tanpa gradien warna, tanpa overlay di atas ilustrasi. Pengecualian: hero Beranda dan kop berfoto
   (foto/video asli) memakai gradien `--deep-2` agar judul putih terbaca.
 - Kontras teks minimal 4,5:1 (semua pasangan di atas sudah diperiksa).
 
@@ -90,8 +90,9 @@ Lingkungan  : nomor lingkungan sebagai angka besar `--primary`, batang porsi jiw
 Bagan KKT   : pengurus inti di puncak (ketua di tengah, bergaris belerang, diapit sekretaris & bendahara),
               garis turun ke kolom bidang (kepala `--deep` berikon, koordinator berlatar `--toska-muda`,
               anggota dalam daftar ringkas). Panel dosen lapangan memakai bidang `--deep`.
-Kop berfoto : `.kop-berfoto` — kop halaman dengan latar foto/video asli + gradien `--deep-2`, judul putih di
-              kiri bawah (Layanan; foto bertulisan memakai `.latar-pekat` yang lebih gelap).
+Kop berfoto : `.kop-berfoto` — kop halaman dengan latar foto `img/hero/<halaman>.webp` + gradien `--deep-2`,
+              judul putih di kiri bawah. Dipakai semua halaman utama (Profil, Pemerintahan, Penduduk, Layanan,
+              Wisata, Kontak, KKT); Cek Data tetap kop polos. Foto bertulisan memakai `.latar-pekat`.
 Kop wisata  : latar foto atau video (berulang, tanpa suara) selebar layar, tinggi 72vh (440–760px), judul di
               kiri bawah + jam & tiket berikon belerang. Video: tombol Jeda/Putar bulat di kanan bawah;
               "kurangi gerak"/hemat data = poster saja. Tepi bawah tetap siluet punggungan.
@@ -125,7 +126,7 @@ Satu kartu dibatasi lebar 560px agar tidak melebar sepanjang layar.
 - Ikon garis Lucide. DILARANG emoji sebagai ikon UI.
 - Ilustrasi bawaan bergaya poster (bidang datar, palet di atas). Semua foto statis di `img/`, didaftarkan
   di kode (lihat README › Foto); spreadsheet tidak mengatur foto. Wajib alt.
-- Rasio: kartu 3:2, hero penuh layar. Foto gagal dimuat → `img/placeholder.webp`.
+- Rasio: kartu 3:2, pas foto 3:4, hero penuh layar. Foto gagal dimuat → `img/umum/placeholder.webp`.
 
 ## 8. GERAK
 - Hanya fade & translate halus, 200–500ms, ease-out; animasi muncul saat digulir, sekali jalan.

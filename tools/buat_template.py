@@ -194,7 +194,7 @@ KUNCI_PROFIL = [
 
 TIDAK_DIATUR = [
     "• Judul dan kalimat pengantar tiap halaman, serta ilustrasi bawaan: di berkas situs (HTML & folder img/).",
-    "• Peta wilayah (gambar): file img/peta-wilayah.png — halaman Profil menampilkannya otomatis bila file ada.",
+    "• Peta wilayah (gambar): file img/umum/peta-wilayah.png — halaman Profil menampilkannya otomatis bila file ada.",
 ]
 
 MASIH_CONTOH = [
