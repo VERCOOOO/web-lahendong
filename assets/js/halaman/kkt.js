@@ -7,10 +7,10 @@
 const DATA_KKT = {
   periode: "", // mis. "Juli – Agustus 2026"; kosong = tidak ditampilkan
 
-  // Tampil di panel tersendiri di atas daftar mahasiswa. foto opsional (rasio 3:4), sama seperti anggota.
+  // Tampil di panel tersendiri di atas daftar mahasiswa. Foto: img/kkt/dosenpemlap.webp & dosenpenglap.webp.
   dosen: [
-    { peran: "Dosen Pembimbing Lapangan", nama: "Dr. Ir. Charles R. Ngangi, MS", foto: "" },
-    { peran: "Dosen Pengawas Lapangan", nama: "Decky J. Paseki, SH., M.H", foto: "" },
+    { peran: "Dosen Pembimbing Lapangan", nama: "Dr. Ir. Charles R. Ngangi, MS", foto: "kkt/dosenpemlap.webp" },
+    { peran: "Dosen Pengawas Lapangan", nama: "Decky J. Paseki, SH., M.H", foto: "kkt/dosenpenglap.webp" },
   ],
 
   // Satu paragraf per elemen; kosong = paragraf "tentang" tidak ditampilkan.
@@ -21,29 +21,29 @@ const DATA_KKT = {
        bidang lain tampil sebagai kolom di bawahnya. Tulis nama bidang sama persis untuk satu bidang.
      - peran: "Koordinator…" ditonjolkan di kepala kolom bidang; "Anggota" tampil di daftar bawahnya.
      - fakultas: tampil di kartu; dihitung untuk angka "Fakultas asal".
-     - foto (opsional): alamat berkas di dalam folder img/, mis. "kkt/fidelia.webp".
-       Kosong = monogram inisial. Semua tempat foto berasio 3:4 (pas foto), mis. 600 × 800 piksel,
+     - foto: otomatis img/kkt/<nim>.webp (mis. img/kkt/230211060074.webp) — mengganti foto cukup menimpa
+       berkas itu (tools/pasang_foto.py). Berkas tidak ada = monogram inisial. Pas foto 3:4 (600 × 800 px),
        wajah di sepertiga atas; foto dengan rasio lain dipotong otomatis dari tengah-atas. */
   anggota: [
-    { bidang: "Pengurus Inti", peran: "Koordinator Posko", nama: "Fidelia Tishri Kololy", nim: "231011030018", fakultas: "Fakultas Matematika dan Ilmu Pengetahuan Alam", foto: "" },
-    { bidang: "Pengurus Inti", peran: "Sekretaris", nama: "Geofena Theresa Viona Nender", nim: "230511060015", fakultas: "Fakultas Perikanan dan Ilmu Kelautan", foto: "" },
-    { bidang: "Pengurus Inti", peran: "Bendahara", nama: "Tiara Tisya Paraso", nim: "230411040070", fakultas: "Fakultas Peternakan", foto: "" },
+    { bidang: "Pengurus Inti", peran: "Koordinator Posko", nama: "Fidelia Tishri Kololy", nim: "231011030018", fakultas: "Fakultas Matematika dan Ilmu Pengetahuan Alam" },
+    { bidang: "Pengurus Inti", peran: "Sekretaris", nama: "Geofena Theresa Viona Nender", nim: "230511060015", fakultas: "Fakultas Perikanan dan Ilmu Kelautan" },
+    { bidang: "Pengurus Inti", peran: "Bendahara", nama: "Tiara Tisya Paraso", nim: "230411040070", fakultas: "Fakultas Peternakan" },
 
-    { bidang: "Bidang Program", peran: "Koordinator", nama: "Vergino F. Maindoka", nim: "230211060074", fakultas: "Fakultas Teknik", foto: "" },
-    { bidang: "Bidang Program", peran: "Anggota", nama: "Elistiani Meisye Manansang", nim: "230911020148", fakultas: "Fakultas Ilmu Budaya", foto: "" },
+    { bidang: "Bidang Program", peran: "Koordinator", nama: "Vergino F. Maindoka", nim: "230211060074", fakultas: "Fakultas Teknik" },
+    { bidang: "Bidang Program", peran: "Anggota", nama: "Elistiani Meisye Manansang", nim: "230911020148", fakultas: "Fakultas Ilmu Budaya" },
 
-    { bidang: "Bidang Pelaporan", peran: "Koordinator", nama: "Militia Meisya Revalinny Senduk", nim: "230111040116", fakultas: "Fakultas Kedokteran", foto: "" },
-    { bidang: "Bidang Pelaporan", peran: "Anggota", nama: "Pipit Desriyani", nim: "230911010009", fakultas: "Fakultas Ilmu Budaya", foto: "" },
-    { bidang: "Bidang Pelaporan", peran: "Anggota", nama: "Firzyawan Listanto Mokoginta", nim: "230911020035", fakultas: "Fakultas Ilmu Budaya", foto: "" },
+    { bidang: "Bidang Pelaporan", peran: "Koordinator", nama: "Militia Meisya Revalinny Senduk", nim: "230111040116", fakultas: "Fakultas Kedokteran" },
+    { bidang: "Bidang Pelaporan", peran: "Anggota", nama: "Pipit Desriyani", nim: "230911010009", fakultas: "Fakultas Ilmu Budaya" },
+    { bidang: "Bidang Pelaporan", peran: "Anggota", nama: "Firzyawan Listanto Mokoginta", nim: "230911020035", fakultas: "Fakultas Ilmu Budaya" },
 
-    { bidang: "Bidang Publikasi dan Dokumentasi", peran: "Koordinator", nama: "Emmanuel Arthur Wirakusumah", nim: "230211050022", fakultas: "Fakultas Teknik", foto: "" },
-    { bidang: "Bidang Publikasi dan Dokumentasi", peran: "Anggota", nama: "Frianita M. T. Lumy", nim: "230311090016", fakultas: "Fakultas Pertanian", foto: "" },
-    { bidang: "Bidang Publikasi dan Dokumentasi", peran: "Anggota", nama: "Natalia Paduli", nim: "230311090002", fakultas: "Fakultas Pertanian", foto: "" },
-    { bidang: "Bidang Publikasi dan Dokumentasi", peran: "Anggota", nama: "Theodorus Dirly Keintjem", nim: "230911020066", fakultas: "Fakultas Ilmu Budaya", foto: "" },
+    { bidang: "Bidang Publikasi dan Dokumentasi", peran: "Koordinator", nama: "Emmanuel Arthur Wirakusumah", nim: "230211050022", fakultas: "Fakultas Teknik" },
+    { bidang: "Bidang Publikasi dan Dokumentasi", peran: "Anggota", nama: "Frianita M. T. Lumy", nim: "230311090016", fakultas: "Fakultas Pertanian" },
+    { bidang: "Bidang Publikasi dan Dokumentasi", peran: "Anggota", nama: "Natalia Paduli", nim: "230311090002", fakultas: "Fakultas Pertanian" },
+    { bidang: "Bidang Publikasi dan Dokumentasi", peran: "Anggota", nama: "Theodorus Dirly Keintjem", nim: "230911020066", fakultas: "Fakultas Ilmu Budaya" },
 
-    { bidang: "Bidang Hubungan Masyarakat", peran: "Koordinator", nama: "Ferlika Novalisa Pasalo", nim: "230111040059", fakultas: "Fakultas Kedokteran", foto: "" },
-    { bidang: "Bidang Hubungan Masyarakat", peran: "Anggota", nama: "Elsa Theresia Br. Sitorus", nim: "230711010017", fakultas: "Fakultas Hukum", foto: "" },
-    { bidang: "Bidang Hubungan Masyarakat", peran: "Anggota", nama: "Kanaya Montolalu", nim: "230111040027", fakultas: "Fakultas Kedokteran", foto: "" },
+    { bidang: "Bidang Hubungan Masyarakat", peran: "Koordinator", nama: "Ferlika Novalisa Pasalo", nim: "230111040059", fakultas: "Fakultas Kedokteran" },
+    { bidang: "Bidang Hubungan Masyarakat", peran: "Anggota", nama: "Elsa Theresia Br. Sitorus", nim: "230711010017", fakultas: "Fakultas Hukum" },
+    { bidang: "Bidang Hubungan Masyarakat", peran: "Anggota", nama: "Kanaya Montolalu", nim: "230111040027", fakultas: "Fakultas Kedokteran" },
   ],
 };
 
@@ -52,8 +52,10 @@ document.addEventListener("DOMContentLoaded", () => {
   isiAtauHapus("tentang-kkt", DATA_KKT.tentang.map((p, i) => `<p${i === 0 ? ' class="lead"' : ""}>${escapeHtml(p)}</p>`).join(""));
 
   // Nilai dari kode di-escape seperti data spreadsheet, agar tanda < atau & dalam nama tetap aman.
-  const rapikan = (daftar) => daftar.map((m) =>
-    Object.fromEntries(["bidang", "peran", "nama", "nim", "fakultas", "foto"].map((k) => [k, escapeHtml(String(m[k] ?? "").trim())])))
+  // Foto mahasiswa mengikuti NIM: img/kkt/<nim>.webp.
+  const rapikan = (daftar) => daftar
+    .map((m) => ({ ...m, foto: m.foto || (m.nim ? `kkt/${m.nim}.webp` : "") }))
+    .map((m) => Object.fromEntries(["bidang", "peran", "nama", "nim", "fakultas", "foto"].map((k) => [k, escapeHtml(String(m[k] ?? "").trim())])))
     .filter((m) => m.nama);
   const anggota = rapikan(DATA_KKT.anggota);
   const dosen = rapikan(DATA_KKT.dosen);

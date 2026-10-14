@@ -36,7 +36,7 @@ function halamanAktif() {
 /* ---------------------------------------------------------------------- */
 
 /* Logo: bukit, pohon pinus, danau, dan matahari belerang — tanda netral, bukan lambang pemerintahan.
-   Sama dengan img/logo.svg (favicon); warna memakai token agar latarnya bisa diganti di footer. */
+   Sama dengan img/logo/logo.svg (favicon); warna memakai token agar latarnya bisa diganti di footer. */
 function emblem(ukuran = 36, latar = "var(--primary)") {
   return `
     <svg viewBox="0 0 40 40" width="${ukuran}" height="${ukuran}" aria-hidden="true" class="shrink-0">

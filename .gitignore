@@ -2,3 +2,6 @@
 # lalu diproses dengan tools/siapkan_foto.py / siapkan_video.py; hasilnya di img/.
 data/*
 !data/template-data-lahendong.xlsx
+
+# Cache Python dari tools/
+__pycache__/

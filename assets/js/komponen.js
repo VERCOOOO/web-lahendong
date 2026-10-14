@@ -84,10 +84,10 @@ const DESTINASI = {
 
 /* Foto orang menurut kode nama (alamat berkas di dalam img/); dipakai di struktur aparat, Kontak,
    Beranda, dan kartu lingkungan. Contoh: "reymon-stive-londok-s-t": "orang/reymon-londok.webp".
-   Foto KKT diisi langsung di DATA_KKT (halaman/kkt.js). Tanpa foto = monogram inisial. */
+   Foto KKT otomatis img/kkt/<nim>.webp (halaman/kkt.js). Tanpa foto = monogram inisial. */
 const FOTO_ORANG = {};
 
-const FOTO_PENGGANTI = "img/placeholder.webp";
+const FOTO_PENGGANTI = "img/umum/placeholder.webp";
 
 /** Hanya destinasi yang terdaftar di DESTINASI — daftar wisata tidak bisa ditambah lewat sheet. */
 function wisataTetap(data) {

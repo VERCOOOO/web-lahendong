@@ -3,14 +3,15 @@
 Situs informasi Kelurahan Lahendong, Kecamatan Tomohon Selatan, Kota Tomohon, Sulawesi Utara —
 disusun oleh Mahasiswa KKT Unsrat Angkatan 149. Sengaja tidak menyebut diri situs resmi pemerintah;
 footer mengingatkan pengunjung untuk memastikan keperluan administrasi ke kantor kelurahan.
-HTML + Tailwind (CDN) + JavaScript biasa — tanpa build step. Desain mengikuti [DESIGN-SPEC.md](DESIGN-SPEC.md).
+HTML + Tailwind (CDN) + JavaScript biasa — tanpa build step.
 
-> **Admin kelurahan:** baca [**Panduan Admin**](docs/panduan-admin.html) — versi visual dari README ini,
-> lengkap dengan tabel tab ↔ halaman yang bisa disorot dan langkah untuk tugas sehari-hari.
-> Versi terbit: <https://vercoooo.github.io/web-lahendong/docs/panduan-admin.html>
->
-> **Pengembang:** baca [**Panduan Teknis**](docs/panduan-teknis.html) — alur data dari sheet ke halaman,
-> isi setiap berkas, fungsi kunci, grid adaptif, dan resep mengubah kode.
+| Dokumen | Untuk |
+|---|---|
+| **README** (berkas ini) | Admin: mengelola isi lewat spreadsheet & mengganti foto |
+| [**docs/PANDUAN-TEKNIS.md**](docs/PANDUAN-TEKNIS.md) | Pengembang: struktur repo, alur data, fungsi kunci, resep mengubah kode |
+| [**docs/DESIGN-SPEC.md**](docs/DESIGN-SPEC.md) | Aturan desain: warna, tipografi, komponen |
+
+Situs terbit: <https://vercoooo.github.io/web-lahendong/>
 
 ## Cara kerja: spreadsheet → situs
 
@@ -31,11 +32,11 @@ Kode hanya menentukan **tampilan**.
 Tabel yang sama, beserta arti setiap kolom, ada di tab `petunjuk` pada spreadsheet.
 
 **Tidak diatur dari spreadsheet:** judul dan kalimat pengantar tiap halaman (berkas HTML),
-**semua foto** (lihat [Foto](#foto-statis-diatur-pengembang)), peta wilayah (`img/peta-wilayah.png` — tampil otomatis bila ada), dan
+**semua foto** (lihat [Foto](#foto-statis-diatur-pengembang)), peta wilayah (`img/umum/peta-wilayah.png` — tampil otomatis bila ada), dan
 halaman **KKT Unsrat Angkatan 149** (`kkt.html`, ditautkan dari baris bawah footer, tidak ada di menu):
 datanya ditulis di `DATA_KKT` pada awal [`assets/js/halaman/kkt.js`](assets/js/halaman/kkt.js) —
-nama, NIM, fakultas, peran (opsional), foto (nama berkas di `img/`, opsional),
-serta dosen lapangan (pembimbing & pengawas), periode, dan paragraf "tentang".
+nama, NIM, fakultas, peran (opsional), serta dosen lapangan (pembimbing & pengawas), periode, dan
+paragraf "tentang". Foto mahasiswa otomatis `img/kkt/<nim>.webp`.
 
 ## Mengelola spreadsheet
 
@@ -63,37 +64,43 @@ Spreadsheet dirancang agar sulit salah isi:
 
 ### Foto (statis, diatur pengembang)
 
-Spreadsheet hanya berisi teks. Semua foto disimpan di folder `img/` dan didaftarkan di kode, jadi
-operator tidak pernah mengurus tautan, nama berkas, atau folder Drive. Untuk mengganti foto, kirim
-fotonya ke pengembang.
+Spreadsheet hanya berisi teks. Semua foto disimpan di folder `img/` dengan **nama berkas tetap**, jadi
+mengganti foto = menimpa berkas bernama sama; kode tidak perlu diubah. Tempat yang fotonya belum ada sudah
+diisi **placeholder** (kop bertuliskan "FOTO HERO · …" dan siluet abu-hijau untuk pas foto).
 
-| Foto | Tempat | Didaftarkan di |
+| Foto | Berkas | Status |
 |---|---|---|
-| Hero Beranda — video berulang tanpa suara | `img/beranda/hero.mp4`, `hero-hp.mp4`, `hero.webp` (poster) | `index.html` |
-| Kop halaman Layanan | `img/layanan/hero.webp` (+ `hero-hp.webp` untuk HP) | `layanan.html` |
-| Kop halaman Wisata | `img/wisata/hero.webp` (+ `hero-hp.webp`) | `wisata.html` |
-| Foto kartu wisata (halaman Wisata & Beranda) | `img/wisata/<kode>/kartu.webp` | `DESTINASI` di [`komponen.js`](assets/js/komponen.js) |
-| Latar kop detail wisata — **foto atau video** berulang | `img/wisata/<kode>/latar.*` | `DESTINASI` |
-| Galeri foto & video per destinasi (diklik untuk diperbesar/diputar) | `img/wisata/<kode>/` | `DESTINASI` |
-| Aparat & kepala lingkungan (opsional; tanpa foto = monogram) | `img/orang/` | `FOTO_ORANG` (menurut nama) di `komponen.js` |
-| KKT & dosen lapangan | `img/` | kolom `foto` di `DATA_KKT` |
+| Hero Beranda — video berulang tanpa suara | `img/hero/beranda.mp4`, `beranda-hp.mp4`, `beranda.webp` (poster) | Asli |
+| Kop Profil · Pemerintahan · Penduduk · Kontak · KKT | `img/hero/<halaman>.webp` (+ `<halaman>-hp.webp` untuk HP) | Placeholder |
+| Kop Layanan · Wisata | `img/hero/layanan.webp`, `img/hero/wisata.webp` (+ `-hp`) | Asli |
+| Pas foto mahasiswa KKT (3:4) | `img/kkt/<nim>.webp`, mis. `img/kkt/230211060074.webp` | Placeholder |
+| Dosen Pembimbing / Pengawas Lapangan | `img/kkt/dosenpemlap.webp` / `img/kkt/dosenpenglap.webp` | Placeholder |
+| Kartu, latar kop & galeri tiap destinasi | `img/wisata/<kode>/` — didaftarkan di `DESTINASI` ([`komponen.js`](assets/js/komponen.js)) | Asli |
+| Aparat & kepala lingkungan (opsional; tanpa foto = monogram) | `img/orang/` — didaftarkan di `FOTO_ORANG` | — |
+| Logo & favicon | `img/logo/` | Asli |
 
-**Alur foto:** simpan foto asli di `data/<destinasi>/` (folder ini tidak ikut di-commit — hanya yang dipakai
-masuk repo), lalu proses ke `img/wisata/<kode>/` dengan `python3 tools/siapkan_foto.py ASLI TUJUAN.webp --jenis kartu|latar|galeri`
-(kartu dipotong 3:2, latar & galeri rasio asli, semua WebP). Pola nama di `data/`: `… card` → `kartu.webp`,
-`… hero` → `latar.webp`/video, foto bernomor → `foto-1.webp`, `foto-2.webp`, … berurutan. Mengganti foto cukup
-menimpa berkas di `img/` dengan nama yang sama.
+**Mengirim foto lewat Google Drive.** Taruh foto dalam satu folder Drive dengan nama berkas berikut
+(format bebas: JPG, PNG, HEIC, WebP; ukuran asli kamera tidak masalah), lalu berikan tautan foldernya:
 
-Latar video: ubah `latar` menjadi `{ berkas: "latar.mp4", hp: "latar-hp.mp4", poster: "latar.webp" }` — diputar tanpa suara,
-berulang, dengan tombol Jeda; pengunjung yang memilih "kurangi gerak" atau hemat data melihat posternya saja.
-Foto galeri boleh lanskap maupun potret: galeri menyusun baris yang rata kiri-kanan sesuai rasio tiap
-foto, jadi tidak ada yang terpotong atau menyisakan sel kosong (semua lanskap = petak seragam).
-**Menyiapkan video** (hero Beranda maupun latar wisata): `python3 tools/siapkan_video.py ASLI.mp4 img/wisata/<kode>/latar`
-membuat versi layar lebar (1920 px), versi HP (`-hp`, 1280 px), dan poster sekaligus, membuang suara, dan membaurkan
-ujung video ke awalnya agar perulangannya tidak melompat. Video yang ramai gerak (mis. drone) pakai `--crf 31`.
-Simpan video asli di `data/` — folder itu tidak ikut di-commit.
-Saran video: MP4 (H.264) 720p–1080p, tanpa suara, kamera diam, 10–30 detik yang menyambung saat berulang,
-di bawah ±8 MB (video beberapa menit terlalu berat untuk pengunjung ber-HP).
+| Nama berkas di Drive | Dipasang sebagai |
+|---|---|
+| `hero-profil.jpg`, `hero-pemerintahan.jpg`, `hero-penduduk.jpg`, `hero-layanan.jpg`, `hero-wisata.jpg`, `hero-kontak.jpg`, `hero-kkt.jpg` | Kop halaman itu (lanskap, minimal 1920 px lebar) |
+| `230211060074.png` (NIM) | Pas foto mahasiswa ber-NIM itu (wajah di sepertiga atas) |
+| `dosenpemlap.jpg` / `dosenpenglap.jpg` | Dosen Pembimbing / Pengawas Lapangan |
+
+Pengembang mengunduhnya ke `data/` lalu menjalankan `python3 tools/pasang_foto.py data/<folder>`: setiap foto
+dipotong, diperkecil, dan diubah ke WebP sesuai tempatnya. Nama yang salah ketik dilaporkan, tidak dipasang.
+
+**Foto wisata:** simpan foto asli di `data/<destinasi>/` (folder ini tidak ikut di-commit), lalu proses ke
+`img/wisata/<kode>/` dengan `python3 tools/siapkan_foto.py ASLI TUJUAN.webp --jenis kartu|latar|galeri`
+(kartu dipotong 3:2, latar & galeri rasio asli). Pola nama: `kartu.webp`, `latar.webp`/video, `foto-1.webp`,
+`foto-2.webp`, … berurutan. Foto galeri boleh lanskap maupun potret — galeri menyusun baris yang rata
+kiri-kanan, jadi tidak ada yang terpotong.
+
+**Video** (hero Beranda maupun latar wisata): `python3 tools/siapkan_video.py ASLI.mp4 img/hero/beranda`
+membuat versi layar lebar, versi HP, dan poster sekaligus, tanpa suara, dengan sambungan perulangan yang
+dibaurkan. Saran: MP4 720p–1080p, kamera diam, 10–30 detik, di bawah ±8 MB. Latar wisata berupa video ditulis
+`{ berkas: "latar.mp4", hp: "latar-hp.mp4", poster: "latar.webp" }` di `DESTINASI`.
 
 **Daftar destinasi wisata tetap.** `DESTINASI` sekaligus daftar destinasinya: baris di tab `wisata`
 yang namanya tidak terdaftar tidak tampil (Cek Data memberi tahu). Menambah destinasi = buat folder
@@ -177,52 +184,22 @@ dalam bahasa biasa. Untuk detail teknis, buka konsol browser (F12 → Console); 
 ## Struktur kode
 
 ```
-├── *.html               satu berkas per halaman — hanya markup, tanpa logika
-├── assets/css/style.css sistem desain: palet, tipografi, komponen, struktur
-├── assets/js/
-│   ├── data.js          pengaturan (PAKAI_DUMMY, ID_SPREADSHEET), SKEMA tab, ambilData()
-│   ├── data-contoh.js   data awal: isi template spreadsheet & data saat PAKAI_DUMMY = true
-│   ├── ui.js            kerangka: header, footer, breadcrumb, info kantor, animasi, status memuat
-│   ├── komponen.js      DESTINASI & FOTO_ORANG, isiDariData(), aturKolom(), potongan HTML bersama
-│   └── halaman/         logika per halaman (index.html → beranda.js; cek-data.js = pemeriksa sheet)
-├── img/                 gambar statis
-├── data/                template spreadsheet
-├── tools/               buat_template.py (template xlsx), versi_aset.py (penanda versi CSS/JS)
-└── docs/                Panduan Admin & Panduan Teknis
+├── *.html          satu berkas per halaman (di akar repo agar alamat situs tetap)
+├── assets/
+│   ├── css/        style.css — sistem desain
+│   └── js/         data.js, data-contoh.js, ui.js, komponen.js, halaman/<halaman>.js
+├── img/
+│   ├── logo/       logo & favicon
+│   ├── hero/       kop tiap halaman
+│   ├── kkt/        pas foto mahasiswa (<nim>.webp) & dosen
+│   ├── wisata/     foto & video tiap destinasi
+│   └── umum/       placeholder & peta wilayah
+├── data/           template spreadsheet
+├── tools/          skrip Python: template, foto, video, penanda versi
+└── docs/           PANDUAN-TEKNIS.md, DESIGN-SPEC.md
 ```
 
-Setiap halaman memuat skrip dengan urutan yang sama:
-`data.js` → `data-contoh.js` → `ui.js` → `komponen.js` → `halaman/<nama>.js`.
+Rincian setiap berkas, alur data, dan resep mengubah kode ada di [**Panduan Teknis**](docs/PANDUAN-TEKNIS.md).
 
-**Menambah kolom atau tab**: tambahkan di `SKEMA` ([`data.js`](assets/js/data.js)) dan di
-[`data-contoh.js`](assets/js/data-contoh.js), lalu buat ulang template dengan
-`python3 tools/buat_template.py` (butuh LibreOffice). Kolom baru yang belum ada
-di sheet terbaca kosong, jadi situs tetap berjalan.
-
-**Menambah blok data** cukup satu panggilan `isiDariData()` — fungsi ini menampilkan "Memuat data…",
-mengambil tab, merender, dan menangani kondisi kosong atau gagal (termasuk bila wadahnya `<tbody>`):
-
-```js
-isiDariData(document.getElementById("grid-wisata"), "wisata",
-  (data) => data.map((item) => kartuWisata(item)).join(""),
-  { kosong: "Belum ada destinasi wisata.", gagal: "Daftar destinasi belum bisa dimuat saat ini." }
-);
-```
-
-**Informasi kantor** di elemen mana pun cukup ditandai `data-profil="kunci"` (mis.
-`<span data-profil="jam_layanan">`); `ui.js` mengisinya dari tab `profil` dan menyembunyikan
-wadah `[data-wadah-profil]` bila nilainya kosong.
-
-**Grid kartu** yang jumlahnya ditentukan admin memakai `class="grid-adaptif"` (atribut opsional
-`data-maks`); `isiDariData()` memanggil `aturKolom()` otomatis. Jangan tambahkan kelas
-kolom Tailwind (`lg:grid-cols-4`) pada wadah itu.
-
-Nilai dari `ambilData()` sudah di-escape, jadi aman disisipkan ke HTML. Untuk konteks non-HTML
-(judul tab, label grafik), pakai `teksPolos()`.
-
-**Sebelum commit perubahan CSS/JS**, jalankan `python3 tools/versi_aset.py`. Skrip ini menambah
-penanda versi (`data.js?v=0cfb573f`) di semua HTML, sehingga browser pengunjung langsung mengambil
-berkas baru alih-alih memakai salinan lama selama 10 menit (cache GitHub Pages).
-
-Untuk pratinjau lokal, jalankan server sederhana di folder repo, mis. `python3 -m http.server`,
-lalu buka `http://localhost:8000`.
+**Sebelum commit perubahan CSS/JS**, jalankan `python3 tools/versi_aset.py` agar browser pengunjung langsung
+mengambil berkas baru. Pratinjau lokal: `python3 -m http.server`, lalu buka `http://localhost:8000`.

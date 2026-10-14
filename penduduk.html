@@ -5,16 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Penduduk — Kelurahan Lahendong</title>
   <meta name="description" content="Statistik dan grafik kependudukan Kelurahan Lahendong, Tomohon Selatan." />
-  <link rel="icon" href="img/logo.svg" type="image/svg+xml" />
-  <link rel="icon" href="img/favicon-32.png" sizes="32x32" type="image/png" />
-  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <link rel="icon" href="img/logo/logo.svg" type="image/svg+xml" />
+  <link rel="icon" href="img/logo/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="img/logo/apple-touch-icon.png" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="assets/css/style.css?v=c21a5ff7" />
+  <link rel="stylesheet" href="assets/css/style.css?v=f605ac2b" />
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
@@ -25,7 +25,12 @@
 
   <main id="konten-utama" class="flex-1">
 
-    <section class="kop-halaman tepi-putih">
+    <!-- KOP — foto img/hero/penduduk.webp (HP: penduduk-hp.webp). Ganti foto = timpa berkasnya (tools/pasang_foto.py). -->
+    <section class="kop-halaman kop-berfoto tepi-putih">
+      <div class="latar-kop">
+        <img src="img/hero/penduduk.webp" srcset="img/hero/penduduk-hp.webp 960w, img/hero/penduduk.webp 1920w" sizes="100vw"
+             alt="" />
+      </div>
       <div class="wadah kop-isi">
         <nav class="remah" aria-label="Lokasi halaman" data-remah></nav>
         <h1 class="judul-halaman">Data Penduduk</h1>
@@ -113,8 +118,8 @@
 
   <script src="assets/js/data.js?v=df4c9c7e"></script>
   <script src="assets/js/data-contoh.js?v=8cc43cfc"></script>
-  <script src="assets/js/ui.js?v=73d0821c"></script>
-  <script src="assets/js/komponen.js?v=de4afefe"></script>
+  <script src="assets/js/ui.js?v=99982ea3"></script>
+  <script src="assets/js/komponen.js?v=6258b3dd"></script>
   <script src="assets/js/halaman/penduduk.js?v=f0195f41"></script>
 </body>
 </html>
