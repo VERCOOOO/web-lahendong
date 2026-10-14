@@ -1542,7 +1542,8 @@ details[open] { border-color: var(--primary); }
     linear-gradient(90deg, rgba(10, 34, 30, 0.55) 0%, rgba(10, 34, 30, 0) 65%);
 }
 
-/* Latar yang ramai (mis. foto bertulisan di kop Layanan): lapisan lebih pekat agar judul tetap menonjol */
+/* Latar yang ramai/terang (foto meja kantor Pemerintahan, Layanan, Kontak): lapisan lebih pekat agar
+   judul & breadcrumb tetap ≥ 4,5:1 */
 .latar-kop.latar-pekat::after {
   background: linear-gradient(90deg, rgba(10, 34, 30, 0.92) 0%, rgba(10, 34, 30, 0.78) 45%, rgba(10, 34, 30, 0.5) 100%);
 }

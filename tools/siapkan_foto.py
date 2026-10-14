@@ -33,9 +33,16 @@ def buka(asli):
 
 def buang_bingkai(im, ambang=24):
     """Buang bingkai hitam (mis. foto 16:9 di kanvas lebar, hasil ekspor video). Baris/kolom dibuang
-    hanya bila SELURUH pikselnya hampir hitam, jadi foto yang tepinya gelap tidak ikut terpotong."""
+    hanya bila SELURUH pikselnya hampir hitam DAN bingkainya simetris (kiri ≈ kanan atau atas ≈ bawah),
+    jadi pas foto berlatar gelap atau foto malam yang langitnya hitam tidak ikut terpotong."""
     kotak = im.convert("L").point(lambda v: 255 if v > ambang else 0).getbbox()
-    if kotak and kotak != (0, 0, im.width, im.height):
+    if not kotak:
+        return im
+    kiri, atas, kanan, bawah = kotak[0], kotak[1], im.width - kotak[2], im.height - kotak[3]
+    simetris = lambda a, b, n: abs(a - b) <= max(2, n * 0.01)
+    if not (simetris(kiri, kanan, im.width) and simetris(atas, bawah, im.height)):
+        return im
+    if kotak != (0, 0, im.width, im.height):
         print(f"  bingkai hitam dibuang: {im.width} × {im.height} → {kotak[2] - kotak[0]} × {kotak[3] - kotak[1]}")
         return im.crop(kotak)
     return im
