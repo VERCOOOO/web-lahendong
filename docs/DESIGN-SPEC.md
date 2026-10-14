@@ -94,7 +94,8 @@ Kop berfoto : `.kop-berfoto` — kop halaman dengan latar foto `img/hero/<halama
               judul putih di kiri bawah. Dipakai semua halaman utama (Profil, Pemerintahan, Penduduk, Layanan,
               Wisata, Kontak, KKT); Cek Data tetap kop polos. Foto terang/bertulisan (meja kantor Pemerintahan,
               Layanan, Kontak) memakai `.latar-pekat` agar breadcrumb & judul ≥ 4,5:1;
-              KKT memakai `.kop-tinggi` (setinggi kop wisata) karena foto timnya tokoh utama halaman.
+              KKT memakai `.kop-tinggi` (setinggi kop wisata) karena foto timnya tokoh utama halaman; di bawah
+              1024px `.kop-foto-atas` menaruh foto (4:3) di atas judul yang memudar ke `--deep`.
 Kop wisata  : latar foto atau video (berulang, tanpa suara) selebar layar, tinggi 72vh (440–760px), judul di
               kiri bawah + jam & tiket berikon belerang. Video: tombol Jeda/Putar bulat di kanan bawah;
               "kurangi gerak"/hemat data = poster saja. Tepi bawah tetap siluet punggungan.

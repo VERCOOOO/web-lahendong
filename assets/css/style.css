@@ -1548,6 +1548,16 @@ details[open] { border-color: var(--primary); }
   background: linear-gradient(90deg, rgba(10, 34, 30, 0.92) 0%, rgba(10, 34, 30, 0.78) 45%, rgba(10, 34, 30, 0.5) 100%);
 }
 
+/* KKT di HP & tablet: foto tim (potret, selebar rombongan) di atas, judul di bawahnya — wajah tidak
+   tertutup judul. Desktop (≥ 1024px) tetap kop berlatar foto biasa. */
+@media (max-width: 1023px) {
+  .kop-foto-atas { flex-direction: column; align-items: stretch; min-height: 0; }
+  .kop-foto-atas .latar-kop { position: relative; z-index: 0; aspect-ratio: 4 / 3; overflow: hidden; }
+  .kop-foto-atas .latar-kop > * { position: absolute; inset: 0; }
+  .kop-foto-atas .latar-kop::after { background: linear-gradient(180deg, rgba(14, 46, 41, 0) 55%, var(--deep) 100%); }
+  .kop-foto-atas .kop-isi { position: relative; margin-top: -56px; padding-top: 0; }
+}
+
 .kop-wisata-isi { padding-block: 120px 88px; }
 
 .kop-wisata-info {

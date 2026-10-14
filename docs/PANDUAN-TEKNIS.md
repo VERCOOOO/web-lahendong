@@ -287,13 +287,14 @@ Setiap halaman utama memakai pola markup yang sama:
 | Layanan | `layanan.webp` + `-hp` | Asli |
 | Wisata | `wisata.webp` + `-hp` | Asli |
 | Kontak | `kontak.webp` + `-hp` | Asli |
-| KKT | `kkt.webp` + `-hp` (kop `.kop-tinggi`, foto tim potret) | Asli |
+| KKT | `kkt.webp` + `-hp` (kop `.kop-tinggi .kop-foto-atas`, foto tim potret) | Asli |
 
 Detail wisata memakai `latar` milik destinasinya; Cek Data (alat admin) tetap berkop polos.
 Gradien `--deep-2` di `.latar-kop::after` menjaga judul putih terbaca; foto yang ramai/bertulisan diberi
 `.latar-pekat`. Titik fokus foto bisa digeser dengan kelas Tailwind pada `<img>`, mis. `object-[center_40%]`
 (di desktop foto selebar layar, jadi posisi mendatar seperti `object-[80%_center]` hanya berpengaruh di HP).
-`.kop-tinggi` (72vh, seperti kop detail wisata) dipakai halaman KKT agar foto tim tidak tertutup judul.
+`.kop-tinggi` (72vh, seperti kop detail wisata) dipakai halaman KKT agar foto tim tidak tertutup judul; `.kop-foto-atas`
+menaruh fotonya di atas judul (kotak 4:3) pada layar < 1024px, dengan titik fokus sendiri (`object-[center_76%] lg:object-[center_57%]`).
 
 ### Pas foto KKT — `img/kkt/`
 

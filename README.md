@@ -72,8 +72,8 @@ diisi **placeholder** (siluet abu-hijau untuk pas foto).
 |---|---|---|
 | Hero Beranda — video berulang tanpa suara | `img/hero/beranda.mp4`, `beranda-hp.mp4`, `beranda.webp` (poster) | Asli |
 | Kop Profil · Pemerintahan · Penduduk · Layanan · Wisata · Kontak · KKT | `img/hero/<halaman>.webp` (+ `<halaman>-hp.webp` untuk HP) | Asli |
-| Pas foto mahasiswa KKT (3:4) | `img/kkt/<nim>.webp`, mis. `img/kkt/230211060074.webp` | Placeholder |
-| Dosen Pembimbing / Pengawas Lapangan | `img/kkt/dosenpemlap.webp` / `img/kkt/dosenpenglap.webp` | Placeholder |
+| Pas foto mahasiswa KKT (3:4) | `img/kkt/<nim>.webp`, mis. `img/kkt/230211060074.webp` | Asli: 4 dari 15 (sisanya placeholder) |
+| Dosen Pembimbing / Pengawas Lapangan | `img/kkt/dosenpemlap.webp` / `img/kkt/dosenpenglap.webp` | Asli / placeholder |
 | Kartu, latar kop & galeri tiap destinasi | `img/wisata/<kode>/` — didaftarkan di `DESTINASI` ([`komponen.js`](assets/js/komponen.js)) | Asli |
 | Aparat & kepala lingkungan (opsional; tanpa foto = monogram) | `img/orang/` — didaftarkan di `FOTO_ORANG` | — |
 | Logo & favicon | `img/logo/` | Asli |
@@ -89,6 +89,7 @@ diisi **placeholder** (siluet abu-hijau untuk pas foto).
 
 Pengembang mengunduhnya ke `data/` lalu menjalankan `python3 tools/pasang_foto.py data/<folder>`: setiap foto
 dipotong, diperkecil, dan diubah ke WebP sesuai tempatnya. Nama yang salah ketik dilaporkan, tidak dipasang.
+Ukuran tiap file di Drive maksimal **10 MB** (batas unduhan); foto yang lebih besar simpan ulang sebagai JPG.
 
 **Foto wisata:** simpan foto asli di `data/<destinasi>/` (folder ini tidak ikut di-commit), lalu proses ke
 `img/wisata/<kode>/` dengan `python3 tools/siapkan_foto.py ASLI TUJUAN.webp --jenis kartu|latar|galeri`
