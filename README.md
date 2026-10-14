@@ -67,13 +67,13 @@ Spreadsheet dirancang agar sulit salah isi:
 
 Spreadsheet hanya berisi teks. Semua foto disimpan di folder `img/` dengan **nama berkas tetap**, jadi
 mengganti foto = menimpa berkas bernama sama; kode tidak perlu diubah. Tempat yang fotonya belum ada sudah
-diisi **placeholder** (siluet abu-hijau untuk pas foto).
+diisi **placeholder** (siluet abu-hijau untuk pas foto, mis. bila ada anggota baru).
 
 | Foto | Berkas | Status |
 |---|---|---|
 | Hero Beranda — video berulang tanpa suara | `img/hero/beranda.mp4`, `beranda-hp.mp4`, `beranda.webp` (poster) | Asli |
 | Kop Profil · Pemerintahan · Penduduk · Layanan · Wisata · Kontak · KKT | `img/hero/<halaman>.webp` (+ `<halaman>-hp.webp` untuk HP) | Asli |
-| Pas foto mahasiswa KKT (3:4) | `img/kkt/<nim>.webp`, mis. `img/kkt/230211060074.webp` | Asli: 14 dari 15 (230711010017 masih placeholder) |
+| Pas foto mahasiswa KKT (3:4) | `img/kkt/<nim>.webp`, mis. `img/kkt/230211060074.webp` | Asli (15 dari 15) |
 | Dosen Pembimbing / Pengawas Lapangan | `img/kkt/dosenpemlap.webp` / `img/kkt/dosenpenglap.webp` | Asli |
 | Kartu, latar kop & galeri tiap destinasi | `img/wisata/<kode>/` — didaftarkan di `DESTINASI` ([`komponen.js`](assets/js/komponen.js)) | Asli |
 | Aparat & kepala lingkungan (opsional; tanpa foto = monogram) | `img/orang/` — didaftarkan di `FOTO_ORANG` | — |
