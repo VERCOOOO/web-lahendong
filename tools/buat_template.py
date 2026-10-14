@@ -149,7 +149,7 @@ PILIHAN = {
     ("aparat", "atasan"): ("aparat.jabatan", True),
 }
 
-ALAMAT_SITUS = "https://vercoooo.github.io/web-lahendong/"
+ALAMAT_SITUS = "https://kelurahan-lahendong.github.io/"
 
 CARA = [
     "• Menambah data: isi baris kosong pertama di bawah data terakhir. Kolom pertama (judul hijau tua) wajib diisi.",

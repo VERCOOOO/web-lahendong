@@ -1,4 +1,4 @@
-# web-lahendong
+# kelurahan-lahendong.github.io
 
 Situs informasi Kelurahan Lahendong, Kecamatan Tomohon Selatan, Kota Tomohon, Sulawesi Utara —
 disusun oleh Mahasiswa KKT Unsrat Angkatan 149. Sengaja tidak menyebut diri situs resmi pemerintah;
@@ -11,7 +11,8 @@ HTML + Tailwind (CDN) + JavaScript biasa — tanpa build step.
 | [**docs/PANDUAN-TEKNIS.md**](docs/PANDUAN-TEKNIS.md) | Pengembang: struktur repo, alur data, fungsi kunci, resep mengubah kode |
 | [**docs/DESIGN-SPEC.md**](docs/DESIGN-SPEC.md) | Aturan desain: warna, tipografi, komponen |
 
-Situs terbit: <https://vercoooo.github.io/web-lahendong/>
+Situs terbit: <https://kelurahan-lahendong.github.io/> (alamat lama `vercoooo.github.io/web-lahendong/` dialihkan ke sini —
+lihat [Pindah alamat](docs/PANDUAN-TEKNIS.md#pindah-alamat-situs)).
 
 ## Cara kerja: spreadsheet → situs
 
@@ -51,7 +52,7 @@ Spreadsheet dirancang agar sulit salah isi:
 - **Dropdown** untuk isian pilihan: `tampil`, `kategori`, `atasan` (aparat, diambil dari kolom jabatan), dan
   `nama` di tab `wisata` (daftar destinasi tetap).
 - **Catatan di judul kolom**: arahkan kursor ke judul kolom untuk melihat arti dan contohnya.
-- **Halaman [Cek Data](https://vercoooo.github.io/web-lahendong/cek-data.html)** memeriksa seluruh sheet
+- **Halaman [Cek Data](https://kelurahan-lahendong.github.io/cek-data.html)** memeriksa seluruh sheet
   dan menunjukkan setiap isian yang keliru: kolom salah ketik, atasan tidak ditemukan, angka tidak valid,
   destinasi wisata yang tidak terdaftar, nama kembar, sampai deret angka yang mirip NIK. Buka setelah mengedit.
 

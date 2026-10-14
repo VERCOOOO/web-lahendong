@@ -40,7 +40,7 @@ Pustaka luar dari CDN hanya empat: Tailwind (kelas utilitas seperti `mt-4`), Luc
 ## 2. Struktur repositori
 
 ```
-web-lahendong/
+kelurahan-lahendong.github.io/
 ├── index.html              Beranda
 ├── profil.html             ┐
 ├── pemerintahan.html       │
@@ -453,5 +453,21 @@ Urutan aman saat perubahan menyentuh sheet dan kode sekaligus:
 - **Mengganti nama kolom/tab**: siapkan keduanya, ubah sheet, lalu segera push kode.
 - **Setelah mengubah `SKEMA` atau data contoh**: `python3 tools/buat_template.py`.
 
-Semua path di situs **relatif** (tanpa garis miring di depan, mis. `img/logo/logo.svg`), karena situs terbit di
-sub-folder `/web-lahendong/`. Pertahankan kebiasaan ini untuk berkas baru.
+Semua path di situs **relatif** (tanpa garis miring di depan, mis. `img/logo/logo.svg`), sehingga situs jalan di
+akar domain (`kelurahan-lahendong.github.io/`) maupun di sub-folder (`…github.io/web-lahendong/`, atau saat dibuka
+lewat `python3 -m http.server` dari folder induk). Pertahankan kebiasaan ini untuk berkas baru: jangan menulis
+`href="/profil.html"` atau `src="/img/..."`.
+
+### Pindah alamat situs
+
+Alamat sekarang `https://kelurahan-lahendong.github.io/` (repo `kelurahan-lahendong.github.io`); sebelumnya
+`https://vercoooo.github.io/web-lahendong/`. GitHub **tidak** mengalihkan alamat GitHub Pages lama setelah repo
+di-rename/dipindah, jadi tautan lama yang sudah tersebar akan 404. Untuk menjaganya tetap jalan:
+
+1. Di akun lama, buat repo publik baru bernama `web-lahendong`.
+2. Salin isi `tools/pengalihan-url-lama/` (`index.html` dan `404.html`) ke akar repo itu, lalu aktifkan Pages
+   (Settings → Pages → Deploy from branch → `main` / root).
+3. Setiap alamat lama diteruskan ke halaman yang sama di alamat baru, termasuk `?id=…` dan `#…`
+   (mis. `…/web-lahendong/layanan.html#surat-keterangan-domisili` → `kelurahan-lahendong.github.io/layanan.html#surat-keterangan-domisili`).
+
+Alamat situs untuk tab `petunjuk` spreadsheet ada di `ALAMAT_SITUS` (`tools/buat_template.py`).
