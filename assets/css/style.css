@@ -57,6 +57,14 @@ body {
   /* clip, bukan hidden: hidden membuat body menjadi wadah scroll sehingga
      header sticky berhenti menempel (terutama di Safari iOS). */
   overflow-x: clip;
+  /* Teks tidak bisa diseleksi dengan mouse/sentuhan; kolom isian (kotak cari Layanan) tetap bisa. */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+input, textarea, select, [contenteditable] {
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 @media (min-width: 768px) {
