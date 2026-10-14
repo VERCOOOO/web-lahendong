@@ -223,7 +223,7 @@ const ATURAN_TAB = {
     const namaResmi = (k) => DATA_DUMMY.wisata.find((w) => kodeDari(w.nama) === k)?.nama || k.replace(/-/g, " ");
     const namaTerdaftar = terdaftar.map(namaResmi);
     baris.forEach((b) => {
-      if (!terdaftar.includes(kodeDari(b.nama))) {
+      if (!terdaftar.includes(kodeDestinasi(kodeDari(b.nama)))) {
         const mirip = palingMirip(b.nama, namaTerdaftar);
         lapor("periksa", b, "nama", `"${teksPolos(b.nama)}" tidak termasuk daftar destinasi situs, jadi baris ini tidak tampil.`,
           mirip ? `Bila maksudnya destinasi yang sudah ada, kembalikan namanya seperti semula ("${mirip}"). Destinasi baru hanya bisa ditambahkan pengembang situs karena butuh foto.`
@@ -235,7 +235,7 @@ const ATURAN_TAB = {
         lapor("salah", b, "maps_link", "Tautan peta tidak diawali https://, jadi tombol Google Maps tidak muncul.", "Salin tautan lengkap dari Google Maps (Bagikan → Salin link).");
       }
     });
-    const adaDiSheet = baris.map((b) => kodeDari(b.nama));
+    const adaDiSheet = baris.map((b) => kodeDestinasi(kodeDari(b.nama)));
     terdaftar.filter((k) => !adaDiSheet.includes(k)).forEach((k) =>
       lapor("info", null, "nama", `Destinasi "${namaResmi(k)}" tidak ada di tab ini, jadi tidak tampil di situs.`,
         "Bila tidak sengaja terhapus atau namanya berubah, pilih lagi namanya dari daftar di kolom nama."));

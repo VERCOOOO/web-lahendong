@@ -393,6 +393,14 @@ Contoh: tab `agenda` berisi kegiatan kelurahan, tampil di Beranda.
 Buat folder `img/wisata/<kode>/`, daftarkan di `DESTINASI`, tambahkan barisnya di `data-contoh.js`, lalu jalankan
 `tools/buat_template.py` agar dropdown `nama` di tab `wisata` ikut memuatnya. Admin lalu mengisi barisnya di sheet.
 
+### Mengganti nama destinasi
+
+Kode destinasi berasal dari namanya di sheet, jadi nama yang diganti tidak lagi cocok dengan `DESTINASI` dan
+barisnya tidak tampil (Cek Data menandainya). Ganti kunci `DESTINASI` dan nama foldernya (`git mv`) ke kode baru,
+catat `"kode-lama": "kode-baru"` di `KODE_LAMA` (`komponen.js`) agar nama lama di sheet dan tautan `?id=` lama tetap
+berlaku, ubah `nama` di `data-contoh.js`, lalu jalankan `tools/buat_template.py`. Dropdown di sheet live tidak ikut
+berubah; perbarui validasinya bila perlu (Data → Validasi data).
+
 > Jangan mengganti nama kolom pertama (`nama`, `jabatan`, `kunci`, …) atau nama tab tanpa mengubah `SKEMA` di
 > saat yang sama. Google mengirim tab pertama bila nama tab tidak ditemukan; situs menolaknya dan bagian itu
 > menampilkan pesan gagal.

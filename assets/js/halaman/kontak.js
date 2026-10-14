@@ -65,7 +65,7 @@ function grup(judul, kartu) {
 }
 
 function kartuDarurat(item) {
-  const ikon = IKON_DARURAT[teksPolos(item.nomor).trim()] || "phone";
+  const ikon = IKON_DARURAT[hrefTelepon(item.nomor).slice(4)] || "phone"; // nomor pertama, tanpa "tel:"
   return `
     <a href="${hrefTelepon(item.nomor)}" class="kartu kartu-hover p-5 flex items-center gap-4">
       <span class="w-11 h-11 rounded-full bg-[var(--bg)] border border-[var(--line)] flex items-center justify-center shrink-0">

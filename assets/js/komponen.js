@@ -89,9 +89,20 @@ const FOTO_ORANG = {};
 
 const FOTO_PENGGANTI = "img/umum/placeholder.webp";
 
+/* Kode lama → kode sekarang. Bila nama destinasi di sheet diganti, kunci DESTINASI & foldernya ikut
+   diganti dan kode lamanya dicatat di sini: nama lama di sheet (mis. dari dropdown lama) dan tautan
+   ?id= yang terlanjur dibagikan tetap mengarah ke destinasi yang sama. */
+const KODE_LAMA = {
+  "objek-wisata-air-panas-belerang-dan-hutan-pinus": "air-panas-belerang-dan-hutan-pinus",
+};
+
+function kodeDestinasi(kode) {
+  return Object.prototype.hasOwnProperty.call(KODE_LAMA, kode) ? KODE_LAMA[kode] : kode;
+}
+
 /** Hanya destinasi yang terdaftar di DESTINASI — daftar wisata tidak bisa ditambah lewat sheet. */
 function wisataTetap(data) {
-  return data.filter((w) => DESTINASI[teksPolos(w.id)]);
+  return data.map((w) => ({ ...w, id: kodeDestinasi(teksPolos(w.id)) })).filter((w) => DESTINASI[w.id]);
 }
 
 /** Alamat satu berkas milik destinasi, mis. img/wisata/danau-linow/kartu.webp; "" bila kosong. */
@@ -254,9 +265,9 @@ function formatAngka(nilai) {
   return n === null ? nilai : n.toLocaleString("id-ID", { maximumFractionDigits: 2 });
 }
 
-/** "0812-3456-7801" → "tel:081234567801". */
+/** "0812-3456-7801" → "tel:081234567801". Beberapa nomor ("118 / 119") → nomor pertama saja. */
 function hrefTelepon(nomor) {
-  return "tel:" + teksPolos(nomor).replace(/[^0-9+]/g, "");
+  return "tel:" + teksPolos(nomor).split(/[\/,;]|\batau\b/i)[0].replace(/[^0-9+]/g, "");
 }
 
 /* ---------------------------------------------------------------------- */
