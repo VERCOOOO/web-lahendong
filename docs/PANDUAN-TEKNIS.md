@@ -281,17 +281,19 @@ Setiap halaman utama memakai pola markup yang sama:
 | Halaman | Berkas | Status |
 |---|---|---|
 | Beranda (video) | `beranda.mp4`, `beranda-hp.mp4`, poster `beranda.webp` | Asli |
-| Profil | `profil.webp` + `profil-hp.webp` | Placeholder |
-| Pemerintahan | `pemerintahan.webp` + `-hp` | Placeholder |
-| Penduduk | `penduduk.webp` + `-hp` | Placeholder |
+| Profil | `profil.webp` + `profil-hp.webp` | Asli |
+| Pemerintahan | `pemerintahan.webp` + `-hp` | Asli |
+| Penduduk | `penduduk.webp` + `-hp` | Asli |
 | Layanan | `layanan.webp` + `-hp` | Asli |
 | Wisata | `wisata.webp` + `-hp` | Asli |
-| Kontak | `kontak.webp` + `-hp` | Placeholder |
-| KKT | `kkt.webp` + `-hp` | Placeholder |
+| Kontak | `kontak.webp` + `-hp` | Asli |
+| KKT | `kkt.webp` + `-hp` (kop `.kop-tinggi`, foto tim potret) | Asli |
 
 Detail wisata memakai `latar` milik destinasinya; Cek Data (alat admin) tetap berkop polos.
 Gradien `--deep-2` di `.latar-kop::after` menjaga judul putih terbaca; foto yang ramai/bertulisan diberi
-`.latar-pekat`. Titik fokus foto bisa digeser dengan kelas Tailwind pada `<img>`, mis. `object-[center_40%]`.
+`.latar-pekat`. Titik fokus foto bisa digeser dengan kelas Tailwind pada `<img>`, mis. `object-[center_40%]`
+(di desktop foto selebar layar, jadi posisi mendatar seperti `object-[80%_center]` hanya berpengaruh di HP).
+`.kop-tinggi` (72vh, seperti kop detail wisata) dipakai halaman KKT agar foto tim tidak tertutup judul.
 
 ### Pas foto KKT — `img/kkt/`
 

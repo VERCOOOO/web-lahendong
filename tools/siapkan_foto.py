@@ -7,7 +7,7 @@
   hero    rasio asli, lebar 1920 px + versi HP TUJUAN-hp.webp lebar 960 px (kop halaman, img/hero/)
   potret  dipotong ke 3:4 dari tengah-atas, 600 × 800 px (pas foto KKT & dosen, img/kkt/)
 
-Orientasi dari kamera HP (EXIF) dibetulkan, hasilnya WebP; foto HEIC (iPhone) dibaca lewat ImageMagick.
+Orientasi dari kamera HP (EXIF) dibetulkan, bingkai hitam dibuang, hasilnya WebP; foto HEIC (iPhone) dibaca lewat ImageMagick.
 Foto asli cukup disimpan di data/ (tidak ikut di-commit); hanya hasil di img/ yang masuk repo.
 Butuh Pillow (pip install pillow) dan, untuk HEIC, ImageMagick.
 
@@ -31,6 +31,16 @@ def buka(asli):
         return Image.open(png).convert("RGB")
 
 
+def buang_bingkai(im, ambang=24):
+    """Buang bingkai hitam (mis. foto 16:9 di kanvas lebar, hasil ekspor video). Baris/kolom dibuang
+    hanya bila SELURUH pikselnya hampir hitam, jadi foto yang tepinya gelap tidak ikut terpotong."""
+    kotak = im.convert("L").point(lambda v: 255 if v > ambang else 0).getbbox()
+    if kotak and kotak != (0, 0, im.width, im.height):
+        print(f"  bingkai hitam dibuang: {im.width} × {im.height} → {kotak[2] - kotak[0]} × {kotak[3] - kotak[1]}")
+        return im.crop(kotak)
+    return im
+
+
 def simpan(im, tujuan):
     os.makedirs(os.path.dirname(tujuan) or ".", exist_ok=True)
     im.save(tujuan, quality=80, method=6)
@@ -38,7 +48,7 @@ def simpan(im, tujuan):
 
 
 def siapkan(asli, tujuan, jenis):
-    im = buka(asli)
+    im = buang_bingkai(buka(asli))
     if jenis == "kartu":
         im = ImageOps.fit(im, (1200, 800), Image.LANCZOS)
     elif jenis == "potret":

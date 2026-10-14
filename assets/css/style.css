@@ -1518,8 +1518,8 @@ details[open] { border-color: var(--primary); }
 .kop-berfoto > .wadah { width: 100%; }
 .kop-berfoto .kop-ringkas { color: var(--on-deep); }
 
-/* Detail wisata: lebih tinggi, latar menjadi tokoh utama halaman */
-.kop-wisata { min-height: clamp(440px, 72vh, 760px); }
+/* Detail wisata & KKT: lebih tinggi, latar (tempat / tim) menjadi tokoh utama halaman */
+.kop-wisata, .kop-tinggi { min-height: clamp(440px, 72vh, 760px); }
 
 .latar-kop {
   position: absolute;

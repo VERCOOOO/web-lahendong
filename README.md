@@ -66,13 +66,12 @@ Spreadsheet dirancang agar sulit salah isi:
 
 Spreadsheet hanya berisi teks. Semua foto disimpan di folder `img/` dengan **nama berkas tetap**, jadi
 mengganti foto = menimpa berkas bernama sama; kode tidak perlu diubah. Tempat yang fotonya belum ada sudah
-diisi **placeholder** (kop bertuliskan "FOTO HERO · …" dan siluet abu-hijau untuk pas foto).
+diisi **placeholder** (siluet abu-hijau untuk pas foto).
 
 | Foto | Berkas | Status |
 |---|---|---|
 | Hero Beranda — video berulang tanpa suara | `img/hero/beranda.mp4`, `beranda-hp.mp4`, `beranda.webp` (poster) | Asli |
-| Kop Profil · Pemerintahan · Penduduk · Kontak · KKT | `img/hero/<halaman>.webp` (+ `<halaman>-hp.webp` untuk HP) | Placeholder |
-| Kop Layanan · Wisata | `img/hero/layanan.webp`, `img/hero/wisata.webp` (+ `-hp`) | Asli |
+| Kop Profil · Pemerintahan · Penduduk · Layanan · Wisata · Kontak · KKT | `img/hero/<halaman>.webp` (+ `<halaman>-hp.webp` untuk HP) | Asli |
 | Pas foto mahasiswa KKT (3:4) | `img/kkt/<nim>.webp`, mis. `img/kkt/230211060074.webp` | Placeholder |
 | Dosen Pembimbing / Pengawas Lapangan | `img/kkt/dosenpemlap.webp` / `img/kkt/dosenpenglap.webp` | Placeholder |
 | Kartu, latar kop & galeri tiap destinasi | `img/wisata/<kode>/` — didaftarkan di `DESTINASI` ([`komponen.js`](assets/js/komponen.js)) | Asli |

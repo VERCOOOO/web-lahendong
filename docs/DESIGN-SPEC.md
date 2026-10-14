@@ -92,7 +92,8 @@ Bagan KKT   : pengurus inti di puncak (ketua di tengah, bergaris belerang, diapi
               anggota dalam daftar ringkas). Panel dosen lapangan memakai bidang `--deep`.
 Kop berfoto : `.kop-berfoto` — kop halaman dengan latar foto `img/hero/<halaman>.webp` + gradien `--deep-2`,
               judul putih di kiri bawah. Dipakai semua halaman utama (Profil, Pemerintahan, Penduduk, Layanan,
-              Wisata, Kontak, KKT); Cek Data tetap kop polos. Foto bertulisan memakai `.latar-pekat`.
+              Wisata, Kontak, KKT); Cek Data tetap kop polos. Foto bertulisan memakai `.latar-pekat`;
+              KKT memakai `.kop-tinggi` (setinggi kop wisata) karena foto timnya tokoh utama halaman.
 Kop wisata  : latar foto atau video (berulang, tanpa suara) selebar layar, tinggi 72vh (440–760px), judul di
               kiri bawah + jam & tiket berikon belerang. Video: tombol Jeda/Putar bulat di kanan bawah;
               "kurangi gerak"/hemat data = poster saja. Tepi bawah tetap siluet punggungan.
